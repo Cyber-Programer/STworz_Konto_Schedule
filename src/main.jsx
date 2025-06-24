@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import SignIn from './pages/Auth/SignIn'
 import SignUp from './pages/Auth/SignUp'
+import Employee from './pages/Employee/Employee'
 
 
 createRoot(document.getElementById('root')).render(
@@ -10,6 +11,7 @@ createRoot(document.getElementById('root')).render(
     {/* <App /> */}
     
     {/* <SignIn></SignIn> */}
-    <SignUp></SignUp>
+    {/* <SignUp></SignUp> */}
+    <Employee></Employee>
   </StrictMode>,
 )

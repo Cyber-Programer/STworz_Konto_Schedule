@@ -6,10 +6,12 @@
     --color-Primary: #3093FC;
     --color-textClr: #000000;
     --color-textClr2: #454545;
+    --color-Gray: #F3F3F3;
     --font-Inter: "Inter", sans-serif;
     --font-Roboto: "Roboto", sans-serif;
 }
 
+/* authentication section area  */
 /* sign in page  */
  .form-control{
     @apply w-full h-12 flex items-center justify-between border-[1px] border-textClr/30 rounded-xl px-2 py-4 bg-[#F3F3F3] shadow-[0px_4px_4px_rgba(0,0,0,0.25)]
@@ -24,3 +26,5 @@
 .sign_with_goole {
     @apply flex gap-x-2 items-center justify-center w-full text-center bg-[#EEEEEEEE] px-3 py-3 rounded-[10px] cursor-pointer
 }
+
+
