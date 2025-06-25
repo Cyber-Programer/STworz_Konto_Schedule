@@ -86,6 +86,8 @@ const Employee = () => {
       {showModal && (
         <div className="fixed px-4 inset-0 flex items-center justify-center bg-textClr/20 bg-opacity-50 z-50">
           <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative">
+
+            {/* cross button on the top right side of the modal  */}
             <button
               className="absolute top-2 right-3 text-gray-500 hover:text-black text-xl cursor-pointer"
               onClick={() => setShowModal(false)}
@@ -93,6 +95,16 @@ const Employee = () => {
               <RxCross1 size={16}/>
             </button>
             <h3 className="text-Primary text-2xl font-medium text-center mb-4">Add New Employee</h3>
+                {/* Image Placeholder + Add Photo */}
+            <div className="flex flex-col items-center mb-6">
+              <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-4xl">
+                {/* replace image <img>  */}
+              </div>
+              <button className="mt-4 cursor-pointer w-[103px] h-7.5 text-sm px-4 py-1 bg-[#8E8E8E] text-white rounded-lg">
+                Add Photo
+              </button>
+            </div>
+            {/* form section  */}
             <form onSubmit={handleSubmit} className="space-y-4">
            <div>
             <label className='block mb-2' >Employee Name</label>
@@ -119,22 +131,12 @@ const Employee = () => {
                 required
               />
            </div>
-           <div>
-            <label className='block mb-2' >Phone</label>
-              <input
-                type="text"
-                name="profileImage"
-                placeholder="Enter EMployee profile url"
-                value={formData.profileImage}
-                onChange={handleChange}
-                className="w-full border border-textClr/30 p-2 rounded outline-none bg-Gray"
-              />
-           </div>
+           
               <button
                 type="submit"
                 className="cursor-pointer w-full bg-Primary text-white py-2 rounded transition-all hover:bg-blue-700 duration-300"
               >
-                Add Employee
+                Add 
               </button>
             </form>
           </div>
