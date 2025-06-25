@@ -1,8 +1,15 @@
-import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Navigate,
+} from "react-router-dom";
 import RootLayout from "./RootLayout"; // RootLayout that wraps around child components
 import Signin from "./pages/Auth/Signin";
 import SignUp from "./pages/Auth/SignUp";
 import Dashboard from "./pages/Dashboard/Dashboard";
+import Employee from "./pages/Employee/Employee";
+import Schedule from "./pages/Schedule/Schedule";
+import Export from "./pages/Export/Export";
 
 export const router = createBrowserRouter([
   {
@@ -10,7 +17,10 @@ export const router = createBrowserRouter([
     element: <RootLayout />, // RootLayout wraps the routes
     children: [
       { index: true, element: <Navigate to="/dashboard" replace /> }, // Default redirect to dashboard
-      { path: "dashboard", element: <Dashboard /> }, // Dashboard route
+      { path: "dashboard", element: <Dashboard /> },
+      { path: "employee", element: <Employee /> },
+      { path: "schedule", element: <Schedule /> },
+      { path: "export", element: <Export /> },
     ],
   },
   {
