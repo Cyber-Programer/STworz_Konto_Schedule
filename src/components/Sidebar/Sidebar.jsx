@@ -6,46 +6,51 @@ import { MdOutlineSchedule } from "react-icons/md";
 import { TbFileExport } from "react-icons/tb";
 import pp from "../../assets/pp.png";
 import { useNavigate } from "react-router-dom";
-const Sidebar = () => {
-  const icons = {
-    Dashboard: "IoHomeOutline",
-    Employees: "FaUserFriends",
-    Schedule: "MdOutlineSchedule",
-    Export: "TbFileExport",
-  };
+
+const Sidebar = ({ isOpen, toggleSidebar }) => {
   const [selectedNav, setSelectedNav] = useState("Dashboard");
+
   const menuItems = [
     { name: "Dashboard", path: "/dashboard", ico: IoHomeOutline },
     { name: "Employees", path: "/employee", ico: FaUserFriends },
     { name: "Schedule Setting", path: "/schedule", ico: MdOutlineSchedule },
     { name: "Export", path: "/export", ico: TbFileExport },
-
-    // { name: }
   ];
-  const navigate = useNavigate()
+
+  const navigate = useNavigate();
 
   return (
-    <div className="p-10 w-[400px] flex flex-col justify-between">
+    <div
+      className={`fixed sm:static top-0 left-0 h-full w-[260px] bg-white z-50 shadow-md transform transition-transform duration-300
+        ${isOpen ? "translate-x-0" : "-translate-x-full"} sm:translate-x-0 p-6 flex flex-col justify-between`}
+    >
+      {/* Close button (mobile only) */}
+      {/* <button
+        className="sm:hidden absolute top-4 right-4 text-2xl"
+        onClick={toggleSidebar}
+      >
+        ✕
+      </button> */}
+
+      {/* Logo + Nav */}
       <div className="flex flex-col gap-10">
-        <img src={WebIcons.logo} alt="" className="w-40 " />
-        {/* Navigation elements */}
+        <img src={WebIcons.logo} alt="Logo" className="w-32" />
+
         <div className="flex flex-col gap-3">
           {menuItems.map((e) => {
             const isSelected = selectedNav === e.name;
             return (
               <div
+                key={e.name}
                 onClick={() => {
                   setSelectedNav(e.name);
-                  navigate(e.path)
-                  
+                  navigate(e.path);
+                  toggleSidebar(); // Close on mobile click
                 }}
-                className={`flex gap-3 w-full ${
-                  isSelected ? "bg-Primary" : "background-white"
-                } ${
-                  isSelected ? "text-white" : "text-black"
-                } p-2 items-center font-semibold text-lg cursor-pointer`}
+                className={`flex items-center gap-3 text-lg font-semibold p-2 rounded-lg cursor-pointer transition
+                  ${isSelected ? "bg-Primary text-white" : "text-black hover:bg-gray-100"}`}
               >
-                <e.ico className="text-2xl " />
+                <e.ico className="text-2xl" />
                 {e.name}
               </div>
             );
@@ -53,16 +58,16 @@ const Sidebar = () => {
         </div>
       </div>
 
-      {/* profile */}
-      <div className="flex flex-col gap-7">
-        <div className="flex gap-5">
-          <img src={pp} alt="img" />
+      {/* Profile */}
+      <div className="flex flex-col gap-6">
+        <div className="flex gap-4 items-center">
+          <img src={pp} alt="Profile" className="w-10 h-10 rounded-full" />
           <div>
-            <h2>John Kabir</h2>
-            <p>askf@gmail.com</p>
+            <h2 className="font-semibold">John Kabir</h2>
+            <p className="text-sm text-gray-500">askf@gmail.com</p>
           </div>
         </div>
-        <button className="capitalize w-full font-semibold text-lg text-Primary hover:bg-Primary hover:text-white border-2 py-2 rounded-lg border-Primary">
+        <button className="w-full py-2 border-2 border-Primary text-Primary hover:bg-Primary hover:text-white rounded-lg font-semibold text-lg">
           Log out
         </button>
       </div>

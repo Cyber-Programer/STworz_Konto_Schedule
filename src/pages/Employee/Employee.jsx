@@ -40,6 +40,42 @@ const initialEmp = [
     email: "furkan@gmail.com",
     profileImage: "https://randomuser.me/api/portraits/men/6.jpg"
   },
+  {
+    id: 7,
+    name: "Sohag ",
+    email: "sohag@gmail.com",
+    profileImage: "https://randomuser.me/api/portraits/men/5.jpg"
+  },
+   {
+    id: 8,
+    name: "Furkan ",
+    email: "furkan@gmail.com",
+    profileImage: "https://randomuser.me/api/portraits/men/6.jpg"
+  },
+  {
+    id: 9,
+    name: "Sohag ",
+    email: "sohag@gmail.com",
+    profileImage: "https://randomuser.me/api/portraits/men/5.jpg"
+  },
+   {
+    id: 10,
+    name: "Furkan ",
+    email: "furkan@gmail.com",
+    profileImage: "https://randomuser.me/api/portraits/men/6.jpg"
+  },
+  {
+    id: 11,
+    name: "Sohag ",
+    email: "sohag@gmail.com",
+    profileImage: "https://randomuser.me/api/portraits/men/5.jpg"
+  },
+   {
+    id: 12,
+    name: "Furkan ",
+    email: "furkan@gmail.com",
+    profileImage: "https://randomuser.me/api/portraits/men/6.jpg"
+  },
 ];
 
 const Employee = () => {
@@ -169,12 +205,15 @@ const Employee = () => {
                 <div className="text-gray-500 text-sm">{emp.email}</div>
               </div>
             </div>
-            <button
+            <div className='flex gap-x-3'>
+              <button className='cursor-pointer text-sm bg-white px-3 py-1 rounded border border-textClr/20'>Edit</button>
+              <button
               onClick={() => handleRemove(emp.id)}
               className="cursor-pointer text-sm bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
             >
               Remove
             </button>
+            </div>
           </div>
         ))}
       </div>
