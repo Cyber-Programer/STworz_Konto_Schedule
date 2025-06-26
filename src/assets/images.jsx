@@ -5,6 +5,7 @@ import scheduleVideo from "./icons/schedule/video.svg";
 import scheduleBot from "./icons/schedule/bot.svg";
 import scheduleSend from "./icons/schedule/send.svg";
 import scheduleCalender from "./icons/schedule/calendar.svg"
+
 const WebIcons = {
   logo: lg, // main logo
   authMain: authmain, // auth bg

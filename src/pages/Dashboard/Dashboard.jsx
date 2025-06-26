@@ -91,7 +91,7 @@ const Dashboard = () => {
             Welcome to Grafik Master
           </h2>
           <div className="flex items-end">
-            <button className="flex  gap-2 items-center border px-5 py-2dispaly              border-blue-400">
+            <button className="flex  gap-2 items-center border px-5 py-2  border-blue-400">
               <img className="w-5 " src={WebIcons.scheduleCalender} alt="" />
               Manage & Create Schedule
             </button>
@@ -99,12 +99,10 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="overflow-auto p-4">
-        <table className="table-auto border-collapse border-gray-500">
+        <table className="table-auto border border-gray-400 border-collapse">
           <thead>
             <tr>
-              <th className="border px-4 py-2 whitespace-nowrap text-left">
-                Employee
-              </th>
+              <th className="border border-gray-400 px-4 py-2">Employee</th>
               <th className="border px-4 py-2 whitespace-nowrap text-left">
                 Total Hours
               </th>
@@ -121,12 +119,13 @@ const Dashboard = () => {
           <tbody>
             {employeeSchedules.map((employee) => (
               <tr key={employee.name}>
-                <td className="border px-4 py-2 align-top">
-                  <span className="font-semibold">{employee.name}</span>
+                <td className="border flex flex-col border-gray-400 px-4 py-2">
+                  <span className="font-semibold">{employee.name} </span>
+                  <span className="text-gray-400">{employee.totalHours}</span>
                 </td>
-                <td className="border px-4 py-2 align-top text-sm text-gray-500 whitespace-nowrap">
+                {/* <td className="border px-4 py-2 align-top text-sm text-gray-500 whitespace-nowrap">
                   {employee.totalHours}
-                </td>
+                </td> */}
                 {dateColumns.map((date) => (
                   <td
                     key={date}
