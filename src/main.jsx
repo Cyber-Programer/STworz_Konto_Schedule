@@ -13,7 +13,7 @@ createRoot(document.getElementById('root')).render(
     
     {/* <SignIn></SignIn> */}
     {/* <SignUp></SignUp> */}
-    <Employee></Employee>
+    {/* <Employee></Employee> */}
     {/* <ManageSchedule></ManageSchedule> */}
   </StrictMode>,
 )
