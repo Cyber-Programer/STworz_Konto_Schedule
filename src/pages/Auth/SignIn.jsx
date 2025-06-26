@@ -11,7 +11,7 @@ const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleSignIn = (e) => {
     e.preventDefault();
@@ -30,7 +30,7 @@ const SignIn = () => {
         <div className="max-w-md  mx-auto mt-16 lg:mt-44">
           <form onSubmit={handleSignIn}>
             <h1 className="font-medium text-[2rem] text-textClr text-center">
-              Sign In
+              Log In
             </h1>
             {/* email input  */}
             <div>
@@ -79,12 +79,17 @@ const SignIn = () => {
             {/* submition button area  */}
 
             <button type="submit" className="signIn_submit">
-              Sign In
+              Log In
             </button>
             {/* sign up link  */}
             <div className="mt-4 text-center text-sm text-gray-600">
               Don’t have an account?{" "}
-              <span onClick={()=>{navigate('/signup')}} className="text-Primary font-semibold hover:underline cursor-pointer">
+              <span
+                onClick={() => {
+                  navigate("/signup");
+                }}
+                className="text-Primary font-semibold hover:underline cursor-pointer"
+              >
                 Sign up
               </span>
             </div>
@@ -93,7 +98,7 @@ const SignIn = () => {
           <h1 className="text-2xl text-center my-7">Or</h1>
 
           <div className="sign_with_goole">
-            <FcGoogle size={28} /> Sign in with google account
+            <FcGoogle size={28} /> Log in with google account
           </div>
         </div>
       </div>

@@ -31,7 +31,7 @@ const SignUp = () => {
         <div className="max-w-md  mx-auto mt-16 lg:mt-14">
           <form onSubmit={handleSignUP}>
             <h1 className="font-medium text-[2rem] text-textClr text-center">
-              Sign Up
+              Registration
             </h1>
 
             {/* name input  */}
@@ -123,14 +123,12 @@ const SignUp = () => {
               </div>
             </div>
 
-            {/* submition button area  */}
-
             <button type="submit" className="signIn_submit">
-              Sign In
+              Registration
             </button>
             {/* sign up link  */}
             <div className="mt-4 text-center text-sm text-gray-600">
-              Don’t have an account?{" "}
+              Do you have an account?{" "}
               <span
                 onClick={() => {
                   navigate("/signin");
@@ -145,7 +143,7 @@ const SignUp = () => {
           <h1 className="text-2xl text-center my-7">Or</h1>
 
           <div className="sign_with_goole">
-            <FcGoogle size={28} /> Sign in with google account
+            <FcGoogle size={28} /> Registration with google account
           </div>
         </div>
       </div>
