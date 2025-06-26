@@ -17,8 +17,9 @@ const Sidebar = () => {
   const menuItems = [
     { name: "Dashboard", path: "/dashboard", ico: IoHomeOutline },
     { name: "Employees", path: "/employee", ico: FaUserFriends },
-    { name: "Schedule", path: "/schedule", ico: MdOutlineSchedule },
+    { name: "Schedule Setting", path: "/schedule", ico: MdOutlineSchedule },
     { name: "Export", path: "/export", ico: TbFileExport },
+
     // { name: }
   ];
   const navigate = useNavigate()
