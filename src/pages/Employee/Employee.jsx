@@ -70,6 +70,11 @@ const Employee = () => {
     setShowModal(false);
   };
 
+
+  const handleRemove = (id)=>{
+    setEmployees(prev => prev.filter(emp => emp.id !== id));
+  }
+
   return (
     <div className="p-4">
       <div className="flex  justify-between items-center mb-8">
@@ -145,27 +150,35 @@ const Employee = () => {
 
       {/* Employee List */}
       <div className="w-full">
-        {/* <h2 className="text-xl font-semibold mb-4">Employee List</h2> */}
         {employees.map(emp => (
           <div
             key={emp.id}
-            className="flex bg-Gray items-center gap-4  p-4  mb-3 shadow-sm"
+            className="flex items-center justify-between bg-Gray p-4 mb-3 shadow-sm rounded"
           >
-            <img
-              src={
-                emp.profileImage ||
-                `https://ui-avatars.com/api/?name=${encodeURIComponent(emp.name)}`
-              }
-              alt={emp.name}
-              className="w-12 h-12 rounded-full object-cover"
-            />
-            <div>
-              <div className="font-medium">{emp.name}</div>
-              <div className="text-gray-500 text-sm">{emp.email}</div>
+            <div className="flex items-center gap-4">
+              <img
+                src={
+                  emp.profileImage ||
+                  `https://ui-avatars.com/api/?name=${encodeURIComponent(emp.name)}`
+                }
+                alt={emp.name}
+                className="w-12 h-12 rounded-full object-cover"
+              />
+              <div>
+                <div className="font-medium">{emp.name}</div>
+                <div className="text-gray-500 text-sm">{emp.email}</div>
+              </div>
             </div>
+            <button
+              onClick={() => handleRemove(emp.id)}
+              className="text-sm bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+            >
+              Remove
+            </button>
           </div>
         ))}
       </div>
+
     </div>
   );
 };

@@ -4,7 +4,7 @@ import './index.css'
 import SignIn from './pages/Auth/SignIn'
 import SignUp from './pages/Auth/SignUp'
 import Employee from './pages/Employee/Employee'
-import ManageSchedule from './pages/Setting/Setting'
+
 
 
 createRoot(document.getElementById('root')).render(
