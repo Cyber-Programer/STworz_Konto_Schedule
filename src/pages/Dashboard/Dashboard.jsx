@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import WebIcons from "../../assets/images";
 const Dashboard = () => {
   const [dateColumns, setDateColumns] = useState([
     "2025-05-01",
@@ -84,59 +84,74 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="overflow-auto p-4">
-      <table className="table-auto border-collapse border-gray-500">
-        <thead>
-          <tr>
-            <th className="border px-4 py-2 whitespace-nowrap text-left">
-              Employee
-            </th>
-            <th className="border px-4 py-2 whitespace-nowrap text-left">
-              Total Hours
-            </th>
-            {dateColumns.map((date) => (
-              <th
-                key={date}
-                className="border px-4 py-2 whitespace-nowrap text-sm text-center"
-              >
-                {formatDate(date)}
+    <>
+      <div className="p-4 font-Roboto">
+        <div className="flex justify-between">
+          <h2 className="text-2xl font-semibold w-40">
+            Welcome to Grafik Master
+          </h2>
+          <div className="flex items-end">
+            <button className="flex  gap-2 items-center border px-5 py-2dispaly              border-blue-400">
+              <img className="w-5 " src={WebIcons.scheduleCalender} alt="" />
+              Manage & Create Schedule
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className="overflow-auto p-4">
+        <table className="table-auto border-collapse border-gray-500">
+          <thead>
+            <tr>
+              <th className="border px-4 py-2 whitespace-nowrap text-left">
+                Employee
               </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {employeeSchedules.map((employee) => (
-            <tr key={employee.name}>
-              <td className="border px-4 py-2 align-top">
-                <span className="font-semibold">{employee.name}</span>
-              </td>
-              <td className="border px-4 py-2 align-top text-sm text-gray-500 whitespace-nowrap">
-                {employee.totalHours}
-              </td>
+              <th className="border px-4 py-2 whitespace-nowrap text-left">
+                Total Hours
+              </th>
               {dateColumns.map((date) => (
-                <td
+                <th
                   key={date}
-                  className="border px-2 py-2 align-top text-center"
+                  className="border px-4 py-2 whitespace-nowrap text-sm text-center"
                 >
-                  <div className="flex flex-col gap-1 items-center">
-                    {(employee.shifts[date] || []).map((shift, idx) => (
-                      <div
-                        key={idx}
-                        className={`text-xs text-white rounded px-2 py-1 ${getShiftColor(
-                          shift
-                        )}`}
-                      >
-                        {shift}
-                      </div>
-                    ))}
-                  </div>
-                </td>
+                  {formatDate(date)}
+                </th>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {employeeSchedules.map((employee) => (
+              <tr key={employee.name}>
+                <td className="border px-4 py-2 align-top">
+                  <span className="font-semibold">{employee.name}</span>
+                </td>
+                <td className="border px-4 py-2 align-top text-sm text-gray-500 whitespace-nowrap">
+                  {employee.totalHours}
+                </td>
+                {dateColumns.map((date) => (
+                  <td
+                    key={date}
+                    className="border px-2 py-2 align-top text-center"
+                  >
+                    <div className="flex flex-col gap-1 items-center">
+                      {(employee.shifts[date] || []).map((shift, idx) => (
+                        <div
+                          key={idx}
+                          className={`text-xs text-white rounded px-2 py-1 ${getShiftColor(
+                            shift
+                          )}`}
+                        >
+                          {shift}
+                        </div>
+                      ))}
+                    </div>
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 };
 
