@@ -4,7 +4,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import RootLayout from "./RootLayout"; // RootLayout that wraps around child components
-import SignIn from "./pages/Auth/Signin";
+import SignIn from "./pages/Auth/SignIn";
 import SignUp from "./pages/Auth/SignUp";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Employee from "./pages/Employee/Employee";

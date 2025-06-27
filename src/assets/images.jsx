@@ -7,7 +7,7 @@ import scheduleSend from "./icons/schedule/send.svg";
 import scheduleCalender from "./icons/schedule/calendar.svg";
 import scheduleEdit from "./icons/schedule/edit.svg";
 import scheduleSave from "./icons/schedule/save.svg";
-import scheduleExport from "./icons/schedule/edit.svg";
+import scheduleExport from "./icons/schedule/export.svg";
 const WebIcons = {
   logo: lg, // main logo
   authMain: authmain, // auth bg

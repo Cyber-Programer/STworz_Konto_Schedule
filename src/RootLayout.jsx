@@ -1,20 +1,40 @@
-import React, { useState, useEffect } from "react";
-import { Outlet, useLocation } from "react-router-dom"; // Use Outlet for rendering child routes
-import Sidebar from "./components/Sidebar/Sidebar"; // Import Sidebar (if needed)
 
-function RootLayout() {
+import React, { useState } from "react";
+import { Outlet, useLocation } from "react-router-dom";
+import Sidebar from "./components/Sidebar/Sidebar";
+import { RxHamburgerMenu } from "react-icons/rx";
+
+const RootLayout = () => {
   const location = useLocation();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   const noSidebarRoutes = ["/signin", "/signup"];
   const showSidebar = !noSidebarRoutes.includes(location.pathname.toLowerCase());
 
+  const toggleSidebar = () => setSidebarOpen((prev) => !prev);
+
   return (
-    <div style={{ display: "flex", height: "100vh", overflow:"hidden"}}>
-      {showSidebar && <Sidebar />} {/* Show Sidebar based on the route */}
-      <main style={{ width: "100%", padding: showSidebar ? "20px" : "0" }}>
-        <Outlet /> {/* This renders the child routes */}
+    <div className="flex h-screen bg-gray-50 relative">
+      {/* Sidebar */}
+      {showSidebar && (
+        <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
+      )}
+
+      {/* Main content */}
+      <main className="flex-1 p-4 overflow-auto w-full">
+        {/* Menu icon on small screens */}
+        {showSidebar && (
+          <button
+            className="sm:hidden fixed top-4 left-4 z-50 bg-white p-2 rounded shadow"
+            onClick={toggleSidebar}
+          >
+            <RxHamburgerMenu className="text-2xl" />
+          </button>
+        )}
+        <Outlet />
       </main>
     </div>
   );
-}
+};
 
 export default RootLayout;

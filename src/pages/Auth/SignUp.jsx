@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import logo from "../../assets/logo.svg";
 import { FcGoogle } from "react-icons/fc";
 import mail from "../../assets/icons/auth/mail.svg";
-import men from "../../assets/men.svg";
+import women from "../../assets/women.svg";
 import { Eye, EyeOff } from "lucide-react";
 import { FaUserEdit } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
@@ -149,7 +149,7 @@ const SignUp = () => {
       </div>
       {/* right section  */}
       <div className="bg-Primary w-1/2 hidden md:flex items-center justify-center">
-        <img src={men} alt="A men image " className="hidden md:block" />
+        <img src={women} alt="A men image " className="hidden md:block" />
       </div>
     </div>
   );

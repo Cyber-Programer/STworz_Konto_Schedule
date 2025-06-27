@@ -113,7 +113,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <SubscriptionPlan />
+      {/* <SubscriptionPlan /> */}
       <div className="w-full p-4">
         {/* Header */}
         <div className="flex justify-between items-center mb-4 w-10/12 mx-auto">
