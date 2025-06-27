@@ -8,7 +8,7 @@ function RootLayout() {
   const showSidebar = !noSidebarRoutes.includes(location.pathname.toLowerCase());
 
   return (
-    <div style={{ display: "flex", height: "100vh" }}>
+    <div style={{ display: "flex", height: "100vh", overflow:"hidden"}}>
       {showSidebar && <Sidebar />} {/* Show Sidebar based on the route */}
       <main style={{ width: "100%", padding: showSidebar ? "20px" : "0" }}>
         <Outlet /> {/* This renders the child routes */}

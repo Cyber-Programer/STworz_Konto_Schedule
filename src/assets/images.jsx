@@ -4,8 +4,10 @@ import scheduleCall from "./icons/schedule/phone.svg";
 import scheduleVideo from "./icons/schedule/video.svg";
 import scheduleBot from "./icons/schedule/bot.svg";
 import scheduleSend from "./icons/schedule/send.svg";
-import scheduleCalender from "./icons/schedule/calendar.svg"
-
+import scheduleCalender from "./icons/schedule/calendar.svg";
+import scheduleEdit from "./icons/schedule/edit.svg";
+import scheduleSave from "./icons/schedule/save.svg";
+import scheduleExport from "./icons/schedule/edit.svg";
 const WebIcons = {
   logo: lg, // main logo
   authMain: authmain, // auth bg
@@ -13,7 +15,10 @@ const WebIcons = {
   scheduleVideo: scheduleVideo, // schedule video call ico
   scheduleBot: scheduleBot, // schedule bot ico
   scheduleSend: scheduleSend, // schedule send ico
-  scheduleCalender: scheduleCalender // schedule calender ico
+  scheduleCalender: scheduleCalender, // schedule calender ico
+  scheduleEdit: scheduleEdit, // schedule edit ico
+  scheduleSave: scheduleSave,
+  scheduleExport: scheduleExport,
 };
 
 export default WebIcons;

@@ -22,10 +22,10 @@ const Sidebar = () => {
 
     // { name: }
   ];
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
-    <div className="p-10 w-[400px] flex flex-col justify-between">
+    <div className="p-10 whitespace-nowrap  flex flex-col justify-between">
       <div className="flex flex-col gap-10">
         <img src={WebIcons.logo} alt="" className="w-40 " />
         {/* Navigation elements */}
@@ -36,8 +36,7 @@ const Sidebar = () => {
               <div
                 onClick={() => {
                   setSelectedNav(e.name);
-                  navigate(e.path)
-                  
+                  navigate(e.path);
                 }}
                 className={`flex gap-3 w-full ${
                   isSelected ? "bg-Primary" : "background-white"

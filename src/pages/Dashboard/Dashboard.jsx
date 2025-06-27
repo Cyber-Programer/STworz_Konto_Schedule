@@ -1,24 +1,26 @@
 import React, { useState } from "react";
 import WebIcons from "../../assets/images";
-const Dashboard = () => {
-  const [dateColumns, setDateColumns] = useState([
-    "2025-05-01",
-    "2025-05-02",
-    "2025-05-03",
-    "2025-05-04",
-    "2025-05-05",
-    "2025-05-06",
-    "2025-05-07",
-  ]);
 
-  const [employeeSchedules, setEmployeeSchedules] = useState([
+const Dashboard = () => {
+  const shOptionsCss =
+    "flex gap-2 items-center justify-center border px-3 border-Primary";
+
+  const [dateColumns] = useState(
+    Array.from({ length: 8 }, (_, i) => {
+      const date = new Date(2025, 4, 1 + i); // May is month index 4
+      return date.toISOString().split("T")[0];
+    })
+  );
+
+  const [employeeSchedules] = useState([
     {
       name: "Mark",
       totalHours: "40 hr 10 min",
       shifts: {
-        "2025-05-01": ["08:00-14:00", "16:00-23:00"],
+        "2025-05-01": ["08:00-14:00"],
         "2025-05-02": ["08:00-14:00"],
-        "2025-05-03": ["10:00-18:00"],
+        "2025-05-03": ["08:00-14:00"],
+        "2025-05-04": ["08:00-14:00"],
         "2025-05-05": ["14:00-21:00"],
         "2025-05-06": ["08:00-14:00"],
         "2025-05-07": ["16:00-23:00"],
@@ -30,127 +32,93 @@ const Dashboard = () => {
       shifts: {
         "2025-05-01": ["08:00-14:00"],
         "2025-05-02": ["16:00-23:00"],
-        "2025-05-04": ["08:00-14:00", "14:00-21:00"],
-        "2025-05-06": ["10:00-18:00"],
-      },
-    },
-    {
-      name: "Daniel",
-      totalHours: "47 hr 10 min",
-      shifts: {
-        "2025-05-01": ["16:00-23:00"],
         "2025-05-03": ["08:00-14:00"],
+        "2025-05-04": ["16:00-23:00"],
         "2025-05-05": ["10:00-18:00"],
-        "2025-05-06": ["16:00-23:00"],
+        "2025-05-06": ["14:00-21:00"],
         "2025-05-07": ["08:00-14:00"],
       },
     },
-    {
-      name: "Helena",
-      totalHours: "32 hr 0 min",
-      shifts: {
-        "2025-05-02": ["08:00-14:00"],
-        "2025-05-03": ["10:00-18:00"],
-        "2025-05-05": ["08:00-14:00"],
-        "2025-05-06": ["10:00-18:00"],
-      },
-    },
-    {
-      name: "Jay Park",
-      totalHours: "29 hr 30 min",
-      shifts: {
-        "2025-05-01": ["10:00-18:00"],
-        "2025-05-04": ["08:00-14:00"],
-        "2025-05-05": ["16:00-23:00"],
-        "2025-05-07": ["10:00-18:00"],
-      },
-    },
+    // Add more employee objects here similarly
   ]);
 
-  function formatDate(dateStr) {
+  const formatDate = (dateStr) => {
     const date = new Date(dateStr);
     return `${String(date.getDate()).padStart(2, "0")}.${String(
       date.getMonth() + 1
     ).padStart(2, "0")}.${date.getFullYear()}`;
-  }
+  };
 
-  function getShiftColor(shift) {
-    if (shift.includes("08:00") || shift.includes("8:00"))
-      return "bg-[#669bbc]"; // morning
+  const getShiftColor = (shift) => {
+    if (shift.includes("08:00")) return "bg-[#669bbc]"; // morning
     if (shift.includes("10:00")) return "bg-[#f4a261]"; // mid
-    if (shift.includes("16:00")) return "bg-[#9d4edd]"; // evening
     if (shift.includes("14:00")) return "bg-[#89c2d9]"; // late morning
-    return "bg-gray-400"; // default
-  }
+    if (shift.includes("16:00")) return "bg-[#9d4edd]"; // evening
+    return "bg-gray-400";
+  };
 
   return (
-    <>
-      <div className="p-4 font-Roboto">
-        <div className="flex justify-between">
-          <h2 className="text-2xl font-semibold w-40">
-            Welcome to Grafik Master
-          </h2>
-          <div className="flex items-end">
-            <button className="flex  gap-2 items-center border px-5 py-2  border-blue-400">
-              <img className="w-5 " src={WebIcons.scheduleCalender} alt="" />
-              Manage & Create Schedule
-            </button>
-          </div>
+    <div className="w-full p-4">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-4 w-10/12 mx-auto">
+        <h2 className="text-2xl font-semibold">Welcome to Grafik Master</h2>
+        <button className="flex gap-2 items-center border px-5 py-2 border-blue-400">
+          <img className="w-5" src={WebIcons.scheduleCalender} alt="" />
+          Manage & Create Schedule
+        </button>
+      </div>
+      <hr className="text-gray-300" />
+      <div className="flex justify-between p-10">
+        <h2 className="text-sm lg:text-xl font-semibold">
+          Previously generated schedules
+        </h2>
+        <div className="flex gap-2 font-semibold">
+          <select
+            name=""
+            id="wm"
+            className="border border-Primary px-5 outline-blue-400"
+          >
+            <option value="Weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+          <button className={shOptionsCss}>
+            <img src={WebIcons.scheduleEdit} alt="edit ico" />
+            Edit
+          </button>
+          <button className={shOptionsCss}>
+            <img src={WebIcons.scheduleSave} alt="save ico" />
+            Save
+          </button>
+          <button className={shOptionsCss}>
+            <img src={WebIcons.scheduleExport} alt="" />
+            Export to PDF
+          </button>
         </div>
       </div>
-      <div className="overflow-auto p-4">
-        <table className="table-auto border border-gray-400 border-collapse">
-          <thead>
-            <tr>
-              <th className="border border-gray-400 px-4 py-2">Employee</th>
-              <th className="border px-4 py-2 whitespace-nowrap text-left">
-                Total Hours
-              </th>
-              {dateColumns.map((date) => (
-                <th
-                  key={date}
-                  className="border px-4 py-2 whitespace-nowrap text-sm text-center"
-                >
-                  {formatDate(date)}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {employeeSchedules.map((employee) => (
-              <tr key={employee.name}>
-                <td className="border flex flex-col border-gray-400 px-4 py-2">
-                  <span className="font-semibold">{employee.name} </span>
-                  <span className="text-gray-400">{employee.totalHours}</span>
-                </td>
-                {/* <td className="border px-4 py-2 align-top text-sm text-gray-500 whitespace-nowrap">
-                  {employee.totalHours}
-                </td> */}
-                {dateColumns.map((date) => (
-                  <td
-                    key={date}
-                    className="border px-2 py-2 align-top text-center"
-                  >
-                    <div className="flex flex-col gap-1 items-center">
-                      {(employee.shifts[date] || []).map((shift, idx) => (
-                        <div
-                          key={idx}
-                          className={`text-xs text-white rounded px-2 py-1 ${getShiftColor(
-                            shift
-                          )}`}
-                        >
-                          {shift}
-                        </div>
-                      ))}
-                    </div>
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
+
+      {/* Schedule Table */}
+      <div className="overflow-x-auto">
+        <table className="border border-gray-400 ">
+          <tr>
+            <th>
+              {/* Date Selection  */}
+              <select
+                name="timeSelect"
+                id="timeSelect"
+                className="font-normal border-0 outline-0"
+              >
+                <option value="01.05 - 07.05">01.05 - 07.05</option>
+                <option value="08.05 - 14.05">08.05 - 14.05</option>
+                <option value="15.05 - 21.05">15.05 - 21.05</option>
+                <option value="22.05 - 28.05">22.05 - 28.05</option>
+                <option value="28.05 - 31.05">28.05 - 31.05</option>
+              </select>
+{/* to be continued... */}
+            </th>
+          </tr>
         </table>
       </div>
-    </>
+    </div>
   );
 };
 

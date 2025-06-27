@@ -4,7 +4,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import RootLayout from "./RootLayout"; // RootLayout that wraps around child components
-import Signin from "./pages/Auth/Signin";
+import SignIn from "./pages/Auth/Signin";
 import SignUp from "./pages/Auth/SignUp";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Employee from "./pages/Employee/Employee";
@@ -25,7 +25,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "/signin",
-    element: <Signin />, // SignIn page
+    element: <SignIn />, // SignIn page
   },
   {
     path: "/signup",
