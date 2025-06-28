@@ -6,15 +6,19 @@ import { MdOutlineSchedule } from "react-icons/md";
 import { TbFileExport } from "react-icons/tb";
 import pp from "../../assets/pp.png";
 import { useNavigate } from "react-router-dom";
+import { Settings } from 'lucide-react';
+import { MessageCircle,Users } from 'lucide-react';
+
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
   const [selectedNav, setSelectedNav] = useState("Dashboard");
 
   const menuItems = [
     { name: "Dashboard", path: "/dashboard", ico: IoHomeOutline },
-    { name: "Employees", path: "/employee", ico: FaUserFriends },
-    { name: "Schedule Setting", path: "/schedule", ico: MdOutlineSchedule },
-    { name: "Export", path: "/export", ico: TbFileExport },
+    { name: "Employees", path: "/employee", ico: Users },
+    { name: "Schedule Setting", path: "/schedule", ico: Settings },
+    { name: "Chat to Set Schedule", path: "/chat", ico: MessageCircle },
+    // { name: "Export", path: "/export", ico: TbFileExport },
   ];
 
   const navigate = useNavigate();
@@ -47,7 +51,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                   navigate(e.path);
                   toggleSidebar(); // Close on mobile click
                 }}
-                className={`flex items-center gap-3 text-lg font-semibold p-2 rounded-lg cursor-pointer transition
+                className={`flex items-center gap-3 text-base font-semibold p-2 rounded-lg cursor-pointer transition
                   ${isSelected ? "bg-Primary text-white" : "text-black hover:bg-gray-100"}`}
               >
                 <e.ico className="text-2xl" />

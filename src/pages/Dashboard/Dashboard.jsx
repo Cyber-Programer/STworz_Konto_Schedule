@@ -6,7 +6,7 @@ const Dashboard = () => {
     "flex gap-2 items-center justify-center border px-3 py-2 border-Primary";
 
   const [dateColumns] = useState(
-    Array.from({ length: 7 }, (_, i) => {
+    Array.from({ length: 30 }, (_, i) => {
       const date = new Date(2025, 4, 2 + i);
       return date.toISOString().split("T")[0];
     })
@@ -189,8 +189,8 @@ const Dashboard = () => {
         </div>
 
         {/* Schedule Table */}
-        <div className="overflow-x-scroll whitespace-nowrap">
-          <table className="table-fixed w-full min-w-[900px] border border-[#AAAAAA] rounded-xl">
+        <div className="overflow-x-scroll ">
+          <table className="w-full min-w-[900px] border border-[#AAAAAA] rounded-xl">
             <thead>
               <tr className="border border-[#AAAAAA]">
                 <th className="border border-[#AAAAAA] px-4 py-2 text-left min-w-[140px]">
@@ -234,7 +234,7 @@ const Dashboard = () => {
                       {(employee.shifts[date] || []).map((shift, idx) => (
                         <div
                           key={idx}
-                          className={` text-sm text-white font-medium rounded-[10px] px-2 py-2 ${getShiftColor(
+                          className={` text-sm text-white font-medium rounded-[10px] h-12.5 flex justify-center items-center px-2 py-2 ${getShiftColor(
                             shift
                           )}`}
                         >

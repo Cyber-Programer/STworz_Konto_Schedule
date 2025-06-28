@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import Employee from "./pages/Employee/Employee";
 import Schedule from "./pages/Schedule/Schedule";
 import Export from "./pages/Export/Export";
+import ChatSchedule from "./pages/ChatSchedule/ChatSchedule";
 
 export const router = createBrowserRouter([
   {
@@ -20,7 +21,8 @@ export const router = createBrowserRouter([
       { path: "dashboard", element: <Dashboard /> },
       { path: "employee", element: <Employee /> },
       { path: "schedule", element: <Schedule /> },
-      { path: "export", element: <Export /> },
+      { path: "chat", element: <ChatSchedule /> },
+      // { path: "export", element: <Export /> },
     ],
   },
   {
