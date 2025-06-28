@@ -3,7 +3,7 @@ import WebIcons from "../../assets/images";
 import SubscriptionPlan from "../../components/Subscription/SubscriptionPlan";
 const Dashboard = () => {
   const shOptionsCss =
-    "flex gap-2 items-center justify-center border px-3 border-Primary";
+    "flex gap-2 items-center justify-center border px-3 py-2 border-Primary";
 
   const [dateColumns] = useState(
     Array.from({ length: 7 }, (_, i) => {
@@ -114,33 +114,35 @@ const Dashboard = () => {
   return (
     <>
       <SubscriptionPlan />
-      <div className="w-full p-4">
+      <div className="w-full p-4 font-Roboto">
         {/* Header */}
-        <div className="flex justify-between items-center mb-4 w-10/12 mx-auto">
-          <h2 className="text-2xl font-semibold">Welcome to Grafik Master</h2>
-          <button className="flex gap-2 items-center border px-5 py-2 border-blue-400">
+        <div className="w-full flex justify-between items-center my-4 ">
+          <h2 className="text-[2rem] font-semibold font-Roboto text-textClr leading-9.5">
+            Welcome to <br className="hidden md:block" /> Grafik Master
+          </h2>
+          <button className="flex gap-x-2.5 items-center border px-5 py-2 border-blue-400">
             <img className="w-5" src={WebIcons.scheduleCalender} alt="" />
             Manage & Create Schedule
           </button>
         </div>
-        <hr className="text-gray-300" />
-        <div className="flex justify-between p-10">
-          <h2 className="text-sm lg:text-xl font-semibold">
+        <hr className="text-gray-300 mb-4" />
+        <div className="flex justify-between">
+          <h2 className="text-sm lg:text-2xl  font-semibold ">
             Previously generated schedules
           </h2>
-          <div className="flex gap-2 font-semibold items-center">
+          <div className="flex gap-2 font-semibold items-center mb-3">
             {/* ⭐ Custom Select */}
             <div className="relative inline-block text-left">
               <button
                 onClick={() => setOpen(!open)}
-                className="flex items-center border border-Primary px-5 py-1 outline-blue-400 gap-2"
+                className="flex items-center border border-Primary px-5 py-2 outline-blue-400 gap-2"
               >
                 <img
                   src={options.find((o) => o.value === selected).icon}
                   alt="ico"
                   className="w-4"
                 />
-                {selected}
+                <p>{selected}</p>
               </button>
 
               {open && (
@@ -155,7 +157,9 @@ const Dashboard = () => {
                       className="flex items-center w-full px-3 py-2 hover:bg-gray-100 gap-2"
                     >
                       <img src={option.icon} alt="ico" className="w-4" />
-                      {option.value}
+                      <p className="font-Inter font-medium text-textClr">
+                        {option.value}
+                      </p>
                     </button>
                   ))}
                 </div>
@@ -164,25 +168,32 @@ const Dashboard = () => {
 
             <button className={shOptionsCss}>
               <img src={WebIcons.scheduleEdit} alt="edit ico" />
-              Edit
+              <p className="hidden lg:block font-Inter font-medium text-textClr">
+                Edit
+              </p>
             </button>
             <button className={shOptionsCss}>
               <img src={WebIcons.scheduleSave} alt="save ico" />
-              Save
+              <p className="hidden lg:block font-Inter font-medium text-textClr">
+                {" "}
+                Save
+              </p>
             </button>
             <button className={shOptionsCss}>
               <img src={WebIcons.scheduleExport} alt="" />
-              Export to PDF
+              <p className="hidden lg:block font-Inter font-medium text-textClr">
+                Export to PDF
+              </p>
             </button>
           </div>
         </div>
 
         {/* Schedule Table */}
         <div className="overflow-x-scroll whitespace-nowrap">
-          <table className="table-fixed w-full min-w-[900px] border border-gray-400">
+          <table className="table-fixed w-full min-w-[900px] border border-[#AAAAAA] rounded-xl">
             <thead>
-              <tr>
-                <th className="border px-4 py-2 text-left min-w-[140px]">
+              <tr className="border border-[#AAAAAA]">
+                <th className="border border-[#AAAAAA] px-4 py-2 text-left min-w-[140px]">
                   <select
                     name="timeSelect"
                     id="timeSelect"
@@ -199,7 +210,7 @@ const Dashboard = () => {
                 {dateColumns.map((date) => (
                   <th
                     key={date}
-                    className="border text-center text-base font-semibold px-2 py-4 min-w-[120px]"
+                    className="border border-[#AAAAAA] text-center text-base font-semibold px-2 py-4 min-w-[120px]"
                   >
                     {formatDate(date)}
                   </th>
@@ -208,8 +219,8 @@ const Dashboard = () => {
             </thead>
             <tbody>
               {employeeSchedules.map((employee) => (
-                <tr key={employee.name}>
-                  <td className="border px-2 py-2 whitespace-nowrap text-[14px] font-semibold text-left min-w-[140px]">
+                <tr key={employee.name} className="border border-[#AAAAAA]">
+                  <td className="border border-[#AAAAAA] px-2 py-2 whitespace-nowrap text-[14px] font-semibold text-left min-w-[140px]">
                     {employee.name}
                     <div className="text-xs text-gray-500">
                       {employee.totalHours}
@@ -218,12 +229,12 @@ const Dashboard = () => {
                   {dateColumns.map((date) => (
                     <td
                       key={date}
-                      className="border text-center px-2 py-2 min-w-[120px]"
+                      className="border border-[#AAAAAA] text-center px-2 py-2 min-w-[120px]"
                     >
                       {(employee.shifts[date] || []).map((shift, idx) => (
                         <div
                           key={idx}
-                          className={`text-sm text-white font-medium rounded px-2 py-2 ${getShiftColor(
+                          className={` text-sm text-white font-medium rounded-[10px] px-2 py-2 ${getShiftColor(
                             shift
                           )}`}
                         >

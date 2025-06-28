@@ -4,7 +4,7 @@ import WebIcons from "../../assets/images";
 const SubscriptionPlan = () => {
   const subscriptionList = "flex items-center gap-5";
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+    <div classN ame=" inset-0 bg-black/50 z-50 flex items-center justify-center">
       <div className=" bg-white p-10 shadow-lg rounded-xl flex flex-col items-center justify-center relative">
         <h1 className="text-2xl font-semibold capitalize mb-4">
           Subscription Plan
