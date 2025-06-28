@@ -113,7 +113,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <SubscriptionPlan />
+      {/* <SubscriptionPlan /> */}
       <div className="w-full p-4 font-Roboto">
         {/* Header */}
         <div className="w-full flex justify-between items-center my-4 ">
