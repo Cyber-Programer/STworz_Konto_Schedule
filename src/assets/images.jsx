@@ -8,6 +8,7 @@ import scheduleCalender from "./icons/schedule/calendar.svg";
 import scheduleEdit from "./icons/schedule/edit.svg";
 import scheduleSave from "./icons/schedule/save.svg";
 import scheduleExport from "./icons/schedule/export.svg";
+import subscriptionIco from "./icons/subscription/tikico.svg";
 const WebIcons = {
   logo: lg, // main logo
   authMain: authmain, // auth bg
@@ -19,6 +20,7 @@ const WebIcons = {
   scheduleEdit: scheduleEdit, // schedule edit ico
   scheduleSave: scheduleSave,
   scheduleExport: scheduleExport,
+  subscriptionIco: subscriptionIco,
 };
 
 export default WebIcons;
