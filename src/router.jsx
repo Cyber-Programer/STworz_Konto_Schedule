@@ -14,6 +14,7 @@ import Premium from "./pages/Premium/Premium";
 import MainDashboard from "./pages/Dashboard/Dashboard";
 import MonthlySch from "./pages/Dashboard/MonthlySch";
 // import ManageSchedule from "./components/ManageSchedule/ManageSchedule";
+import ChatSchedule from "./pages/ChatSchedule/ChatSchedule";
 
 export const router = createBrowserRouter([
   {
@@ -24,8 +25,8 @@ export const router = createBrowserRouter([
       { path: "dashboard", element: <MonthlySch /> },
       { path: "employee", element: <Employee /> },
       { path: "schedule", element: <Schedule /> },
+      { path: "chat", element: <ChatSchedule /> },
       { path: "premium", element: <Premium /> },
-      { path: "export", element: <Export /> },
     ],
   },
   {

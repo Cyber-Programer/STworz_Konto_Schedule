@@ -212,8 +212,8 @@ const Dashboard = ({ selectedMonth, setShowDashboard }) => {
         </div>
 
         {/* Schedule Table */}
-        <div className="overflow-x-scroll whitespace-nowrap">
-          <table className="table-fixed w-full min-w-[900px] border border-[#AAAAAA] rounded-xl">
+        <div className="overflow-x-scroll ">
+          <table className="w-full min-w-[900px] border border-[#AAAAAA] rounded-xl">
             <thead>
               <tr className="border border-[#AAAAAA]">
                 <th className="border border-[#AAAAAA] px-4 py-2 text-left min-w-[140px]">

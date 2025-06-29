@@ -1,168 +1,122 @@
 import React, { useState } from "react";
+import { Search, MoreVertical } from "lucide-react";
 import WebIcons from "../../assets/images";
-import scheduleImage from "../../assets/Screenshot 2025-06-26 012150.png"; // example image
 
-const Schedule = () => {
-  const [input, setInput] = useState("");
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      sender: "user",
-      time: "8:14 AM",
-      text: "Create a New Schedule for June:\n• Helena: 160 hours, no Thursdays, only first shifts.\n• Oscar: Entire month off.\n• Daniel: 140 hours, only second shifts until June 15, after that, any shift.\n• Mark: 45 hours, only Friday and Saturday.",
-      type: "text",
-    },
-    {
-      id: 2,
-      sender: "bot",
-      time: "8:15 AM",
-      text: "our schedule for June 2025 has been updated.",
-      type: "text",
-    },
-    {
-      id: 3,
-      sender: "bot",
-      time: "8:15 AM",
-      type: "image",
-      imageUrl: scheduleImage,
-    },
-    {
-      id: 4,
-      sender: "bot",
-      time: "8:15 AM",
-      text: "Should I send this to all employees via email?",
-      type: "text",
-    },
-  ]);
+const initialData = [
+  { id: "FIG-121", title: "The maximum working time in a month is 180 hours" },
+  { id: "FIG-122", title: "We are closed on Sundays" },
+  { id: "FIG-123", title: "During the holiday period (July and August), the maximum shift length is 6 hours" },
+  { id: "FIG-124", title: "Standard workweek is 40 hours, with possible overtime" },
+  { id: "FIG-125", title: "Employees are entitled to short breaks (15 mins) and longer breaks for shifts over 6 hours" },
+  { id: "FIG-126", title: "During the holiday period (July and August), the maximum shift length is 6 hours" },
+  { id: "FIG-127", title: "Shifts usually last 8 hours, but can be shorter or longer" },
+  { id: "FIG-128", title: "Flexible work hours or remote work may be offered in some roles" },
+  { id: "FIG-129", title: "Employees earn paid vacation time annually" },
+  { id: "FIG-130", title: "Employees may rotate between day, evening, or night shifts" },
+];
 
-  const [employeeList, setEmployeeList] = useState([
-    {
-      name: "Helena",
-      img: "string",
-    },
-    {
-      name: "Oscar",
-      img: "string",
-    },
-    {
-      name: "Daniel",
-      img: "string",
-    },
-    {
-      name: "Demo",
-      img: "string",
-    },
-  ]);
+const PrinciplesTable = () => {
+  const [search, setSearch] = useState("");
+  const [openActionId, setOpenActionId] = useState(null);
+  const [principles, setPrinciples] = useState(initialData);
 
-  const handleSend = () => {
-    if (!input.trim()) return;
+  const filteredData = principles.filter((item) =>
+    item.title.toLowerCase().includes(search.toLowerCase())
+  );
 
-    const newMessage = {
-      id: Date.now(),
-      sender: "user",
-      time: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-      text: input.trim(),
-      type: "text",
-    };
+  const toggleActionMenu = (id) => {
+    setOpenActionId(openActionId === id ? null : id);
+  };
 
-    setMessages((prev) => [newMessage, ...prev]);
-    setInput("");
+  const handleEdit = (id) => {
+    const updatedTitle = prompt("Edit rule title:");
+    if (updatedTitle) {
+      setPrinciples((prev) =>
+        prev.map((item) =>
+          item.id === id ? { ...item, title: updatedTitle } : item
+        )
+      );
+      setOpenActionId(null);
+    }
+  };
+
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this rule?")) {
+      setPrinciples((prev) => prev.filter((item) => item.id !== id));
+      setOpenActionId(null);
+    }
   };
 
   return (
-    <div className="font-Roboto h-screen flex p-4 gap-4">
-      {/* Schedule Chat Section */}
-      <div className="flex-1 flex flex-col">
-        {/* Header */}
-        <h1 className="text-xl md:text-3xl font-bold mb-4">
-          Schedule Settings
-        </h1>
+    <div className="max-w-8xl  p-6 mt-10 bg-white shadow rounded-md font-Roboto ">
+      <h2 className="text-xl font-semibold text-textClr mb-4">Principles</h2>
 
-        {/* Chat Header */}
-        <div className="w-full flex justify-between px-3 items-center mb-4">
-          <div className="flex gap-3 items-center">
-            <img className="w-8 h-8" src={WebIcons.scheduleBot} alt="bot" />
-            <p className="font-semibold">ChatBot</p>
-          </div>
-          <div className="flex gap-4">
-            <img className="w-5 h-5" src={WebIcons.scheduleCall} alt="call" />
-            <img className="w-5 h-5" src={WebIcons.scheduleVideo} alt="video" />
-          </div>
+      <div className="flex items-center justify-between mb-4">
+        {/* Search Input with Icon */}
+        <div className="relative w-full max-w-sm">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+          <input
+            type="text"
+            placeholder="Search rules..."
+            className="pl-10 pr-3 py-2 border border-gray-300 rounded w-full outline-none"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
 
-        {/* Chat Box and Input */}
-        <div className="flex flex-col flex-grow overflow-hidden">
-          {/* Messages */}
-          <div className="flex flex-col flex-grow overflow-y-auto border border-gray-300 rounded-2xl p-4 bg-white mb-4">
-            {messages.map((msg) => (
-              <div
-                key={msg.id}
-                className={`flex flex-col ${
-                  msg.sender === "user"
-                    ? "items-end self-end"
-                    : "items-start self-start"
-                } mb-3`}
-              >
-                <div className="text-xs text-gray-500">{msg.time}</div>
-                {msg.type === "text" ? (
-                  <div
-                    className={`p-3 rounded-lg max-w-md whitespace-pre-line ${
-                      msg.sender === "user"
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-200 text-black"
-                    }`}
-                  >
-                    {msg.text}
+        {/* Static Edit Button */}
+        {/* <div className="flex gap-2 ml-4">
+          <button className="p-2 rounded hover:bg-gray-100 flex items-center">
+            <img src={WebIcons.scheduleEdit} alt="edit icon" className="w-4 h-4" />
+            <p className="ml-2">Edit</p>
+          </button>
+        </div> */}
+      </div>
+
+      {/* Table */}
+      <table className="w-full table-auto">
+        <thead>
+          <tr className="text-left  font-medium">
+            <th className="py-2 px-2 w-24 text-[#828282]">Task</th>
+            <th className="py-2 px-2 text-textClr font-medium ">Title</th>
+            <th className="py-2 px-2">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredData.map((item) => (
+            <tr key={item.id} className="border-t border-[#E0E0E0] hover:bg-gray-50 relative text-sm">
+              <td className="py-2 px-2 text-[#828282]">{item.id}</td>
+              <td className="py-2 px-2">{item.title}</td>
+              <td className="py-2 px-2 relative">
+                <button onClick={() => toggleActionMenu(item.id)}>
+                  <MoreVertical className="text-gray-500" size={18} />
+                  
+                </button>
+
+                {openActionId === item.id && (
+                  <div className="absolute right-2 mt-2 bg-white border border-gray-200 rounded shadow w-28 z-10">
+                    <button
+                      onClick={() => handleEdit(item.id)}
+                      className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(item.id)}
+                      className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                    >
+                      Delete
+                    </button>
                   </div>
-                ) : (
-                  <img
-                    src={msg.imageUrl}
-                    alt="chat-img"
-                    className="w-full max-w-xs rounded-lg shadow"
-                  />
                 )}
-              </div>
-            ))}
-          </div>
-
-          {/* Input */}
-          <div className="flex items-center gap-3 border-2 border-gray-300 rounded-lg px-4 py-4">
-            <input
-              type="text"
-              placeholder="Enter your message"
-              className="flex-grow outline-none border-gray-400"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSend()}
-            />
-            <button onClick={handleSend}>
-              <img
-                src={WebIcons.scheduleSend}
-                alt="send"
-                className="w-5 h-5 cursor-pointer"
-              />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Employee List Section */}
-      <div className="w-auto min-w-[180px] max-w-xs border-l pl-4 overflow-y-auto">
-        {/* <h2 className="text-lg font-semibold mb-3">Employees</h2> */}
-        {employeeList.map((employee) => (
-          <div key={employee.name} className="flex gap-3 items-center mb-2">
-            <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-sm text-white">
-              {employee.name.charAt(0)}
-            </div>
-            <span className="text-base">{employee.name}</span>
-          </div>
-        ))}
-      </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
 
-export default Schedule;
+export default PrinciplesTable;
+
