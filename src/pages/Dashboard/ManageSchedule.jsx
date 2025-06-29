@@ -17,7 +17,7 @@ const ManageSchedule = ({ setShowManageSchedule }) => {
     }
   }, [value]);
 
-  // ✅ Fix date formatting to local date, not UTC
+  //  Fix date formatting to local date, not UTC
   const handleCalendarChange = (selectedDate) => {
     setValue(selectedDate);
 
@@ -33,7 +33,7 @@ const ManageSchedule = ({ setShowManageSchedule }) => {
   const handleDateInputChange = (e) => {
     setDate(e.target.value);
 
-    // ✅ Also update calendar selection when typing in input
+    //  Also update calendar selection when typing in input
     const [year, month, day] = e.target.value.split("-");
     const newDate = new Date(year, month - 1, day);
     setValue(newDate);
@@ -69,7 +69,7 @@ const ManageSchedule = ({ setShowManageSchedule }) => {
       {/* Calendar section */}
       <div className="mt-12.5">
         <h1 className="text-2xl">{monthName}</h1>
-        <div className="py-2 w-1/3">
+        <div className="py-2 max-w-[660px]">
           <Calendar
             onChange={handleCalendarChange}
             value={value}
@@ -122,7 +122,7 @@ const ManageSchedule = ({ setShowManageSchedule }) => {
               />
             </div>
           </div>
-          <button className="mt-5.5 cursor-pointer w-max px rounded-md text-white bg-Primary p-4 ">
+          <button className="mt-5.5 cursor-pointer w-max p-3 rounded-md text-white bg-Primary  ">
             Add New Schedule
           </button>
         </form>
