@@ -6,6 +6,7 @@ import { MdOutlineSchedule } from "react-icons/md";
 import { TbFileExport } from "react-icons/tb";
 import pp from "../../assets/pp.png";
 import { useNavigate } from "react-router-dom";
+import { MdOutlineWorkspacePremium } from "react-icons/md";
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
   const [selectedNav, setSelectedNav] = useState("Dashboard");
@@ -15,6 +16,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     { name: "Employees", path: "/employee", ico: FaUserFriends },
     { name: "Schedule Setting", path: "/schedule", ico: MdOutlineSchedule },
     { name: "Export", path: "/export", ico: TbFileExport },
+    { name: "Premium", path: "/premium", ico: MdOutlineWorkspacePremium },
   ];
 
   const navigate = useNavigate();
@@ -22,7 +24,9 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   return (
     <div
       className={`fixed sm:static top-0 left-0 h-full w-[260px] bg-white z-50 shadow-md transform transition-transform duration-300
-        ${isOpen ? "translate-x-0" : "-translate-x-full"} sm:translate-x-0 p-6 flex flex-col justify-between border-r border-textClr/20`}
+        ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        } sm:translate-x-0 p-6 flex flex-col justify-between border-r border-textClr/20`}
     >
       {/* Close button (mobile only) */}
       {/* <button
@@ -48,7 +52,11 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                   toggleSidebar(); // Close on mobile click
                 }}
                 className={`flex items-center gap-3 text-lg font-semibold p-2 rounded-lg cursor-pointer transition
-                  ${isSelected ? "bg-Primary text-white" : "text-black hover:bg-gray-100"}`}
+                  ${
+                    isSelected
+                      ? "bg-Primary text-white"
+                      : "text-black hover:bg-gray-100"
+                  }`}
               >
                 <e.ico className="text-2xl" />
                 {e.name}

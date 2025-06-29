@@ -13,6 +13,11 @@
     --font-Maname:  "Maname", serif;
 }
 
+.react-calendar {
+  width: 100% !important; /* Force it to take full width of parent */
+}
+
+
 /* authentication section area  */
 /* sign in page  */
  .form-control{

@@ -1,17 +1,9 @@
 import React, { useState } from "react";
 import WebIcons from "../../assets/images";
 import SubscriptionPlan from "../../components/Subscription/SubscriptionPlan";
-const Dashboard = () => {
-  const shOptionsCss =
-    "flex gap-2 items-center justify-center border px-3 py-2 border-Primary";
+import ManageSchedule from "./ManageSchedule";
 
-  const [dateColumns] = useState(
-    Array.from({ length: 7 }, (_, i) => {
-      const date = new Date(2025, 4, 2 + i);
-      return date.toISOString().split("T")[0];
-    })
-  );
-
+const Dashboard = ({ selectedMonth, setShowDashboard }) => {
   const [employeeSchedules] = useState([
     {
       name: "Mark",
@@ -87,12 +79,26 @@ const Dashboard = () => {
     },
   ]);
 
+  const [showManageSchedule, setShowManageSchedule] = useState(false);
+
+  const [dateColumns] = useState(
+    Array.from({ length: 7 }, (_, i) => {
+      const date = new Date(2025, 4, 2 + i);
+      return date.toISOString().split("T")[0];
+    })
+  );
+
+  const shOptionsCss =
+    "flex gap-2 items-center justify-center border px-3 py-2 border-Primary";
+
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
     return `${String(date.getDate()).padStart(2, "0")}.${String(
       date.getMonth() + 1
     ).padStart(2, "0")}.${date.getFullYear()}`;
   };
+
+  console.log("You select month: ", selectedMonth);
 
   const getShiftColor = (shift) => {
     if (shift.includes("08:00")) return "bg-[#669bbc]";
@@ -111,23 +117,41 @@ const Dashboard = () => {
     { value: "Monthly", icon: WebIcons.scheduleCalender },
   ];
 
+  const handelSchedule = () => {
+    setShowManageSchedule(true); // ✅ fixed
+  };
+
+  if (showManageSchedule) {
+    return <ManageSchedule setShowManageSchedule={setShowManageSchedule} />;
+  }
+
   return (
     <>
-      {/* <SubscriptionPlan /> */}
       <div className="w-full p-4 font-Roboto">
         {/* Header */}
-        <div className="w-full flex justify-between items-center my-4 ">
-          <h2 className="text-[2rem] font-semibold font-Roboto text-textClr leading-9.5">
+        <div className="w-full flex justify-end  my-4 ">
+          {/* <h2 className="text-[2rem] font-semibold font-Roboto text-textClr leading-9.5">
             Welcome to <br className="hidden md:block" /> Grafik Master
-          </h2>
-          <button className="flex gap-x-2.5 items-center border px-5 py-2 border-blue-400">
+          </h2> */}
+          <button
+            onClick={handelSchedule}
+            className="flex gap-x-2.5 items-center border px-5 py-2 border-blue-400 cursor-pointer"
+          >
             <img className="w-5" src={WebIcons.scheduleCalender} alt="" />
             Manage & Create Schedule
           </button>
         </div>
+
         <hr className="text-gray-300 mb-4" />
+
         <div className="flex justify-between">
-          <h2 className="text-sm lg:text-2xl  font-semibold ">
+          <h2
+            onClick={() => {
+              setShowDashboard(false);
+            }}
+            className="flex pb-10 items-center gap-2 text-sm lg:text-2xl font-semibold cursor-pointer"
+          >
+            <img src={WebIcons.scheduleBack} alt="" />
             Previously generated schedules
           </h2>
           <div className="flex gap-2 font-semibold items-center mb-3">
@@ -175,7 +199,6 @@ const Dashboard = () => {
             <button className={shOptionsCss}>
               <img src={WebIcons.scheduleSave} alt="save ico" />
               <p className="hidden lg:block font-Inter font-medium text-textClr">
-                {" "}
                 Save
               </p>
             </button>
@@ -206,7 +229,6 @@ const Dashboard = () => {
                     <option value="28.05 - 31.05">28.05 - 31.05</option>
                   </select>
                 </th>
-
                 {dateColumns.map((date) => (
                   <th
                     key={date}
@@ -234,7 +256,7 @@ const Dashboard = () => {
                       {(employee.shifts[date] || []).map((shift, idx) => (
                         <div
                           key={idx}
-                          className={` text-sm text-white font-medium rounded-[10px] px-2 py-2 ${getShiftColor(
+                          className={`text-sm text-white font-medium rounded-[10px] px-2 py-2 ${getShiftColor(
                             shift
                           )}`}
                         >

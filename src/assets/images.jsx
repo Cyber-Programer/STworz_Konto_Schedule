@@ -9,6 +9,9 @@ import scheduleEdit from "./icons/schedule/edit.svg";
 import scheduleSave from "./icons/schedule/save.svg";
 import scheduleExport from "./icons/schedule/export.svg";
 import subscriptionIco from "./icons/subscription/tikico.svg";
+import scheduleBack from "./icons/schedule/back.svg";
+import monthBg from "./monthly.png";
+
 const WebIcons = {
   logo: lg, // main logo
   authMain: authmain, // auth bg
@@ -21,6 +24,8 @@ const WebIcons = {
   scheduleSave: scheduleSave,
   scheduleExport: scheduleExport,
   subscriptionIco: subscriptionIco,
+  scheduleBack: scheduleBack,
+  monthBg: monthBg,
 };
 
 export default WebIcons;
