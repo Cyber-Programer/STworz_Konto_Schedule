@@ -5,14 +5,38 @@ import WebIcons from "../../assets/images";
 const initialData = [
   { id: "FIG-121", title: "The maximum working time in a month is 180 hours" },
   { id: "FIG-122", title: "We are closed on Sundays" },
-  { id: "FIG-123", title: "During the holiday period (July and August), the maximum shift length is 6 hours" },
-  { id: "FIG-124", title: "Standard workweek is 40 hours, with possible overtime" },
-  { id: "FIG-125", title: "Employees are entitled to short breaks (15 mins) and longer breaks for shifts over 6 hours" },
-  { id: "FIG-126", title: "During the holiday period (July and August), the maximum shift length is 6 hours" },
-  { id: "FIG-127", title: "Shifts usually last 8 hours, but can be shorter or longer" },
-  { id: "FIG-128", title: "Flexible work hours or remote work may be offered in some roles" },
+  {
+    id: "FIG-123",
+    title:
+      "During the holiday period (July and August), the maximum shift length is 6 hours",
+  },
+  {
+    id: "FIG-124",
+    title: "Standard workweek is 40 hours, with possible overtime",
+  },
+  {
+    id: "FIG-125",
+    title:
+      "Employees are entitled to short breaks (15 mins) and longer breaks for shifts over 6 hours",
+  },
+  {
+    id: "FIG-126",
+    title:
+      "During the holiday period (July and August), the maximum shift length is 6 hours",
+  },
+  {
+    id: "FIG-127",
+    title: "Shifts usually last 8 hours, but can be shorter or longer",
+  },
+  {
+    id: "FIG-128",
+    title: "Flexible work hours or remote work may be offered in some roles",
+  },
   { id: "FIG-129", title: "Employees earn paid vacation time annually" },
-  { id: "FIG-130", title: "Employees may rotate between day, evening, or night shifts" },
+  {
+    id: "FIG-130",
+    title: "Employees may rotate between day, evening, or night shifts",
+  },
 ];
 
 const PrinciplesTable = () => {
@@ -54,7 +78,10 @@ const PrinciplesTable = () => {
       <div className="flex items-center justify-between mb-4">
         {/* Search Input with Icon */}
         <div className="relative w-full max-w-sm">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+          <Search
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            size={18}
+          />
           <input
             type="text"
             placeholder="Search rules..."
@@ -63,14 +90,21 @@ const PrinciplesTable = () => {
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
+      </div>
+      {/* Add new rules section  */}
 
-        {/* Static Edit Button */}
-        {/* <div className="flex gap-2 ml-4">
-          <button className="p-2 rounded hover:bg-gray-100 flex items-center">
-            <img src={WebIcons.scheduleEdit} alt="edit icon" className="w-4 h-4" />
-            <p className="ml-2">Edit</p>
-          </button>
-        </div> */}
+      <div className="my-6 flex flex-wrap gap-2 justify-end w-full sm:w-auto">
+        <input
+          type="text"
+          placeholder="Add New Rules"
+          className="py-2 px-3 border border-gray-300 rounded w-full sm:w-64 outline-none"
+        />
+        <button className="bg-[#F7F7F7] rounded px-3 py-2 flex items-center gap-x-2 w-max">
+          <span className="w-5 h-5 border rounded-full flex items-center justify-center text-lg font-bold leading-none">
+            +
+          </span>
+          Add New
+        </button>
       </div>
 
       {/* Table */}
@@ -84,13 +118,15 @@ const PrinciplesTable = () => {
         </thead>
         <tbody>
           {filteredData.map((item) => (
-            <tr key={item.id} className="border-t border-[#E0E0E0] hover:bg-gray-50 relative text-sm">
+            <tr
+              key={item.id}
+              className="border-t border-[#E0E0E0] hover:bg-gray-50 relative text-sm"
+            >
               <td className="py-2 px-2 text-[#828282]">{item.id}</td>
               <td className="py-2 px-2">{item.title}</td>
               <td className="py-2 px-2 relative">
                 <button onClick={() => toggleActionMenu(item.id)}>
                   <MoreVertical className="text-gray-500" size={18} />
-                  
                 </button>
 
                 {openActionId === item.id && (
@@ -119,4 +155,3 @@ const PrinciplesTable = () => {
 };
 
 export default PrinciplesTable;
-
