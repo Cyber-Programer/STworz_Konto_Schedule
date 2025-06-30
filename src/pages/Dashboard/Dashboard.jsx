@@ -108,7 +108,7 @@ const Dashboard = ({ selectedMonth, setShowDashboard }) => {
     return "bg-gray-400";
   };
 
-  // ⭐ Custom select state
+  //  Custom select state
   const [selected, setSelected] = useState("Weekly");
   const [open, setOpen] = useState(false);
 
@@ -118,7 +118,7 @@ const Dashboard = ({ selectedMonth, setShowDashboard }) => {
   ];
 
   const handelSchedule = () => {
-    setShowManageSchedule(true); // ✅ fixed
+    setShowManageSchedule(true); //  fixed
   };
 
   if (showManageSchedule) {
@@ -155,7 +155,7 @@ const Dashboard = ({ selectedMonth, setShowDashboard }) => {
             Previously generated schedules
           </h2>
           <div className="flex gap-2 font-semibold items-center mb-3">
-            {/* ⭐ Custom Select */}
+            {/*  Custom Select */}
             <div className="relative inline-block text-left">
               <button
                 onClick={() => setOpen(!open)}
@@ -266,7 +266,7 @@ const Dashboard = ({ selectedMonth, setShowDashboard }) => {
                       {(employee.shifts[date] || []).map((shift, idx) => (
                         <div
                           key={idx}
-                          className={`text-sm text-white font-medium rounded-[10px] px-2 py-2 ${getShiftColor(
+                          className={`text-sm text-white font-medium rounded-[10px] px-2 py-2 h-12.5 flex items-center justify-center ${getShiftColor(
                             shift
                           )}`}
                         >
