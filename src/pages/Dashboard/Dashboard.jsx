@@ -4,7 +4,7 @@ import SubscriptionPlan from "../../components/Subscription/SubscriptionPlan";
 import ManageSchedule from "./ManageSchedule";
 
 const Dashboard = ({ selectedMonth, setShowDashboard }) => {
-  const [employeeSchedules] = useState([
+  const [employeeSchedules, setEmployeeSchedules] = useState([
     {
       name: "Mark",
       totalHours: "160 hr 0 min",
@@ -78,7 +78,7 @@ const Dashboard = ({ selectedMonth, setShowDashboard }) => {
       },
     },
   ]);
-
+  const [isEditable, setIsEditable] = useState(false);
   const [showManageSchedule, setShowManageSchedule] = useState(false);
 
   const [dateColumns] = useState(
@@ -89,7 +89,7 @@ const Dashboard = ({ selectedMonth, setShowDashboard }) => {
   );
 
   const shOptionsCss =
-    "flex gap-2 items-center justify-center border px-3 py-2 border-Primary";
+    "flex gap-2 items-center cursor-pointer justify-center border px-3 py-2 border-Primary";
 
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
@@ -127,7 +127,7 @@ const Dashboard = ({ selectedMonth, setShowDashboard }) => {
 
   return (
     <>
-      <div className="w-full p-4 font-Roboto">
+      <div className="w-full p-4 font-Roboto cursor-pointer">
         {/* Header */}
         <div className="w-full flex justify-end  my-4 ">
           {/* <h2 className="text-[2rem] font-semibold font-Roboto text-textClr leading-9.5">
@@ -159,7 +159,7 @@ const Dashboard = ({ selectedMonth, setShowDashboard }) => {
             <div className="relative inline-block text-left">
               <button
                 onClick={() => setOpen(!open)}
-                className="flex items-center border border-Primary px-5 py-2 outline-blue-400 gap-2"
+                className="flex items-center border border-Primary px-5 py-2 outline-blue-400 gap-2 cursor-pointer"
               >
                 <img
                   src={options.find((o) => o.value === selected).icon}
@@ -178,7 +178,7 @@ const Dashboard = ({ selectedMonth, setShowDashboard }) => {
                         setSelected(option.value);
                         setOpen(false);
                       }}
-                      className="flex items-center w-full px-3 py-2 hover:bg-gray-100 gap-2"
+                      className="flex items-center w-full px-3 py-2 hover:bg-gray-100 gap-2 cursor-pointer"
                     >
                       <img src={option.icon} alt="ico" className="w-4" />
                       <p className="font-Inter font-medium text-textClr">
@@ -190,13 +190,23 @@ const Dashboard = ({ selectedMonth, setShowDashboard }) => {
               )}
             </div>
 
-            <button className={shOptionsCss}>
+            <button
+              onClick={() => {
+                setIsEditable(true);
+              }}
+              className={shOptionsCss}
+            >
               <img src={WebIcons.scheduleEdit} alt="edit ico" />
               <p className="hidden lg:block font-Inter font-medium text-textClr">
                 Edit
               </p>
             </button>
-            <button className={shOptionsCss}>
+            <button
+              onClick={() => {
+                setIsEditable(false);
+              }}
+              className={shOptionsCss}
+            >
               <img src={WebIcons.scheduleSave} alt="save ico" />
               <p className="hidden lg:block font-Inter font-medium text-textClr">
                 Save
@@ -260,7 +270,32 @@ const Dashboard = ({ selectedMonth, setShowDashboard }) => {
                             shift
                           )}`}
                         >
-                          {shift}
+                          {/* {shift} */}
+                          {isEditable ? (
+                            <input
+                              type="text"
+                              value={shift}
+                              className="w-full border border-gray-500 px-1 py-1 rounded text-black"
+                              onChange={(e) => {
+                                const newSchedules = [...employeeSchedules];
+                                const employeeIndex =
+                                  employeeSchedules.findIndex(
+                                    (e) => e.name === employee.name
+                                  );
+                                newSchedules[employeeIndex].shifts[date][idx] =
+                                  e.target.value;
+                                setEmployeeSchedules(newSchedules);
+                              }}
+                            />
+                          ) : (
+                            <div
+                              className={`text-sm text-white font-medium rounded-[10px] px-2 py-2 ${getShiftColor(
+                                shift
+                              )}`}
+                            >
+                              {shift}
+                            </div>
+                          )}
                         </div>
                       ))}
                     </td>

@@ -19,6 +19,10 @@ const SignUp = () => {
     console.log(name, email, password);
   };
 
+  const registerHandel = () => {
+    navigate("/dashboard");
+  };
+
   return (
     <div className="flex max-w-[1536px] mx-auto px-4 sm:px-6 min-h-screen font-Inter">
       {/* left content  */}
@@ -123,7 +127,11 @@ const SignUp = () => {
               </div>
             </div>
 
-            <button type="submit" className="signIn_submit">
+            <button
+              onClick={registerHandel}
+              type="submit"
+              className="signIn_submit"
+            >
               Registration
             </button>
             {/* sign up link  */}

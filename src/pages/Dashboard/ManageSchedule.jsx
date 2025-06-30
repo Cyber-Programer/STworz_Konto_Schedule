@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import WebIcons from "../../assets/images";
+import TimePicker from "react-time-picker";
 
 const ManageSchedule = ({ setShowManageSchedule }) => {
   const [name, setName] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
+  const [endTime, setEndTime] = useState("");
   const [monthName, setMonthName] = useState("");
   const [value, setValue] = useState(new Date());
 
@@ -98,7 +100,7 @@ const ManageSchedule = ({ setShowManageSchedule }) => {
           </div>
           <div className="mt-5.5 flex w-full flex-col md:flex-row justify-between gap-2">
             <div className="w-full">
-              <label className="block mb-1 leading-5.5 text-xl text-textClr">
+              <label className="block mb-1 leading-5.5 text-lg text-textClr">
                 Date of Schedule
               </label>
               <input
@@ -109,19 +111,35 @@ const ManageSchedule = ({ setShowManageSchedule }) => {
                 required
               />
             </div>
-            <div className="w-full">
-              <label className="block mb-1 leading-5.5 text-xl text-textClr">
-                Time
+            <div className="">
+              <label className="block mb-1 leading-5.5 text-sm text-gray-600">
+                Start Time
               </label>
               <input
                 type="time"
+                name="startTime"
                 value={time}
                 className="w-full border-[1px] border-[#E0E0E0] px-4 py-2 outline-none rounded"
                 onChange={(e) => setTime(e.target.value)}
                 required
               />
             </div>
+
+            <div className="">
+              <label className="block mb-1 leading-5.5 text-sm text-gray-600">
+                End Time
+              </label>
+              <input
+                type="time"
+                name="endTime"
+                value={endTime}
+                className="w-full border-[1px] border-[#E0E0E0] px-4 py-2 outline-none rounded"
+                onChange={(e) => setEndTime(e.target.value)}
+                required
+              />
+            </div>
           </div>
+          {console.log(time)}
           <button className="mt-5.5 cursor-pointer w-max px rounded-md text-white bg-Primary p-4 ">
             Add New Schedule
           </button>

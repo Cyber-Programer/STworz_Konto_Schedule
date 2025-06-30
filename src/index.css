@@ -34,4 +34,8 @@
     @apply flex gap-x-2 items-center justify-center w-full text-center bg-[#EEEEEEEE] px-3 py-3 rounded-[10px] cursor-pointer
 }
 
+input[type="time"]::-webkit-inner-spin-button,
+input[type="time"]::-webkit-clear-button {
+  display: none;
+}
 

@@ -73,7 +73,7 @@ const ChatSchedule = () => {
   };
 
   return (
-    <div className="font-Roboto h-screen flex p-4 gap-4">
+    <div className="font-Roboto h-screen flex px-5 py-8 gap-4">
       {/* Schedule Chat Section */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
@@ -87,13 +87,12 @@ const ChatSchedule = () => {
             <img className="w-8 h-8" src={WebIcons.scheduleBot} alt="bot" />
             <p className="font-semibold">ChatBot</p>
           </div>
-          
+
           {/* <div className="flex gap-4">
             <img className="w-5 h-5" src={WebIcons.scheduleCall} alt="call" />
             <img className="w-5 h-5" src={WebIcons.scheduleVideo} alt="video" />
           </div> */}
         </div>
-        
 
         {/* Chat Box and Input */}
         <div className="flex flex-col flex-grow overflow-hidden">
@@ -152,7 +151,7 @@ const ChatSchedule = () => {
       </div>
 
       {/* Employee List Section */}
-      <div className="w-auto min-w-[180px] max-w-xs border-l pl-4 overflow-y-auto">
+      <div className="w-auto min-w-[180px] max-w-xs border-l pl-4 overflow-y-auto overflow-y-scroll">
         {/* <h2 className="text-lg font-semibold mb-3">Employees</h2> */}
         {employeeList.map((employee) => (
           <div key={employee.name} className="flex gap-3 items-center mb-2">

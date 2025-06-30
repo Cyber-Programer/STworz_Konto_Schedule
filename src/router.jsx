@@ -21,7 +21,7 @@ export const router = createBrowserRouter([
     path: "/",
     element: <RootLayout />, // RootLayout wraps the routes
     children: [
-      { index: true, element: <Navigate to="/dashboard" replace /> }, // Default redirect to dashboard
+      { index: true, element: <Navigate to="/signin" replace /> }, // Default redirect to dashboard
       { path: "dashboard", element: <MonthlySch /> },
       { path: "employee", element: <Employee /> },
       { path: "schedule", element: <Schedule /> },

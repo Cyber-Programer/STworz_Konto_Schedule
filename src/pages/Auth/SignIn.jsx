@@ -18,6 +18,10 @@ const SignIn = () => {
     console.log(email, password);
   };
 
+  const loginHandel = ()=>{
+    navigate('/dashboard')
+  }
+
   return (
     <div className="flex max-w-[1536px] mx-auto px-4 sm:px-6 min-h-screen font-Inter">
       {/* left content  */}
@@ -78,7 +82,7 @@ const SignIn = () => {
 
             {/* submition button area  */}
 
-            <button type="submit" className="signIn_submit">
+            <button onClick={loginHandel} type="submit" className="signIn_submit">
               Log In
             </button>
             {/* sign up link  */}
