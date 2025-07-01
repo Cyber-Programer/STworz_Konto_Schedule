@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-
+import ManageSchedule from "./ManageSchedule";
 // Mock WebIcons since we don't have the actual implementation
 const WebIcons = {
   scheduleCalender:
@@ -414,15 +414,16 @@ const Dashboard = ({
 
   if (showManageSchedule) {
     return (
-      <div className="p-8 text-center">
-        <h2 className="text-2xl font-bold mb-4">Manage Schedule Component</h2>
-        <button
-          onClick={() => setShowManageSchedule(false)}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          Back to Dashboard
-        </button>
-      </div>
+      // <div className="p-8 text-center">
+      //   <h2 className="text-2xl font-bold mb-4">Manage Schedule Component</h2>
+      //   <button
+      //     onClick={() => setShowManageSchedule(false)}
+      //     className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      //   >
+      //     Back to Dashboard
+      //   </button>
+      // </div>
+      <ManageSchedule setShowManageSchedule={setShowManageSchedule} />
     );
   }
 

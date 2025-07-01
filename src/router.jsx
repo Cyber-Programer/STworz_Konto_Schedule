@@ -15,7 +15,7 @@ import MainDashboard from "./pages/Dashboard/Dashboard";
 import MonthlySch from "./pages/Dashboard/MonthlySch";
 // import ManageSchedule from "./components/ManageSchedule/ManageSchedule";
 import ChatSchedule from "./pages/ChatSchedule/ChatSchedule";
-
+import CancelSubscription from "./pages/Premium/CancelSubscription";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -26,6 +26,7 @@ export const router = createBrowserRouter([
       { path: "employee", element: <Employee /> },
       { path: "schedule", element: <Schedule /> },
       { path: "chat", element: <ChatSchedule /> },
+      { path: "cancel", element: <CancelSubscription /> },
       { path: "premium", element: <Premium /> },
     ],
   },

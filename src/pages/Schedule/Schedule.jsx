@@ -43,6 +43,7 @@ const PrinciplesTable = () => {
   const [search, setSearch] = useState("");
   const [openActionId, setOpenActionId] = useState(null);
   const [principles, setPrinciples] = useState(initialData);
+  const [newRule, setNewRule] = useState(""); 
 
   const filteredData = principles.filter((item) =>
     item.title.toLowerCase().includes(search.toLowerCase())
@@ -71,6 +72,15 @@ const PrinciplesTable = () => {
     }
   };
 
+  //  Add New Rule Function
+  const handleAddRule = () => {
+    if (!newRule.trim()) return;
+    const newId = `FIG-${Math.floor(Math.random() * 1000) + 131}`;
+    const newItem = { id: newId, title: newRule.trim() };
+    setPrinciples([...principles, newItem]);
+    setNewRule("");
+  };
+
   return (
     <div className="max-w-8xl  p-6 mt-10 bg-white shadow rounded-md font-Roboto ">
       <h2 className="text-xl font-semibold text-textClr mb-4">Principles</h2>
@@ -91,15 +101,20 @@ const PrinciplesTable = () => {
           />
         </div>
       </div>
-      {/* Add new rules section  */}
 
+      {/* Add new rules section */}
       <div className="my-6 flex flex-wrap gap-4 justify-end w-full sm:w-auto">
         <input
           type="text"
           placeholder="Add New Rules"
           className="py-2 px-3 border border-gray-300 rounded w-full sm:w-64 outline-none"
+          value={newRule}
+          onChange={(e) => setNewRule(e.target.value)}
         />
-        <button className="bg-[#F7F7F7] rounded px-3 py-2 flex items-center gap-x-2 w-max">
+        <button
+          onClick={handleAddRule}
+          className="bg-[#F7F7F7] rounded px-3 py-2 flex items-center gap-x-2 w-max"
+        >
           <span className="w-5 h-5 border rounded-full flex items-center justify-center text-lg font-bold leading-none">
             +
           </span>
@@ -155,3 +170,4 @@ const PrinciplesTable = () => {
 };
 
 export default PrinciplesTable;
+
