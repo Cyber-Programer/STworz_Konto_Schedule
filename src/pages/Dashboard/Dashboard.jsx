@@ -144,6 +144,8 @@ const Dashboard = ({
     })
   );
 
+  
+
   const shOptionsCss =
     "flex gap-2 items-center cursor-pointer justify-center border px-3 py-2 border-blue-500";
 
@@ -155,7 +157,7 @@ const Dashboard = ({
   };
 
   const getShiftColor = (shift) => {
-    if (shift.includes("08:00")) return "#669bbc";
+    if (shift.includes("08:00")) return "#669bbc"; 
     if (shift.includes("10:00")) return "#f4a261";
     if (shift.includes("14:00")) return "#89c2d9";
     if (shift.includes("16:00")) return "#9d4edd";
@@ -163,10 +165,10 @@ const Dashboard = ({
   };
 
   const getShiftColorClass = (shift) => {
-    if (shift.includes("08:00")) return "bg-[#669bbc]";
-    if (shift.includes("10:00")) return "bg-[#f4a261]";
-    if (shift.includes("14:00")) return "bg-[#89c2d9]";
-    if (shift.includes("16:00")) return "bg-[#9d4edd]";
+    if (shift.includes("08:00")) return "bg-[#71A3B7]"; // #71A3B7
+    if (shift.includes("10:00")) return "bg-[#97CBFD]"; // #97CBFD
+    if (shift.includes("14:00")) return "bg-[#A68BFB]"; // #A68BFB
+    if (shift.includes("16:00")) return "bg-[#F59F67]"; // #F59F67
     return "bg-gray-400";
   };
 
