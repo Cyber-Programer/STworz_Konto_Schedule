@@ -39,7 +39,9 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
       {/* Logo + Nav */}
       <div className="flex flex-col gap-10">
-        <img src={WebIcons.logo} alt="Logo" className="w-32" />
+        <button onClick={()=>{
+          navigate('/dashboard')
+          }} className="cursor-pointer"><img src={WebIcons.logo} alt="Logo" className="w-32" /></button>
 
         <div className="flex flex-col gap-3">
           {menuItems.map((e) => {

@@ -1,25 +1,8 @@
 import React, { useState, useRef } from "react";
-import ManageSchedule from "./ManageSchedule";
-// Mock WebIcons since we don't have the actual implementation
-const WebIcons = {
-  scheduleCalender:
-    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='18' x='3' y='4' rx='2' ry='2'/%3E%3Cline x1='16' x2='16' y1='2' y2='6'/%3E%3Cline x1='8' x2='8' y1='2' y2='6'/%3E%3Cline x1='3' x2='21' y1='10' y2='10'/%3E%3C/svg%3E",
-  scheduleBack:
-    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m12 19-7-7 7-7'/%3E%3Cpath d='M19 12H5'/%3E%3C/svg%3E",
-  scheduleEdit:
-    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z'/%3E%3C/svg%3E",
-  scheduleSave:
-    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z'/%3E%3Cpolyline points='17,21 17,13 7,13 7,21'/%3E%3Cpolyline points='7,3 7,8 15,8'/%3E%3C/svg%3E",
-  scheduleExport:
-    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/%3E%3Cpolyline points='14,2 14,8 20,8'/%3E%3Cline x1='16' x2='8' y1='13' y2='13'/%3E%3Cline x1='16' x2='8' y1='17' y2='17'/%3E%3Cpolyline points='10,9 9,9 8,9'/%3E%3C/svg%3E",
-};
+import { Calendar, ArrowLeft, Edit, Save, FileDown } from "lucide-react";
 
-const Dashboard = ({
-  selectedMonth = "May 2025",
-  setShowDashboard = () => {},
-}) => {
+const Dashboard = () => {
   const [employeeSchedules, setEmployeeSchedules] = useState([
-    // Your original two
     {
       name: "Mark",
       totalHours: "160 hr 0 min",
@@ -54,6 +37,8 @@ const Dashboard = ({
         "2025-05-28": ["16:00-23:00"],
         "2025-05-29": ["08:00-14:00"],
         "2025-05-30": ["10:00-18:00"],
+        "2025-05-31": ["10:00-18:00"],
+
       },
     },
     {
@@ -90,9 +75,10 @@ const Dashboard = ({
         "2025-05-28": ["16:00-23:00"],
         "2025-05-29": ["08:00-14:00"],
         "2025-05-30": ["10:00-18:00"],
+        "2025-05-31": ["10:00-18:00"],
+
       },
     },
-    // Add 20 more employees below
     ...Array.from({ length: 5 }, (_, i) => ({
       name: `Employee ${i + 3}`,
       totalHours: `${140 + (i % 5) * 5} hr 0 min`,
@@ -127,25 +113,47 @@ const Dashboard = ({
         "2025-05-28": ["16:00-23:00"],
         "2025-05-29": ["08:00-14:00"],
         "2025-05-30": ["10:00-18:00"],
+        "2025-05-31": ["10:00-18:00"],
       },
     })),
   ]);
 
   const [isEditable, setIsEditable] = useState(false);
-  const [showManageSchedule, setShowManageSchedule] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const [showManageSchedule, setShowManageSchedule] = useState(false);
+  const [selected, setSelected] = useState("Weekly");
+  const [open, setOpen] = useState(false);
+  const [monthName, setMonthName] = useState("may");
+  const [showMonthName, setShowMonthName] = useState(false);
 
   const tableRef = useRef();
 
   const [dateColumns] = useState(
-    Array.from({ length: 30 }, (_, i) => {
+    Array.from({ length: 31 }, (_, i) => {
       const date = new Date(2025, 4, 2 + i);
       return date.toISOString().split("T")[0];
     })
   );
 
-  const shOptionsCss =
-    "flex gap-2 items-center cursor-pointer justify-center border px-3 py-2 border-blue-500";
+  const options = [
+    { value: "Weekly" },
+    { value: "Monthly" },
+  ];
+
+  const months = [
+    { value: "january" },
+    { value: "february" },
+    { value: "march" },
+    { value: "april" },
+    { value: "may" },
+    { value: "june" },
+    { value: "july" },
+    { value: "august" },
+    { value: "september" },
+    { value: "october" },
+    { value: "november" },
+    { value: "december" },
+  ];
 
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
@@ -170,223 +178,191 @@ const Dashboard = ({
     return "bg-gray-400";
   };
 
-  // Custom select state
-  const [selected, setSelected] = useState("Weekly");
-  const [open, setOpen] = useState(false);
-  const [monthName, setMonthName] = useState("january");
-  const [showMonthName, setShowMonthName] = useState(false);
-
-  const options = [
-    { value: "Weekly", icon: WebIcons.scheduleCalender },
-    { value: "Monthly", icon: WebIcons.scheduleCalender },
-  ];
-
-  const months = [
-    { value: "january", icon: WebIcons.scheduleCalender },
-    { value: "february", icon: WebIcons.scheduleCalender },
-    { value: "march", icon: WebIcons.scheduleCalender },
-    { value: "april", icon: WebIcons.scheduleCalender },
-    { value: "may", icon: WebIcons.scheduleCalender },
-    { value: "june", icon: WebIcons.scheduleCalender },
-    { value: "july", icon: WebIcons.scheduleCalender },
-    { value: "august", icon: WebIcons.scheduleCalender },
-    { value: "september", icon: WebIcons.scheduleCalender },
-    { value: "october", icon: WebIcons.scheduleCalender },
-    { value: "november", icon: WebIcons.scheduleCalender },
-    { value: "december", icon: WebIcons.scheduleCalender },
-  ];
-
   const handleExport = async () => {
     if (!tableRef.current) return;
 
     setExporting(true);
 
     try {
-      // Create a canvas to capture the table
+      // Create a canvas
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");
 
-      // Get table element and its computed styles
-      const table = tableRef.current;
-      const tableRect = table.getBoundingClientRect();
+      // Optimized dimensions with reduced padding
+      const nameColumnWidth = 120;
+      const cellWidth = 110;
+      const totalColumns = dateColumns.length;
+      const headerHeight = 50;
+      const rowHeight = 50;
+      const topMargin = 80;
+      const sideMargin = 15;
+      
+      const totalWidth = sideMargin * 2 + nameColumnWidth + (totalColumns * cellWidth);
+      const totalHeight = topMargin + headerHeight + (employeeSchedules.length * rowHeight) + 20;
 
-      // Set canvas size with higher resolution for better quality
+      // Set canvas size with proper scaling
       const scale = 2;
-      canvas.width = Math.max(1400, tableRect.width) * scale;
-      canvas.height = Math.max(1000, tableRect.height + 150) * scale;
+      canvas.width = totalWidth * scale;
+      canvas.height = totalHeight * scale;
       ctx.scale(scale, scale);
 
       // Fill white background
       ctx.fillStyle = "white";
-      ctx.fillRect(0, 0, canvas.width / scale, canvas.height / scale);
+      ctx.fillRect(0, 0, totalWidth, totalHeight);
 
-      // Add title
+      // Add compact title
       ctx.fillStyle = "#1f2937";
-      ctx.font = "bold 24px Arial";
-      ctx.fillText("Employee Schedule Dashboard", 20, 35);
+      ctx.font = "bold 20px Arial";
+      ctx.fillText("Employee Schedule Dashboard", sideMargin, 25);
 
       ctx.fillStyle = "#6b7280";
-      ctx.font = "14px Arial";
-      ctx.fillText(`Period: 01.05 - 07.05 (${selected} View)`, 20, 60);
-      ctx.fillText(`Generated on: ${new Date().toLocaleDateString()}`, 20, 80);
+      ctx.font = "12px Arial";
+      ctx.fillText(`Period: 01.05 - 31.05 (${selected} View) | Generated: ${new Date().toLocaleDateString()}`, sideMargin, 45);
 
-      // Draw table
-      const startY = 100;
-      const cellWidth = 150;
-      const nameColumnWidth = 120;
-      const headerHeight = 50;
-      const rowHeight = 80;
+      // Draw table starting position
+      const startY = topMargin;
 
-      // Helper function to convert hex to RGB
-      const hexToRgb = (hex) => {
-        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return result
-          ? {
-              r: parseInt(result[1], 16),
-              g: parseInt(result[2], 16),
-              b: parseInt(result[3], 16),
-            }
-          : null;
-      };
-
-      // Draw header row
-      ctx.fillStyle = "#f3f4f6";
-      ctx.fillRect(20, startY, nameColumnWidth, headerHeight);
-      dateColumns.forEach((_, index) => {
-        ctx.fillRect(
-          20 + nameColumnWidth + index * cellWidth,
-          startY,
-          cellWidth,
-          headerHeight
-        );
-      });
-
-      // Header borders
-      ctx.strokeStyle = "#AAAAAA";
+      // Draw table border and headers with UI-like styling
+      ctx.strokeStyle = "#D1D5DB";
       ctx.lineWidth = 1;
-      ctx.strokeRect(20, startY, nameColumnWidth, headerHeight);
+
+      // Draw header background
+      ctx.fillStyle = "#F9FAFB";
+      ctx.fillRect(sideMargin, startY, nameColumnWidth + (totalColumns * cellWidth), headerHeight);
+
+      // Draw header borders
+      ctx.strokeRect(sideMargin, startY, nameColumnWidth + (totalColumns * cellWidth), headerHeight);
+
+      // Header vertical lines
+      ctx.strokeRect(sideMargin, startY, nameColumnWidth, headerHeight);
       dateColumns.forEach((_, index) => {
-        ctx.strokeRect(
-          20 + nameColumnWidth + index * cellWidth,
-          startY,
-          cellWidth,
-          headerHeight
-        );
+        const x = sideMargin + nameColumnWidth + index * cellWidth;
+        ctx.strokeRect(x, startY, cellWidth, headerHeight);
       });
 
-      // Header text - Time Period
+      // Header text - Name column
       ctx.fillStyle = "#374151";
       ctx.font = "bold 14px Arial";
       ctx.textAlign = "left";
-      ctx.fillText("01.05 - 07.05", 25, startY + 30);
+      ctx.fillText("Employee", sideMargin + 8, startY + 32);
 
-      // Header text - Dates
+      // Header text - Date columns (matching UI format)
+      ctx.textAlign = "center";
       dateColumns.forEach((date, index) => {
-        const x = 20 + nameColumnWidth + index * cellWidth;
+        const x = sideMargin + nameColumnWidth + index * cellWidth;
         const formattedDate = formatDate(date);
-        ctx.textAlign = "center";
-        ctx.fillText(formattedDate, x + cellWidth / 2, startY + 30);
+        
+        ctx.fillStyle = "#374151";
+        ctx.font = "bold 12px Arial";
+        ctx.fillText(formattedDate, x + cellWidth / 2, startY + 32);
       });
 
       // Draw employee rows
       employeeSchedules.forEach((emp, empIndex) => {
         const y = startY + headerHeight + empIndex * rowHeight;
 
-        // Row background (alternating)
-        ctx.fillStyle = empIndex % 2 === 0 ? "#ffffff" : "#f9fafb";
-        ctx.fillRect(
-          20,
-          y,
-          nameColumnWidth + dateColumns.length * cellWidth,
-          rowHeight
-        );
+        // Row background
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(sideMargin, y, nameColumnWidth + dateColumns.length * cellWidth, rowHeight);
 
-        // Name cell border
-        ctx.strokeStyle = "#AAAAAA";
-        ctx.strokeRect(20, y, nameColumnWidth, rowHeight);
+        // Row borders
+        ctx.strokeStyle = "#D1D5DB";
+        ctx.lineWidth = 1;
+        ctx.strokeRect(sideMargin, y, nameColumnWidth + dateColumns.length * cellWidth, rowHeight);
+
+        // Name cell
+        ctx.strokeRect(sideMargin, y, nameColumnWidth, rowHeight);
 
         // Employee name and hours
         ctx.fillStyle = "#1f2937";
-        ctx.font = "bold 14px Arial";
+        ctx.font = "bold 12px Arial";
         ctx.textAlign = "left";
-        ctx.fillText(emp.name, 25, y + 25);
+        ctx.fillText(emp.name, sideMargin + 8, y + 25);
 
         ctx.fillStyle = "#6b7280";
-        ctx.font = "12px Arial";
-        ctx.fillText(emp.totalHours, 25, y + 45);
+        ctx.font = "10px Arial";
+        ctx.fillText(emp.totalHours, sideMargin + 8, y + 42);
 
-        // Shift cells
+        // Draw shift cells for ALL dates
         dateColumns.forEach((date, dateIndex) => {
-          const x = 20 + nameColumnWidth + dateIndex * cellWidth;
+          const x = sideMargin + nameColumnWidth + dateIndex * cellWidth;
 
           // Cell border
           ctx.strokeRect(x, y, cellWidth, rowHeight);
 
           const shifts = emp.shifts[date] || [];
           shifts.forEach((shift, shiftIndex) => {
-            const shiftY = y + 15 + shiftIndex * 30;
-            const badgeWidth = 120;
-            const badgeHeight = 25;
-            const badgeX = x + (cellWidth - badgeWidth) / 2;
+            const shiftY = y + 10 + shiftIndex * 25;
+            const badgeWidth = cellWidth - 12;
+            const badgeHeight = 22;
+            const badgeX = x + 6;
 
-            // Get shift color
+            // Shift background color with rounded corners effect
             const shiftColor = getShiftColor(shift);
-
-            // Draw colored badge background
             ctx.fillStyle = shiftColor;
-            ctx.fillRect(badgeX, shiftY, badgeWidth, badgeHeight);
-
-            // Badge border radius effect (simplified)
-            ctx.fillRect(badgeX + 2, shiftY - 1, badgeWidth - 4, 1);
-            ctx.fillRect(badgeX + 2, shiftY + badgeHeight, badgeWidth - 4, 1);
-            ctx.fillRect(badgeX - 1, shiftY + 2, 1, badgeHeight - 4);
-            ctx.fillRect(badgeX + badgeWidth, shiftY + 2, 1, badgeHeight - 4);
+            
+            // Draw rounded rectangle
+            const radius = 8;
+            ctx.beginPath();
+            ctx.moveTo(badgeX + radius, shiftY);
+            ctx.lineTo(badgeX + badgeWidth - radius, shiftY);
+            ctx.quadraticCurveTo(badgeX + badgeWidth, shiftY, badgeX + badgeWidth, shiftY + radius);
+            ctx.lineTo(badgeX + badgeWidth, shiftY + badgeHeight - radius);
+            ctx.quadraticCurveTo(badgeX + badgeWidth, shiftY + badgeHeight, badgeX + badgeWidth - radius, shiftY + badgeHeight);
+            ctx.lineTo(badgeX + radius, shiftY + badgeHeight);
+            ctx.quadraticCurveTo(badgeX, shiftY + badgeHeight, badgeX, shiftY + badgeHeight - radius);
+            ctx.lineTo(badgeX, shiftY + radius);
+            ctx.quadraticCurveTo(badgeX, shiftY, badgeX + radius, shiftY);
+            ctx.closePath();
+            ctx.fill();
 
             // Shift text
             ctx.fillStyle = "white";
-            ctx.font = "bold 12px Arial";
+            ctx.font = "bold 10px Arial";
             ctx.textAlign = "center";
-            ctx.fillText(shift, badgeX + badgeWidth / 2, shiftY + 16);
+            ctx.fillText(shift, badgeX + badgeWidth / 2, shiftY + 15);
           });
         });
       });
 
-      // Load jsPDF and convert canvas to PDF
+      // Load jsPDF and generate
       const script = document.createElement("script");
-      script.src =
-        "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+      script.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
       document.head.appendChild(script);
 
       script.onload = () => {
         try {
           const { jsPDF } = window.jspdf;
+          
           const doc = new jsPDF({
             orientation: "landscape",
             unit: "mm",
-            format: "a4",
+            format: "a3",
           });
 
-          // Convert canvas to image and add to PDF
           const imgData = canvas.toDataURL("image/png");
-          const imgWidth = 277; // A4 landscape width in mm minus margins
+          const pageWidth = doc.internal.pageSize.getWidth();
+          const pageHeight = doc.internal.pageSize.getHeight();
+          
+          // Optimize PDF margins
+          const pdfMargin = 5;
+          const availableWidth = pageWidth - (pdfMargin * 2);
+          const availableHeight = pageHeight - (pdfMargin * 2);
+          
+          const imgWidth = availableWidth;
           const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-          doc.addImage(
-            imgData,
-            "PNG",
-            10,
-            10,
-            imgWidth,
-            Math.min(imgHeight, 180)
-          );
+          let finalWidth = imgWidth;
+          let finalHeight = imgHeight;
+          
+          if (imgHeight > availableHeight) {
+            finalHeight = availableHeight;
+            finalWidth = (canvas.width * finalHeight) / canvas.height;
+          }
 
-          // Save the PDF
-          doc.save(
-            `employee-schedule-dashboard-${
-              new Date().toISOString().split("T")[0]
-            }.pdf`
-          );
+          doc.addImage(imgData, "PNG", pdfMargin, pdfMargin, finalWidth, finalHeight);
 
+          doc.save(`employee-schedule-dashboard-${new Date().toISOString().split("T")[0]}.pdf`);
           setExporting(false);
         } catch (error) {
           console.error("PDF generation error:", error);
@@ -396,9 +372,7 @@ const Dashboard = ({
       };
 
       script.onerror = () => {
-        alert(
-          "Failed to load PDF library. Please check your internet connection."
-        );
+        alert("Failed to load PDF library. Please check your internet connection.");
         setExporting(false);
       };
     } catch (error) {
@@ -408,34 +382,29 @@ const Dashboard = ({
     }
   };
 
-  const handelSchedule = () => {
-    setShowManageSchedule(true);
-  };
-
   if (showManageSchedule) {
     return (
-      // <div className="p-8 text-center">
-      //   <h2 className="text-2xl font-bold mb-4">Manage Schedule Component</h2>
-      //   <button
-      //     onClick={() => setShowManageSchedule(false)}
-      //     className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-      //   >
-      //     Back to Dashboard
-      //   </button>
-      // </div>
-      <ManageSchedule setShowManageSchedule={setShowManageSchedule} />
+      <div className="p-8 text-center">
+        <h2 className="text-2xl font-bold mb-4">Manage Schedule Component</h2>
+        <button
+          onClick={() => setShowManageSchedule(false)}
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Back to Dashboard
+        </button>
+      </div>
     );
   }
 
   return (
-    <div className="w-full p-4 font-sans cursor-pointer">
+    <div className="w-full p-4 font-sans">
       {/* Header */}
       <div className="w-full flex justify-end my-4">
         <button
-          onClick={handelSchedule}
+          onClick={() => setShowManageSchedule(true)}
           className="flex gap-x-2.5 items-center border px-5 py-2 border-blue-400 cursor-pointer hover:bg-blue-50"
         >
-          <img className="w-5" src={WebIcons.scheduleCalender} alt="" />
+          <Calendar className="w-5 h-5" />
           Manage & Create Schedule
         </button>
       </div>
@@ -443,30 +412,21 @@ const Dashboard = ({
       <hr className="text-gray-300 mb-4" />
 
       <div className="flex justify-between">
-        <h2
-          onClick={() => {
-            setShowDashboard(false);
-          }}
-          className="flex pb-10 items-center gap-2 text-sm lg:text-2xl font-semibold cursor-pointer hover:text-blue-600"
-        >
-          <img src={WebIcons.scheduleBack} alt="" />
+        <h2 className="flex pb-10 items-center gap-2 text-sm lg:text-2xl font-semibold cursor-pointer hover:text-blue-600">
+          <ArrowLeft className="w-6 h-6" />
           Previously generated schedules
         </h2>
-        {/* month name */}
+        
+        {/* Controls */}
         <div className="flex gap-2 font-semibold items-center mb-3">
+          {/* Month selector */}
           <div className="relative inline-block text-left">
             <button
-              onClick={() => {
-                setShowMonthName(!showMonthName);
-              }}
+              onClick={() => setShowMonthName(!showMonthName)}
               className="w-[130px] flex items-center border border-blue-500 px-5 py-2 outline-blue-400 gap-2 cursor-pointer hover:bg-blue-50"
             >
-              <img
-                src={options.find((o) => o.value === selected).icon}
-                alt="ico"
-                className="w-4"
-              />
-              <p>{monthName}</p>
+              <Calendar className="w-4 h-4" />
+              <p className="capitalize">{monthName}</p>
             </button>
             {showMonthName && (
               <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 shadow-lg">
@@ -479,24 +439,21 @@ const Dashboard = ({
                     }}
                     className="flex items-center w-full px-2 py-2 hover:bg-gray-100 gap-2 cursor-pointer"
                   >
-                    <img src={option.icon} alt="ico" className="w-4" />
-                    <p className="font-medium text-gray-700">{option.value}</p>
+                    <Calendar className="w-4 h-4" />
+                    <p className="font-medium text-gray-700 capitalize">{option.value}</p>
                   </button>
                 ))}
               </div>
             )}
           </div>
-          {/* Custom Select */} {/* weekly */}
+
+          {/* Weekly/Monthly selector */}
           <div className="relative inline-block text-left">
             <button
               onClick={() => setOpen(!open)}
               className="flex items-center border border-blue-500 px-5 py-2 outline-blue-400 gap-2 cursor-pointer hover:bg-blue-50"
             >
-              <img
-                src={options.find((o) => o.value === selected).icon}
-                alt="ico"
-                className="w-4"
-              />
+              <Calendar className="w-4 h-4" />
               <p>{selected}</p>
             </button>
 
@@ -511,41 +468,40 @@ const Dashboard = ({
                     }}
                     className="flex items-center w-full px-3 py-2 hover:bg-gray-100 gap-2 cursor-pointer"
                   >
-                    <img src={option.icon} alt="ico" className="w-4" />
+                    <Calendar className="w-4 h-4" />
                     <p className="font-medium text-gray-700">{option.value}</p>
                   </button>
                 ))}
               </div>
             )}
           </div>
+
           <button
-            onClick={() => {
-              setIsEditable(true);
-            }}
-            className={`${shOptionsCss} hover:bg-blue-50 ${
+            onClick={() => setIsEditable(true)}
+            className={`flex gap-2 items-center cursor-pointer justify-center border px-3 py-2 border-blue-500 hover:bg-blue-50 ${
               isEditable ? "bg-blue-100" : ""
             }`}
           >
-            <img src={WebIcons.scheduleEdit} alt="edit ico" />
+            <Edit className="w-4 h-4" />
             <p className="hidden lg:block font-medium text-gray-700">Edit</p>
           </button>
+
           <button
-            onClick={() => {
-              setIsEditable(false);
-            }}
-            className={`${shOptionsCss} hover:bg-green-50`}
+            onClick={() => setIsEditable(false)}
+            className="flex gap-2 items-center cursor-pointer justify-center border px-3 py-2 border-blue-500 hover:bg-green-50"
           >
-            <img src={WebIcons.scheduleSave} alt="save ico" />
+            <Save className="w-4 h-4" />
             <p className="hidden lg:block font-medium text-gray-700">Save</p>
           </button>
+
           <button
             onClick={handleExport}
             disabled={exporting}
-            className={`${shOptionsCss} ${
+            className={`flex gap-2 items-center cursor-pointer justify-center border px-3 py-2 border-blue-500 ${
               exporting ? "opacity-50 cursor-not-allowed" : "hover:bg-yellow-50"
             }`}
           >
-            <img src={WebIcons.scheduleExport} alt="" />
+            <FileDown className="w-4 h-4" />
             <p className="hidden lg:block font-medium text-gray-700">
               {exporting ? "Generating PDF..." : "Export to PDF"}
             </p>
@@ -557,11 +513,11 @@ const Dashboard = ({
       <div className="overflow-x-auto">
         <table
           ref={tableRef}
-          className="w-full min-w-[900px] border border-[#AAAAAA] rounded-xl"
+          className="w-full min-w-[900px] border border-gray-400 rounded-xl"
         >
           <thead>
-            <tr className="border border-[#AAAAAA]">
-              <th className="border border-[#AAAAAA] px-4 py-2 text-left min-w-[140px]">
+            <tr className="border border-gray-400">
+              <th className="border border-gray-400 px-4 py-2 text-left min-w-[140px]">
                 <select
                   name="timeSelect"
                   id="timeSelect"
@@ -577,7 +533,7 @@ const Dashboard = ({
               {dateColumns.map((date) => (
                 <th
                   key={date}
-                  className="border border-[#AAAAAA] text-center text-base font-semibold px-2 py-4 min-w-[120px]"
+                  className="border border-gray-400 text-center text-base font-semibold px-2 py-4 min-w-[120px]"
                 >
                   {formatDate(date)}
                 </th>
@@ -586,8 +542,8 @@ const Dashboard = ({
           </thead>
           <tbody>
             {employeeSchedules.map((employee) => (
-              <tr key={employee.name} className="border border-[#AAAAAA]">
-                <td className="border border-[#AAAAAA] px-2 py-2 whitespace-nowrap text-[14px] font-semibold text-left min-w-[140px]">
+              <tr key={employee.name} className="border border-gray-400">
+                <td className="border border-gray-400 px-2 py-2 whitespace-nowrap text-[14px] font-semibold text-left min-w-[140px]">
                   {employee.name}
                   <div className="text-xs text-gray-500">
                     {employee.totalHours}
@@ -596,7 +552,7 @@ const Dashboard = ({
                 {dateColumns.map((date) => (
                   <td
                     key={date}
-                    className="border border-[#AAAAAA] text-center px-2 py-2 min-w-[120px]"
+                    className="border border-gray-400 text-center px-2 py-2 min-w-[120px]"
                   >
                     {(employee.shifts[date] || []).map((shift, idx) => (
                       <div key={idx} className="mb-1">

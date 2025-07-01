@@ -327,7 +327,7 @@ const ChatSchedule = () => {
       }}
     >
       <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-        <h1
+        {/* <h1
           style={{
             fontSize: "24px",
             fontWeight: "bold",
@@ -336,7 +336,7 @@ const ChatSchedule = () => {
           }}
         >
           Schedule Settings
-        </h1>
+        </h1> */}
         <div
           style={{
             width: "100%",
