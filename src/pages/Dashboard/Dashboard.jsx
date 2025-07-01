@@ -266,7 +266,7 @@ const Dashboard = ({ selectedMonth, setShowDashboard }) => {
                       {(employee.shifts[date] || []).map((shift, idx) => (
                         <div
                           key={idx}
-                          className={`text-sm text-white font-medium rounded-[10px] px-2 py-2 h-12.5 flex items-center justify-center ${getShiftColor(
+                          className={`text-sm text-white font-medium rounded-[10px] px-2 py-2 h-13.5 flex items-center justify-center ${getShiftColor(
                             shift
                           )}`}
                         >
@@ -289,7 +289,7 @@ const Dashboard = ({ selectedMonth, setShowDashboard }) => {
                             />
                           ) : (
                             <div
-                              className={`text-sm text-white font-medium rounded-[10px] px-2 py-2 ${getShiftColor(
+                              className={`text-sm text-white font-medium rounded-[10px] px-2 py-2 h-13.5 flex items-center justify-center ${getShiftColor(
                                 shift
                               )}`}
                             >
