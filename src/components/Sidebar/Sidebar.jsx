@@ -76,7 +76,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             <p className="text-sm text-gray-500">askf@gmail.com</p>
           </div>
         </div>
-        <button className="w-full py-2 border-2 border-Primary text-Primary hover:bg-Primary hover:text-white rounded-lg font-semibold text-lg">
+        <button onClick={()=>{navigate('/')}} className="w-full py-2 border-2 border-Primary text-Primary hover:bg-Primary hover:text-white rounded-lg font-semibold text-lg">
           Log out
         </button>
       </div>
