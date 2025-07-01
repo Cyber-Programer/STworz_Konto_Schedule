@@ -11,6 +11,11 @@
     --font-Inter: "Inter", sans-serif;
     --font-Roboto: "Roboto", sans-serif;
     --font-Maname:  "Maname", serif;
+    --shift-blue: #669bbc;
+    --shift-orange: #f4a261;
+    --shift-light-blue: #89c2d9;
+    --shift-purple: #9d4edd;
+    --shift-gray: #a3a3a3;
 }
 
 .react-calendar {
