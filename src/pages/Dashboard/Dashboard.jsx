@@ -93,7 +93,7 @@ const Dashboard = ({
       },
     },
     // Add 20 more employees below
-    ...Array.from({ length: 20 }, (_, i) => ({
+    ...Array.from({ length: 5 }, (_, i) => ({
       name: `Employee ${i + 3}`,
       totalHours: `${140 + (i % 5) * 5} hr 0 min`,
       shifts: {

@@ -18,12 +18,12 @@ const SignIn = () => {
     console.log(email, password);
   };
 
-  const loginHandel = ()=>{
-    navigate('/dashboard')
-  }
+  const loginHandel = () => {
+    navigate("/dashboard");
+  };
 
   return (
-    <div className="flex max-w-[1536px] mx-auto px-4 sm:px-6 min-h-screen font-Inter">
+    <div className="flex  mx-auto min-h-screen font-Inter">
       {/* left content  */}
       <div className="w-full md:w-1/2">
         {/* logo section  */}
@@ -82,7 +82,11 @@ const SignIn = () => {
 
             {/* submition button area  */}
 
-            <button onClick={loginHandel} type="submit" className="signIn_submit">
+            <button
+              onClick={loginHandel}
+              type="submit"
+              className="signIn_submit"
+            >
               Log In
             </button>
             {/* sign up link  */}
@@ -99,7 +103,7 @@ const SignIn = () => {
             </div>
           </form>
 
-          <h1 className="text-2xl text-center my-7">Or</h1>
+          <h1 className="text-base text-center my-7">Or</h1>
 
           <div className="sign_with_goole">
             <FcGoogle size={28} /> Log in with google account

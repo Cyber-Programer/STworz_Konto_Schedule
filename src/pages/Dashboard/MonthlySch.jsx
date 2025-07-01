@@ -105,7 +105,7 @@ const MonthlySch = () => {
         </div>
 
         {/* Show months with background image */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {months.map((month, index) => (
             <div
               onClick={() => {
@@ -113,7 +113,7 @@ const MonthlySch = () => {
                 setShowDashboard(true);
               }}
               key={index}
-              className="max-w-[320px] h-32 border rounded-lg flex items-center justify-center capitalize text-white font-bold text-xl shadow-lg cursor-pointer"
+              className="w-[370px] h-50 border rounded-lg flex items-center justify-center capitalize text-white font-bold text-xl shadow-lg cursor-pointer"
               style={{
                 background: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${WebIcons.monthBg})`,
                 backgroundSize: "cover",
@@ -130,7 +130,12 @@ const MonthlySch = () => {
       </div>
     );
   } else {
-    return <Dashboard setShowDashboard={setShowDashboard} selectedMonth={selectedMonth} />;
+    return (
+      <Dashboard
+        setShowDashboard={setShowDashboard}
+        selectedMonth={selectedMonth}
+      />
+    );
   }
 };
 
