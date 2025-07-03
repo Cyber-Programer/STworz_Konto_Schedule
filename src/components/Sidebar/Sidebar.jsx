@@ -1,13 +1,11 @@
+
 import React, { useState } from "react";
 import WebIcons from "../../assets/images";
 import { IoHomeOutline } from "react-icons/io5";
-import { FaUserFriends } from "react-icons/fa";
-import { MdOutlineSchedule, MdOutlineWorkspacePremium } from "react-icons/md";
-import { TbFileExport } from "react-icons/tb";
-import pp from "../../assets/pp.png";
+import { MdOutlineWorkspacePremium } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import { Settings } from "lucide-react";
-import { MessageCircle, Users } from "lucide-react";
+import { Settings, MessageCircle, Users } from "lucide-react";
+import pp from "../../assets/pp.png";
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
   const [selectedNav, setSelectedNav] = useState("Dashboard");
@@ -25,18 +23,8 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   return (
     <div
       className={`fixed sm:static top-0 left-0 h-full w-[260px] bg-white z-50 shadow-md transform transition-transform duration-300
-        ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        } sm:translate-x-0 p-6 flex flex-col justify-between border-r border-textClr/20`}
+        ${isOpen ? "translate-x-0" : "-translate-x-full"} sm:translate-x-0 p-6 flex flex-col justify-between border-r border-textClr/20`}
     >
-      {/* Close button (mobile only) */}
-      {/* <button
-        className="sm:hidden absolute top-4 right-4 text-2xl"
-        onClick={toggleSidebar}
-      >
-        ✕
-      </button> */}
-
       {/* Logo + Nav */}
       <div className="flex flex-col gap-10">
         <button onClick={()=>{
@@ -46,6 +34,11 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         <div className="flex flex-col gap-3">
           {menuItems.map((e) => {
             const isSelected = selectedNav === e.name;
+            const isBorderedch =
+               e.name === "Chat to Set Schedule";
+            const isBorderedpm =
+               e.name === "Premium";
+
             return (
               <div
                 key={e.name}
@@ -55,11 +48,13 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                   toggleSidebar(); // Close on mobile click
                 }}
                 className={`flex items-center gap-3 text-base font-semibold p-2 rounded-lg cursor-pointer transition
+                  ${isSelected ? "bg-Primary text-white" : " hover:bg-gray-100"}
                   ${
-                    isSelected
-                      ? "bg-Primary text-white"
-                      : "text-black hover:bg-gray-100"
-                  }`}
+                    isBorderedch
+                      ? "border border-Primary text-Primary rounded-lg "
+                      : ""
+                  } ${isBorderedpm? "border border-black rounded-lg ":""}`}
+                  
               >
                 <e.ico className="text-2xl" />
                 {e.name}
@@ -78,7 +73,12 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             <p className="text-sm text-gray-500">askf@gmail.com</p>
           </div>
         </div>
-        <button onClick={()=>{navigate('/')}} className="w-full py-2 border-2 border-Primary text-Primary hover:bg-Primary hover:text-white rounded-lg font-semibold text-lg">
+        <button
+          onClick={() => {
+            navigate("/");
+          }}
+          className="w-full py-2 border-2 border-Primary text-Primary hover:bg-Primary hover:text-white rounded-lg font-semibold text-lg"
+        >
           Log out
         </button>
       </div>
@@ -87,3 +87,4 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 };
 
 export default Sidebar;
+
