@@ -58,7 +58,7 @@ const ManageSchedule = ({ setShowManageSchedule }) => {
   };
 
   return (
-    <div className="p-4 font-Roboto">
+    <div className="p-4 font-Roboto cursor-pointer">
       <h1
         onClick={() => {
           setShowManageSchedule(false);

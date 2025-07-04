@@ -1,7 +1,8 @@
 import React, { useState, useRef } from "react";
 import { Calendar, ArrowLeft, Edit, Save, FileDown } from "lucide-react";
+import ManageSchedule from "./ManageSchedule";
 
-const Dashboard = () => {
+const Dashboard = ({setShowDashboard,selectedMonth}) => {
   const [employeeSchedules, setEmployeeSchedules] = useState([
     {
       name: "Mark",
@@ -38,7 +39,6 @@ const Dashboard = () => {
         "2025-05-29": ["08:00-14:00"],
         "2025-05-30": ["10:00-18:00"],
         "2025-05-31": ["10:00-18:00"],
-
       },
     },
     {
@@ -76,7 +76,6 @@ const Dashboard = () => {
         "2025-05-29": ["08:00-14:00"],
         "2025-05-30": ["10:00-18:00"],
         "2025-05-31": ["10:00-18:00"],
-
       },
     },
     ...Array.from({ length: 5 }, (_, i) => ({
@@ -135,10 +134,7 @@ const Dashboard = () => {
     })
   );
 
-  const options = [
-    { value: "Weekly" },
-    { value: "Monthly" },
-  ];
+  const options = [{ value: "Weekly" }, { value: "Monthly" }];
 
   const months = [
     { value: "january" },
@@ -163,7 +159,7 @@ const Dashboard = () => {
   };
 
   const getShiftColor = (shift) => {
-    if (shift.includes("08:00")) return "#71A3B7"; 
+    if (shift.includes("08:00")) return "#71A3B7";
     if (shift.includes("10:00")) return "#97CBFD";
     if (shift.includes("14:00")) return "#A68BFB";
     if (shift.includes("16:00")) return "#F59F67";
@@ -196,9 +192,11 @@ const Dashboard = () => {
       const rowHeight = 50;
       const topMargin = 80;
       const sideMargin = 15;
-      
-      const totalWidth = sideMargin * 2 + nameColumnWidth + (totalColumns * cellWidth);
-      const totalHeight = topMargin + headerHeight + (employeeSchedules.length * rowHeight) + 20;
+
+      const totalWidth =
+        sideMargin * 2 + nameColumnWidth + totalColumns * cellWidth;
+      const totalHeight =
+        topMargin + headerHeight + employeeSchedules.length * rowHeight + 20;
 
       // Set canvas size with proper scaling
       const scale = 2;
@@ -217,7 +215,11 @@ const Dashboard = () => {
 
       ctx.fillStyle = "#6b7280";
       ctx.font = "12px Arial";
-      ctx.fillText(`Period: 01.05 - 31.05 (${selected} View) | Generated: ${new Date().toLocaleDateString()}`, sideMargin, 45);
+      ctx.fillText(
+        `Period: 01.05 - 31.05 (${selected} View) | Generated: ${new Date().toLocaleDateString()}`,
+        sideMargin,
+        45
+      );
 
       // Draw table starting position
       const startY = topMargin;
@@ -228,10 +230,20 @@ const Dashboard = () => {
 
       // Draw header background
       ctx.fillStyle = "#F9FAFB";
-      ctx.fillRect(sideMargin, startY, nameColumnWidth + (totalColumns * cellWidth), headerHeight);
+      ctx.fillRect(
+        sideMargin,
+        startY,
+        nameColumnWidth + totalColumns * cellWidth,
+        headerHeight
+      );
 
       // Draw header borders
-      ctx.strokeRect(sideMargin, startY, nameColumnWidth + (totalColumns * cellWidth), headerHeight);
+      ctx.strokeRect(
+        sideMargin,
+        startY,
+        nameColumnWidth + totalColumns * cellWidth,
+        headerHeight
+      );
 
       // Header vertical lines
       ctx.strokeRect(sideMargin, startY, nameColumnWidth, headerHeight);
@@ -251,7 +263,7 @@ const Dashboard = () => {
       dateColumns.forEach((date, index) => {
         const x = sideMargin + nameColumnWidth + index * cellWidth;
         const formattedDate = formatDate(date);
-        
+
         ctx.fillStyle = "#374151";
         ctx.font = "bold 12px Arial";
         ctx.fillText(formattedDate, x + cellWidth / 2, startY + 32);
@@ -263,12 +275,22 @@ const Dashboard = () => {
 
         // Row background
         ctx.fillStyle = "#ffffff";
-        ctx.fillRect(sideMargin, y, nameColumnWidth + dateColumns.length * cellWidth, rowHeight);
+        ctx.fillRect(
+          sideMargin,
+          y,
+          nameColumnWidth + dateColumns.length * cellWidth,
+          rowHeight
+        );
 
         // Row borders
         ctx.strokeStyle = "#D1D5DB";
         ctx.lineWidth = 1;
-        ctx.strokeRect(sideMargin, y, nameColumnWidth + dateColumns.length * cellWidth, rowHeight);
+        ctx.strokeRect(
+          sideMargin,
+          y,
+          nameColumnWidth + dateColumns.length * cellWidth,
+          rowHeight
+        );
 
         // Name cell
         ctx.strokeRect(sideMargin, y, nameColumnWidth, rowHeight);
@@ -300,17 +322,32 @@ const Dashboard = () => {
             // Shift background color with rounded corners effect
             const shiftColor = getShiftColor(shift);
             ctx.fillStyle = shiftColor;
-            
+
             // Draw rounded rectangle
             const radius = 8;
             ctx.beginPath();
             ctx.moveTo(badgeX + radius, shiftY);
             ctx.lineTo(badgeX + badgeWidth - radius, shiftY);
-            ctx.quadraticCurveTo(badgeX + badgeWidth, shiftY, badgeX + badgeWidth, shiftY + radius);
+            ctx.quadraticCurveTo(
+              badgeX + badgeWidth,
+              shiftY,
+              badgeX + badgeWidth,
+              shiftY + radius
+            );
             ctx.lineTo(badgeX + badgeWidth, shiftY + badgeHeight - radius);
-            ctx.quadraticCurveTo(badgeX + badgeWidth, shiftY + badgeHeight, badgeX + badgeWidth - radius, shiftY + badgeHeight);
+            ctx.quadraticCurveTo(
+              badgeX + badgeWidth,
+              shiftY + badgeHeight,
+              badgeX + badgeWidth - radius,
+              shiftY + badgeHeight
+            );
             ctx.lineTo(badgeX + radius, shiftY + badgeHeight);
-            ctx.quadraticCurveTo(badgeX, shiftY + badgeHeight, badgeX, shiftY + badgeHeight - radius);
+            ctx.quadraticCurveTo(
+              badgeX,
+              shiftY + badgeHeight,
+              badgeX,
+              shiftY + badgeHeight - radius
+            );
             ctx.lineTo(badgeX, shiftY + radius);
             ctx.quadraticCurveTo(badgeX, shiftY, badgeX + radius, shiftY);
             ctx.closePath();
@@ -327,13 +364,14 @@ const Dashboard = () => {
 
       // Load jsPDF and generate
       const script = document.createElement("script");
-      script.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+      script.src =
+        "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
       document.head.appendChild(script);
 
       script.onload = () => {
         try {
           const { jsPDF } = window.jspdf;
-          
+
           const doc = new jsPDF({
             orientation: "landscape",
             unit: "mm",
@@ -343,26 +381,37 @@ const Dashboard = () => {
           const imgData = canvas.toDataURL("image/png");
           const pageWidth = doc.internal.pageSize.getWidth();
           const pageHeight = doc.internal.pageSize.getHeight();
-          
+
           // Optimize PDF margins
           const pdfMargin = 5;
-          const availableWidth = pageWidth - (pdfMargin * 2);
-          const availableHeight = pageHeight - (pdfMargin * 2);
-          
+          const availableWidth = pageWidth - pdfMargin * 2;
+          const availableHeight = pageHeight - pdfMargin * 2;
+
           const imgWidth = availableWidth;
           const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
           let finalWidth = imgWidth;
           let finalHeight = imgHeight;
-          
+
           if (imgHeight > availableHeight) {
             finalHeight = availableHeight;
             finalWidth = (canvas.width * finalHeight) / canvas.height;
           }
 
-          doc.addImage(imgData, "PNG", pdfMargin, pdfMargin, finalWidth, finalHeight);
+          doc.addImage(
+            imgData,
+            "PNG",
+            pdfMargin,
+            pdfMargin,
+            finalWidth,
+            finalHeight
+          );
 
-          doc.save(`employee-schedule-dashboard-${new Date().toISOString().split("T")[0]}.pdf`);
+          doc.save(
+            `employee-schedule-dashboard-${
+              new Date().toISOString().split("T")[0]
+            }.pdf`
+          );
           setExporting(false);
         } catch (error) {
           console.error("PDF generation error:", error);
@@ -372,7 +421,9 @@ const Dashboard = () => {
       };
 
       script.onerror = () => {
-        alert("Failed to load PDF library. Please check your internet connection.");
+        alert(
+          "Failed to load PDF library. Please check your internet connection."
+        );
         setExporting(false);
       };
     } catch (error) {
@@ -383,17 +434,7 @@ const Dashboard = () => {
   };
 
   if (showManageSchedule) {
-    return (
-      <div className="p-8 text-center">
-        <h2 className="text-2xl font-bold mb-4">Manage Schedule Component</h2>
-        <button
-          onClick={() => setShowManageSchedule(false)}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          Back to Dashboard
-        </button>
-      </div>
-    );
+    return <ManageSchedule setShowManageSchedule={setShowManageSchedule} />;
   }
 
   return (
@@ -411,12 +452,12 @@ const Dashboard = () => {
 
       <hr className="text-gray-300 mb-4" />
 
-      <div className="flex justify-between">
-        <h2 className="flex pb-10 items-center gap-2 text-sm lg:text-2xl font-semibold cursor-pointer hover:text-blue-600">
-          <ArrowLeft className="w-6 h-6" />
+      <div className="flex justify-between" >
+        <h2 onClick={()=>{setShowDashboard(false)}} className="flex pb-10 items-center gap-2 text-sm lg:text-2xl font-semibold cursor-pointer hover:text-blue-600">
+          <ArrowLeft className="w-6 h-6"  />
           Previously generated schedules
         </h2>
-        
+
         {/* Controls */}
         <div className="flex gap-2 font-semibold items-center mb-3">
           {/* Month selector */}
@@ -440,7 +481,9 @@ const Dashboard = () => {
                     className="flex items-center w-full px-2 py-2 hover:bg-gray-100 gap-2 cursor-pointer"
                   >
                     <Calendar className="w-4 h-4" />
-                    <p className="font-medium text-gray-700 capitalize">{option.value}</p>
+                    <p className="font-medium text-gray-700 capitalize">
+                      {option.value}
+                    </p>
                   </button>
                 ))}
               </div>
