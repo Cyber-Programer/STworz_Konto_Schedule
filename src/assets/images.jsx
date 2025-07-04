@@ -1,4 +1,4 @@
-import lg from "./logo.svg"; // main logo
+import lg from "./NavLogo2.png"; // main logo
 import authmain from "./men.svg"; // auth main img
 import scheduleCall from "./icons/schedule/phone.svg";
 import scheduleVideo from "./icons/schedule/video.svg";
@@ -11,6 +11,7 @@ import scheduleExport from "./icons/schedule/export.svg";
 import subscriptionIco from "./icons/subscription/tikico.svg";
 import scheduleBack from "./icons/schedule/back.svg";
 import monthBg from "./monthly.png";
+import dashboardTranslate from "./translate.svg"
 
 const WebIcons = {
   logo: lg, // main logo
@@ -26,6 +27,7 @@ const WebIcons = {
   subscriptionIco: subscriptionIco,
   scheduleBack: scheduleBack,
   monthBg: monthBg,
+  dashboardTranslate: dashboardTranslate
 };
 
 export default WebIcons;
