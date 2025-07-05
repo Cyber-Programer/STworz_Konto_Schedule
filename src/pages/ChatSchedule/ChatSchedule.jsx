@@ -1,12 +1,12 @@
 import React, { useState, useRef } from "react";
-
+import WebIcons from "../../assets/images"; // Adjust the path as necessary
 // Mock icons since we don't have the actual WebIcons
-const WebIcons = {
-  scheduleBot:
-    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 8V4H8'/%3E%3Crect width='16' height='12' x='4' y='8' rx='2'/%3E%3Cpath d='M2 14h2'/%3E%3Cpath d='M20 14h2'/%3E%3Cpath d='M15 13v2'/%3E%3Cpath d='M9 13v2'/%3E%3C/svg%3E",
-  scheduleSend:
-    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m22 2-7 20-4-9-9-4Z'/%3E%3Cpath d='M22 2 11 13'/%3E%3C/svg%3E",
-};
+// const WebIcons = {
+//   scheduleBot:
+//     "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 8V4H8'/%3E%3Crect width='16' height='12' x='4' y='8' rx='2'/%3E%3Cpath d='M2 14h2'/%3E%3Cpath d='M20 14h2'/%3E%3Cpath d='M15 13v2'/%3E%3Cpath d='M9 13v2'/%3E%3C/svg%3E",
+//   scheduleSend:
+//     "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m22 2-7 20-4-9-9-4Z'/%3E%3Cpath d='M22 2 11 13'/%3E%3C/svg%3E",
+// };
 
 const ChatSchedule = () => {
   const [input, setInput] = useState("");
@@ -319,11 +319,11 @@ const ChatSchedule = () => {
     <div
       style={{
         fontFamily: "Arial, sans-serif",
-        height: "95vh",
+        height: "100vh",
         display: "flex",
         padding: "32px 20px",
         gap: "16px",
-        backgroundColor: "#f9fafb",
+        backgroundColor: "#ffffff",
       }}
     >
       <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
@@ -344,6 +344,8 @@ const ChatSchedule = () => {
             gap: "12px",
             alignItems: "center",
             marginBottom: "16px",
+            borderBottom: "1px solid #d1d5db",
+            paddingBottom: "8px",
           }}
         >
           <img
@@ -368,12 +370,12 @@ const ChatSchedule = () => {
               flexDirection: "column",
               flexGrow: 1,
               overflowY: "auto",
-              border: "1px solid #d1d5db",
+              // border: "1px solid #d1d5db",
               borderRadius: "16px",
               padding: "16px",
               backgroundColor: "white",
               marginBottom: "16px",
-              boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1)",
+              // boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1)",
             }}
           >
             {messages.map((msg) =>

@@ -21,7 +21,7 @@ const RootLayout = () => {
       )}
 
       {/* Main content */}
-      <main className="flex-1 p-4 overflow-auto w-full">
+      <main className="flex-1 p-4 overflow-auto w-full bg-white">
         {/* Menu icon on small screens */}
         {showSidebar && (
           <button

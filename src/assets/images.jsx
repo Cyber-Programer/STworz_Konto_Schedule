@@ -2,7 +2,8 @@ import lg from "./NavLogo2.png"; // main logo
 import authmain from "./men.svg"; // auth main img
 import scheduleCall from "./icons/schedule/phone.svg";
 import scheduleVideo from "./icons/schedule/video.svg";
-import scheduleBot from "./icons/schedule/bot.svg";
+// import scheduleBot from "./icons/schedule/bot.svg";
+import scheduleBot from "./icons/schedule/bot.svg"; // schedule bot ico
 import scheduleSend from "./icons/schedule/send.svg";
 import scheduleCalender from "./icons/schedule/calendar.svg";
 import scheduleEdit from "./icons/schedule/edit.svg";
