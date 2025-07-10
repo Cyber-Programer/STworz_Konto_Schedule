@@ -87,7 +87,7 @@ const PrinciplesTable = () => {
 
       <div className="flex items-center justify-between mb-4">
         {/* Search Input with Icon */}
-        <div className="relative w-full max-w-sm">
+        <div className="relative w-full md:max-w-[405px]">
           <Search
             className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
             size={18}
@@ -107,7 +107,7 @@ const PrinciplesTable = () => {
         <input
           type="text"
           placeholder="Add New Rules"
-          className="py-2 px-3 border border-gray-300 rounded w-full sm:w-64 outline-none"
+          className="py-2 px-3 border border-gray-300 rounded w-full sm:w-96 outline-none"
           value={newRule}
           onChange={(e) => setNewRule(e.target.value)}
         />

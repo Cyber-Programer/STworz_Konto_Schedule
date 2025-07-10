@@ -7,15 +7,22 @@ import Dashboard from "./Dashboard";
 const MonthlySch = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenT, setIsOpenT] = useState(false);
-  const [selectedYear, setSelectedYear] = useState("2024");
+  const [selectedYear, setSelectedYear] = useState("2025");
   const [showDashboard, setShowDashboard] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [language, setLanguage] = useState("English");
 
   const years = [
-    { value: "2024", label: "2024" },
+    
     { value: "2025", label: "2025" },
     { value: "2026", label: "2026" },
+    { value: "2027", label: "2027" },
+    { value: "2028", label: "2028" },
+    { value: "2029", label: "2029" },
+    { value: "2030", label: "2030" },
+    { value: "2031", label: "2031" },
+    { value: "2032", label: "2032" },
+    { value: "2033", label: "2033" },
   ];
   const languageList = ["English", "Polish"];
   const months = [
@@ -40,18 +47,18 @@ const MonthlySch = () => {
 
   if (!showDashboard) {
     return (
-      <div className="w-full flex flex-col gap-10 my-4 capitalize px-5">
-        <h2 className="text-2xl font-semibold font-sans text-gray-800 leading-tight">
+      <div className="w-full flex flex-col gap-10 my-2 capitalize px-5">
+        <h2 className="mt-7 md:mt-0 text-2xl md:text-[2rem] font-semibold font-Roboto text-textClr">
           Welcome to <br className="hidden md:block" /> Grafik Master
         </h2>
 
-        <div className="flex justify-between items-center">
-          <span className="text-lg font-semibold">
+        <div className="flex flex-col md:flex-row gap-5 justify-between md:items-center">
+          <span className="text-xl md:text-2xl font-semibold text-textClr font-Roboto">
             monthly generated schedules
           </span>
 
           {/* Custom Dropdown */}
-          <div className="flex gap-5">
+          <div className="flex gap-5 justify-end">
             <div className="relative font-Inter">
               <button
                 onClick={() => {
@@ -158,7 +165,7 @@ const MonthlySch = () => {
                 setShowDashboard(true);
               }}
               key={index}
-              className="w-[370px] h-50 border rounded-lg flex items-center justify-center capitalize text-white font-bold text-xl shadow-lg cursor-pointer"
+              className=" h-50 border rounded-lg flex items-center justify-center capitalize text-white font-bold text-xl shadow-lg cursor-pointer"
               style={{
                 background: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${WebIcons.monthBg})`,
                 backgroundSize: "cover",

@@ -23,7 +23,7 @@ const SignIn = () => {
   };
 
   return (
-    <div className="flex  mx-auto min-h-screen font-Inter">
+    <div className="flex gap-6 mx-auto min-h-screen font-Inter">
       {/* left content  */}
       <div className="w-full md:w-1/2">
         {/* logo section  */}
@@ -31,7 +31,7 @@ const SignIn = () => {
           <img src={logo} alt="a animate picture" />
         </div>
         {/* form section area  */}
-        <div className="max-w-md  mx-auto mt-16 lg:mt-44">
+        <div className="max-w-md  mx-auto mt-16 lg:mt-44 px-4 md:px-0">
           <form onSubmit={handleSignIn}>
             <h1 className="font-medium text-[2rem] text-textClr text-center">
               Log In
