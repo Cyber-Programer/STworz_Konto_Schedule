@@ -9,12 +9,12 @@ const CancelSubscription = () => {
       </h2>
 
       <div className="border border-gray-300 rounded-md p-6 h-[80%] flex flex-col items-center  gap-6">
-        <h3 className="text-2xl sm:text-4xl font-bold capitalize text-center mb-8">
+        <h3 className="text-4xl md:text-[2.5rem] font-bold capitalize text-center mb-4">
           Subscription Plan
         </h3>
 
         <div className="bg-Primary text-white rounded-xl shadow-lg p-6  max-w-[850px] h-auto md:h-[480px] mx-auto  mt-5 md:mt-16">
-          <h4 className="font-bold text-xl sm:text-2xl">Premium</h4>
+          <h4 className="font-bold text-xl sm:text-[1.375rem]">Premium</h4>
           <p className=" mb-4">
             Ideal for individuals who who need advanced features and tools for
             client work.

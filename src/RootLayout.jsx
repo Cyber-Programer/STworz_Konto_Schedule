@@ -14,14 +14,14 @@ const RootLayout = () => {
   const toggleSidebar = () => setSidebarOpen((prev) => !prev);
 
   return (
-    <div className="flex h-screen bg-gray-50 relative">
+    <div className="flex h-screen bg-white relative">
       {/* Sidebar */}
       {showSidebar && (
         <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
       )}
 
       {/* Main content */}
-      <main className="flex-1 p-4 overflow-auto w-full bg-white">
+      <main className="flex-1 p-4 overflow-auto w-full bg-white mt-6 sm:mt-0">
         {/* Menu icon on small screens */}
         {showSidebar && (
           <button

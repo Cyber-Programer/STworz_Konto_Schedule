@@ -37,7 +37,7 @@ const Premium = () => {
         for premium user
       </h1>
       <div className="m-5 p-10 border border-gray-400 flex flex-col gap-3 items-center justify-center">
-        <h1 className="text-2xl sm:text-4xl font-bold capitalize text-center mb-5">
+        <h1 className="text-2xl sm:text-[2.5rem] font-bold capitalize text-center mb-5">
           subscription plan
         </h1>
         <div>
@@ -61,13 +61,13 @@ const Premium = () => {
               ></div>
             </button>
 
-            <p className="text-base text-[#191D23]">pay yearly</p>
+            <p className="sm:text-sm text-base text-[#191D23]">pay yearly</p>
           </div>
         </div>
         {/* details */}
         <div className="flex flex-col lg:flex-row gap-10 mt-10 ">
           {/* free */}
-          <div className="free flex flex-col gap-4 w-100 h-140 border border-[#AAAAAA] rounded-md p-6">
+          <div className="free flex flex-col gap-4 max-w-[417px] h-auto md:h-140 border border-[#AAAAAA] rounded-md p-6">
             <h2 className="font-bold text-xl sm:text-2xl text-[#191D23]">
               Free
             </h2>
@@ -108,7 +108,7 @@ const Premium = () => {
             </div>
           </div>
           {/* premium */}
-          <div className="premium bg-[#3093FC] text-white p-6 rounded-md max-w-[417px] h-140">
+          <div className="premium bg-[#3093FC] text-white p-6 rounded-md max-w-[417px] h-auto md:h-140">
             <h2 className="font-bold text-xl sm:text-2xl">Premium</h2>
             <p className="text-gray-200 font-light mt-3 text-sm">
               {isYearly ? premium.yearly.desc : premium.monthly.desc}
