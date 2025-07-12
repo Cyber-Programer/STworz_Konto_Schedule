@@ -31,7 +31,7 @@ const SignIn = () => {
           <img src={logo} alt="a animate picture" />
         </div>
         {/* form section area  */}
-        <div className="max-w-md  mx-auto mt-16 lg:mt-44 px-4 md:px-0">
+        <div className="max-w-md  mx-auto mt-16 lg:mt-44 px-4 lg:px-0">
           <form onSubmit={handleSignIn}>
             <h1 className="font-medium text-[2rem] text-textClr text-center">
               Log In

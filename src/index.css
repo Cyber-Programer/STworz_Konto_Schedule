@@ -31,7 +31,7 @@
 
  /* sign in or sing up button  */
 .signIn_submit {
-    @apply mt-5 cursor-pointer text-2xl font-bold font-Inter w-full bg-Primary hover:bg-Primary/90 text-white py-4 rounded-xl transition duration-300
+    @apply mt-5 cursor-pointer text-2xl font-bold font-Inter w-full bg-Primary hover:bg-Primary/90 text-white py-3 rounded-xl transition duration-300
 }
 
 /* sign in with google button  */

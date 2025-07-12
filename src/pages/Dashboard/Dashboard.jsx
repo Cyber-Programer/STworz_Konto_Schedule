@@ -452,14 +452,14 @@ const Dashboard = ({setShowDashboard,selectedMonth}) => {
 
       <hr className="text-gray-300 mb-4" />
 
-      <div className="flex justify-between" >
-        <h2 onClick={()=>{setShowDashboard(false)}} className="flex pb-10 items-center gap-2 text-sm lg:text-2xl font-semibold cursor-pointer hover:text-blue-600">
+      <div className="flex flex-col lg:flex-row justify-between flex-wrap" >
+        <h2 onClick={()=>{setShowDashboard(false)}} className="flex pb-10 items-center gap-2 text-lg lg:text-2xl font-semibold cursor-pointer hover:text-blue-600">
           <ArrowLeft className="w-6 h-6"  />
           Previously generated schedules
         </h2>
 
         {/* Controls */}
-        <div className="flex gap-2 font-semibold items-center mb-3">
+        <div className="flex flex-col lg:flex-row gap-2 font-semibold items-start justify-start mb-3">
           {/* Month selector */}
           <div className="relative inline-block text-left">
             <button
@@ -526,15 +526,15 @@ const Dashboard = ({setShowDashboard,selectedMonth}) => {
             }`}
           >
             <Edit className="w-4 h-4" />
-            <p className="hidden lg:block font-medium text-gray-700">Edit</p>
+            <p className="font-medium text-gray-700">Edit</p>
           </button>
 
           <button
             onClick={() => setIsEditable(false)}
-            className="flex gap-2 items-center cursor-pointer justify-center border px-3 py-2 border-blue-500 hover:bg-green-50"
+            className="flex gap-2 items-center cursor-pointer md:justify-center border px-3 py-2 border-blue-500 hover:bg-green-50"
           >
             <Save className="w-4 h-4" />
-            <p className="hidden lg:block font-medium text-gray-700">Save</p>
+            <p className=" font-medium text-gray-700">Save</p>
           </button>
 
           <button
@@ -545,7 +545,7 @@ const Dashboard = ({setShowDashboard,selectedMonth}) => {
             }`}
           >
             <FileDown className="w-4 h-4" />
-            <p className="hidden lg:block font-medium text-gray-700">
+            <p className=" font-medium text-gray-700">
               {exporting ? "Generating PDF..." : "Export to PDF"}
             </p>
           </button>
