@@ -44,7 +44,6 @@ const ChatSchedule = () => {
   const [showFullTable, setShowFullTable] = useState(false);
   const [isEditable, setIsEditable] = useState(false);
   const [exporting, setExporting] = useState(false);
-  const [showEmployees, setShowEmployees] = useState(false);
 
   const [employeeSchedules, setEmployeeSchedules] = useState([
     {
@@ -324,11 +323,11 @@ const ChatSchedule = () => {
 
  
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col">
+      <div className="w-full flex-1 flex flex-col">
         
         {/* Header */}
         <div className="flex gap-3 items-center mb-4 border-b border-gray-300 pb-3">
-          <img className="w-8 h-8" src={WebIcons.scheduleBot} alt="bot" />
+          <img className="w-8 h-8" src={WebIcons.scheduleBot} alt="bot"/>
           <p className="font-medium text-textClr text-xl ">ChatBot</p>
         </div>
 
@@ -431,8 +430,7 @@ const ChatSchedule = () => {
       </div>
 
       {/* Employee List Sidebar */}
-      <div className={`w-auto min-w-44 max-w-80 border-l border-gray-300 pl-4 overflow-y-auto
-    ${showEmployees ? "block" : "hidden"} md:block`}>
+      <div className="hidden md:block w-auto min-w-44 max-w-80 border-l border-gray-300 pl-4 overflow-y-auto">
         <h3 className="font-semibold text-gray-700 mb-3">Employees</h3>
         {["Helena", "Oscar", "Daniel", "Mark"].map((name) => (
           <div

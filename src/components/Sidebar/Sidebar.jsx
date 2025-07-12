@@ -26,7 +26,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         ${isOpen ? "translate-x-0" : "-translate-x-full"} sm:translate-x-0 p-6 flex flex-col justify-between border-r border-textClr/20`}
     >
       {/* Logo + Nav */}
-      <div className="flex flex-col gap-10">
+      <div className="mt-9 md:mt-0 flex flex-col gap-10">
         <button onClick={()=>{
           navigate('/dashboard')
           }} className="cursor-pointer"><img src={WebIcons.logo} alt="Logo" className="w-32" /></button>

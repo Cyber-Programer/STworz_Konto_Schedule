@@ -63,7 +63,7 @@ const ManageSchedule = ({ setShowManageSchedule }) => {
         onClick={() => {
           setShowManageSchedule(false);
         }}
-        className="cursor-pointer  flex gap-10 items-center text-[2rem] text-textClr font-semibold leading-5.5"
+        className="cursor-pointer mt-4 md:mt-0 flex gap-10 items-center text-[1.75rem] md:text-[2rem] text-textClr font-semibold leading-5.5"
       >
         <img src={WebIcons.scheduleBack} alt="" />
         Manage Schedule
