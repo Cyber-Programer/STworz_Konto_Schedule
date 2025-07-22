@@ -28,21 +28,114 @@
     "schedules": "Ustawienie harmonogramu",
     "chat": "Czat, aby ustawić harmonogram",
     "premium": "Premia",
-    "logout": "Wyloguj się"
+    "logout": "Wyloguj się",
+    "save": "Zapisz"
   },
 
-  "month": {
-    "january": "Styczeń",
-    "february": "Luty",
-    "march": "Marzec",
-    "april": "Kwiecień",
-    "may": "Móc",
-    "june": "Czerwiec",
-    "july": "Lipiec",
-    "august": "Sierpień",
-    "september": "Wrzesień",
-    "october": "Październik",
-    "november": "Listopad",
-    "december": "Grudzień"
+  "months": {
+    "January": "Styczeń",
+    "February": "Luty",
+    "March": "Marzec",
+    "April": "Kwiecień",
+    "May": "Móc",
+    "June": "Czerwiec",
+    "July": "Lipiec",
+    "August": "Sierpień",
+    "September": "Wrzesień",
+    "October": "Październik",
+    "November": "Listopad",
+    "December": "Grudzień"
+  },
+
+  "monthlySch": {
+    "welcomeLine1": "Witamy w",
+    "welcomeLine2": "Grafik Master",
+    "monthlySch": "Miesięczne wygenerowane grafiki"
+  },
+
+  "manageSch": {
+    "title": "Zarządzaj harmonogramem",
+    "createSchedule": "Utwórz harmonogram",
+    "name": "Imię",
+    "dateOfSchedule": "Data harmonogramu",
+    "startTime": "Godzina rozpoczęcia",
+    "endTime": "Godzina zakończenia",
+    "addSchedule": "Dodaj nowy harmonogram",
+    "placeholder": {
+      "name": "Wpisz swoje imię"
+    }
+  },
+
+  "dashboard": {
+    "manage&createSch": "Zarządzaj i twórz grafik",
+    "prevGeneratedSch": "Poprzednio wygenerowane grafiki",
+    "monthly": "Miesięczny",
+    "weekly": "Tygodniowy",
+    "edit": "Edytuj",
+    "save": "Zapisz",
+    "exportPdf": "Eksportuj do PDF",
+    "generatingPdf": "Generowanie PDF..."
+  },
+
+  "employee": {
+  "title": "Pracownicy",
+  "addNew": "Dodaj nowego pracownika",
+  "editTitle": "Edytuj pracownika",
+  "addTitle": "Dodaj nowego pracownika",
+  "addPhoto": "Dodaj zdjęcie",
+  "nameLabel": "Imię i nazwisko",
+  "emailLabel": "Email",
+  "namePlaceholder": "Wpisz imię pracownika",
+  "emailPlaceholder": "Wpisz email pracownika",
+  "updateBtn": "Aktualizuj",
+  "addBtn": "Dodaj",
+  "edit": "Edytuj",
+  "remove": "Usuń"
+},
+
+"schedule": {
+  "principles": "Zasady",
+  "searchPlaceholder": "Szukaj zasad...",
+  "addNewRule": "Dodaj nowe zasady",
+  "addNew": "Dodaj",
+  "task": "Zadanie",
+  "title": "Tytuł",
+  "action": "Akcja",
+  "edit": "Edytuj",
+  "delete": "Usuń",
+  "editPrompt": "Edytuj tytuł zasady:",
+  "confirmDelete": "Czy na pewno chcesz usunąć tę zasadę?"
+},
+
+"premiumPage": {
+    "title": "Dla użytkowników premium",
+    "planTitle": "Plan subskrypcji",
+    "choosePlan": "Wybierz plan, który Ci odpowiada",
+    "payMonthly": "Płatność miesięczna",
+    "payYearly": "Płatność roczna",
+    "free": "Darmowy",
+    "getStarted": "Rozpocznij teraz",
+    "freeDesc": "Idealny dla osób, które potrzebują szybkiego dostępu do podstawowych funkcji.",
+    "freeFeatures": [
+      "Dostęp do harmonogramów generowanych przez AI przez pierwsze 3 dni.",
+      "Możliwość podglądu wygenerowanych harmonogramów",
+      "Po 3 dniach konieczna jest aktualizacja do wersji premium."
+    ],
+    "premium": "Premium",
+    "premiumDesc": "Idealny dla osób, które potrzebują zaawansowanych funkcji i narzędzi do pracy z klientami.",
+    "monthlyPrice": "199 PLN zt",
+    "yearlyPrice": "1499 PLN zt",
+    "perMonth": "/ Miesiąc",
+    "perYear": "/ Rok",
+    "premiumFeatures": [
+      "Administrator może tworzyć dowolną liczbę harmonogramów, bez ograniczeń czasowych",
+      "Nieograniczony dostęp do generowania harmonogramów wspomaganego przez AI.",
+      "Użytkownicy premium otrzymują priorytetowe wsparcie klienta."
+    ]
   }
+
+
+
+
+
 }

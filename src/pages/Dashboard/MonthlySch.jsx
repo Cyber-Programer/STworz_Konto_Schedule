@@ -27,20 +27,21 @@ const MonthlySch = () => {
     { value: "2032", label: "2032" },
     { value: "2033", label: "2033" },
   ];
+  
   const languageList = ["English", "Polish"];
   const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    t("months.January"),
+    t("months.February"),
+    t("months.March"),
+    t("months.April"),
+    t("months.May"),
+    t("months.June"),
+    t("months.July"),
+    t("months.August"),
+    t("months.September"),
+    t("months.October"),
+    t("months.November"),
+    t("months.December"),
   ];
 
   const handleSelect = (year) => {
@@ -57,12 +58,12 @@ const MonthlySch = () => {
     return (
       <div className="w-full flex flex-col gap-10 my-2 capitalize px-5">
         <h2 className="mt-7 md:mt-0 text-2xl md:text-[2rem] font-semibold font-Roboto text-textClr">
-          Welcome to <br className="hidden md:block" /> Grafik Master
+          {t("monthlySch.welcomeLine1")} <br className="hidden md:block" /> {t("monthlySch.welcomeLine2")}
         </h2>
 
         <div className="flex flex-col md:flex-row gap-5 justify-between md:items-center">
           <span className="text-xl md:text-2xl font-semibold text-textClr font-Roboto">
-            monthly generated schedules
+            {t("monthlySch.monthlySch")}
           </span>
 
           {/* Custom Dropdown */}

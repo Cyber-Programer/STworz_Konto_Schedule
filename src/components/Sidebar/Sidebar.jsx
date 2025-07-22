@@ -8,6 +8,7 @@ import { FaCamera } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
 import pp from "../../assets/pp.png";
 import { useTranslation } from "react-i18next";
+import { CiEdit } from "react-icons/ci";
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
   const {t} = useTranslation();
@@ -41,7 +42,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
   return (
     <div
-      className={`fixed sm:static top-0 left-0 h-full w-[260px] bg-white z-50 shadow-md transform transition-transform duration-300
+      className={`fixed sm:static top-0 left-0 h-full w-auto bg-white z-50 shadow-md transform transition-transform duration-300
       ${isOpen ? "translate-x-0" : "-translate-x-full"} sm:translate-x-0 p-6 flex flex-col justify-between border-r border-textClr/20`}
     >
       {/* Top Section */}
@@ -79,12 +80,13 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
       {/* Profile Section */}
       <div className="flex flex-col gap-6 relative">
-        <div className="flex gap-4 items-center cursor-pointer" onClick={() => setIsModalOpen(true)}>
+        <div className="flex gap-4 items-center cursor-pointer relative">
           <img src={profileImage} alt="Profile" className="w-10 h-10 rounded-full object-cover" />
           <div>
             <h2 className="font-semibold">{name}</h2>
             <p className="text-sm text-gray-500">{email}</p>
           </div>
+          <div><CiEdit size={24} className="absolute top-0 right-0" onClick={() => setIsModalOpen(true)}/></div>
         </div>
 
         <button
@@ -119,26 +121,23 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
               />
             </div>
 
-            <input
+          <div className="flex flex-col gap-1">
+            <label className="text-sm">Name</label>
+              <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full mb-2 p-2 border rounded outline-0"
               placeholder="Name"
             />
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full mb-4 p-2 border rounded outline-0"
-              placeholder="Email"
-            />
+          </div>
+            
 
             <button
               onClick={() => setIsModalOpen(false)}
-              className="w-full bg-Primary text-white py-2 rounded font-semibold"
+              className="mt-2 w-full bg-Primary text-white py-2 rounded font-semibold"
             >
-              Save
+              {t("sidebar.save")}
             </button>
             <button>
               <RxCross2

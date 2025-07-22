@@ -420,11 +420,9 @@ const ChatSchedule = () => {
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
-        <div className="flex gap-3 items-center mb-4 border-b border-gray-300 pb-3">
-          <img className="w-8 h-8" src={WebIcons.scheduleBot} alt="bot" />
-          <p className="font-medium text-textClr text-xl md:text-2xl">
-            ChatBot
-          </p>
+        <div className="mt-6 md:mt-0 flex gap-3 items-center mb-4 border-b border-gray-300 pb-3">
+          <img className="w-8 h-8" src={WebIcons.scheduleBot} alt="bot"/>
+          <p className="font-medium text-textClr text-xl md:text-2xl">ChatBot</p>
         </div>
 
         {/* Chat Container - Fixed height structure */}

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Search, MoreVertical } from "lucide-react";
-import WebIcons from "../../assets/images";
+import { useTranslation } from "react-i18next";
 
 const initialData = [
   { id: "FIG-121", title: "The maximum working time in a month is 180 hours" },
@@ -40,10 +40,13 @@ const initialData = [
 ];
 
 const PrinciplesTable = () => {
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [openActionId, setOpenActionId] = useState(null);
+  const [editingId, setEditingId] = useState(null);
+  const [editValue, setEditValue] = useState("");
   const [principles, setPrinciples] = useState(initialData);
-  const [newRule, setNewRule] = useState(""); 
+  const [newRule, setNewRule] = useState("");
 
   const filteredData = principles.filter((item) =>
     item.title.toLowerCase().includes(search.toLowerCase())
@@ -53,26 +56,30 @@ const PrinciplesTable = () => {
     setOpenActionId(openActionId === id ? null : id);
   };
 
-  const handleEdit = (id) => {
-    const updatedTitle = prompt("Edit rule title:");
-    if (updatedTitle) {
-      setPrinciples((prev) =>
-        prev.map((item) =>
-          item.id === id ? { ...item, title: updatedTitle } : item
-        )
-      );
-      setOpenActionId(null);
-    }
+  const handleEdit = (id, currentTitle) => {
+    setEditingId(id);
+    setEditValue(currentTitle);
+    setOpenActionId(null);
+  };
+
+  const handleSave = (id) => {
+    if (!editValue.trim()) return;
+    setPrinciples((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, title: editValue.trim() } : item
+      )
+    );
+    setEditingId(null);
+    setEditValue("");
   };
 
   const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this rule?")) {
+    
       setPrinciples((prev) => prev.filter((item) => item.id !== id));
       setOpenActionId(null);
-    }
+    
   };
 
-  //  Add New Rule Function
   const handleAddRule = () => {
     if (!newRule.trim()) return;
     const newId = `FIG-${Math.floor(Math.random() * 1000) + 131}`;
@@ -82,89 +89,118 @@ const PrinciplesTable = () => {
   };
 
   return (
-    <div className="max-w-8xl  p-6 mt-10 bg-white shadow rounded-md font-Roboto ">
-      <h2 className="text-xl font-semibold text-textClr mb-4">Principles</h2>
-
-      <div className="flex items-center justify-between mb-4">
-        {/* Search Input with Icon */}
-        <div className="relative w-full md:max-w-[405px]">
-          <Search
-            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-            size={18}
-          />
-          <input
-            type="text"
-            placeholder="Search rules..."
-            className="pl-10 pr-3 py-2 border border-gray-300 rounded w-full outline-none"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+    <div className="max-w-8xl p-6 mt-10 bg-white  rounded-md font-Roboto">
+      <div className="sticky top-0 z-20 bg-white pb-4">
+        <h2 className="text-xl font-semibold text-textClr mb-4">
+          {t("schedule.principles")}
+        </h2>
+        <div className="flex items-center justify-between mb-4">
+          <div className="relative w-full md:max-w-[405px]">
+            <Search
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              size={18}
+            />
+            <input
+              type="text"
+              placeholder={t("schedule.searchPlaceholder")}
+              className="pl-10 pr-3 py-2 border border-gray-300 rounded w-full outline-none"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
         </div>
       </div>
 
-      {/* Add new rules section */}
-      <div className="my-6 flex flex-wrap gap-4 justify-end w-full sm:w-auto">
-        <input
-          type="text"
-          placeholder="Add New Rules"
-          className="py-2 px-3 border border-gray-300 rounded w-full sm:w-96 outline-none"
-          value={newRule}
-          onChange={(e) => setNewRule(e.target.value)}
-        />
-        <button
-          onClick={handleAddRule}
-          className="bg-[#F7F7F7] rounded px-3 py-2 flex items-center gap-x-2 w-max"
-        >
-          <span className="w-5 h-5 border rounded-full flex items-center justify-center text-lg font-bold leading-none">
-            +
-          </span>
-          Add New
-        </button>
+      <div className="my-6 overflow-x-auto">
+        <div className="flex flex-wrap gap-4 justify-end w-full min-w-[300px] sm:w-auto">
+          <input
+            type="text"
+            placeholder={t("schedule.addNewRule")}
+            className="py-2 px-3 border border-gray-300 rounded w-full sm:w-96 outline-none"
+            value={newRule}
+            onChange={(e) => setNewRule(e.target.value)}
+          />
+          <button
+            onClick={handleAddRule}
+            className="bg-[#F7F7F7] rounded px-3 py-2 flex items-center gap-x-2 w-max"
+          >
+            <span className="w-5 h-5 border rounded-full flex items-center justify-center text-lg font-bold leading-none">
+              +
+            </span>
+            {t("schedule.addNew")}
+          </button>
+        </div>
       </div>
 
-      {/* Table */}
-      <table className="w-full table-auto">
-        <thead>
-          <tr className="text-left  font-medium">
-            <th className="py-2 px-2 w-24 text-[#828282]">Task</th>
-            <th className="py-2 px-2 text-textClr font-medium ">Title</th>
-            <th className="py-2 px-2">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredData.map((item) => (
-            <tr
-              key={item.id}
-              className="border-t border-[#E0E0E0] hover:bg-gray-50 relative text-sm"
-            >
-              <td className="py-2 px-2 text-[#828282]">{item.id}</td>
-              <td className="py-2 px-2">{item.title}</td>
-              <td className="py-2 px-2 relative">
-                <button onClick={() => toggleActionMenu(item.id)}>
-                  <MoreVertical className="text-gray-500" size={18} />
-                </button>
-
-                {openActionId === item.id && (
-                  <div className="absolute right-2 mt-2 bg-white border border-gray-200 rounded shadow w-28 z-10">
-                    <button
-                      onClick={() => handleEdit(item.id)}
-                      className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(item.id)}
-                      className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                )}
-              </td>
+      <div className="overflow-y-auto max-h-[420px]">
+        <table className="w-full table-auto">
+          <thead className="sticky top-0 bg-white z-10">
+            <tr className="text-left font-medium">
+              <th className="py-2 px-2 w-24 text-[#828282]">
+                {t("schedule.task")}
+              </th>
+              <th className="py-2 px-2 text-textClr font-medium">
+                {t("schedule.title")}
+              </th>
+              <th className="py-2 px-2">{t("schedule.action")}</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredData.map((item) => (
+              <tr
+                key={item.id}
+                className="border-t border-[#E0E0E0] hover:bg-gray-50 relative text-sm"
+              >
+                <td className="py-2 px-2 text-[#828282]">{item.id}</td>
+                <td className="py-2 px-2">
+                  {editingId === item.id ? (
+                    <input
+                      type="text"
+                      value={editValue}
+                      onChange={(e) => setEditValue(e.target.value)}
+                      className="border border-gray-300 px-2 py-1 rounded w-full"
+                    />
+                  ) : (
+                    item.title
+                  )}
+                </td>
+                <td className="py-2 px-2 relative">
+                  {editingId === item.id ? (
+                    <button
+                      onClick={() => handleSave(item.id)}
+                      className="bg-blue-600 text-sm text-white  px-2 py-1 rounded cursor-pointer"
+                    >
+                      Save
+                    </button>
+                  ) : (
+                    <>
+                      <button onClick={() => toggleActionMenu(item.id)}>
+                        <MoreVertical className="text-gray-500" size={18} />
+                      </button>
+                      {openActionId === item.id && (
+                        <div className="absolute right-2 mt-2 bg-white border border-gray-200 rounded shadow w-28 z-10">
+                          <button
+                            onClick={() => handleEdit(item.id, item.title)}     
+                            className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                          >
+                            {t("schedule.edit")}
+                          </button>
+                          <button
+                            onClick={() => handleDelete(item.id)}
+                            className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                          >
+                            {t("schedule.delete")}
+                          </button>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

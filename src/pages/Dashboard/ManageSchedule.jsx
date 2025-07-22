@@ -3,6 +3,7 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import WebIcons from "../../assets/images";
 import TimePicker from "react-time-picker";
+import { useTranslation } from "react-i18next";
 
 const ManageSchedule = ({ setShowManageSchedule }) => {
   const [name, setName] = useState("");
@@ -12,12 +13,23 @@ const ManageSchedule = ({ setShowManageSchedule }) => {
   const [monthName, setMonthName] = useState("");
   const [value, setValue] = useState(new Date());
 
-  useEffect(() => {
-    if (value instanceof Date && !isNaN(value)) {
-      const month = value.toLocaleString("default", { month: "long" });
-      setMonthName(month);
-    }
-  }, [value]);
+  const {t} = useTranslation()
+
+  // useEffect(() => {
+  //   if (value instanceof Date && !isNaN(value)) {
+  //     const month = value.toLocaleString("default", { month: "long" });
+  //     setMonthName(month);
+  //   }
+  // }, [value]);
+
+  // Use English locale to ensure month names are consistent
+
+useEffect(() => {
+  if (value instanceof Date && !isNaN(value)) {
+    const month = value.toLocaleString("default", { month: "long" }); // always get English
+    setMonthName(month); // keep it as key
+  }
+}, [value]);
 
   //  Fix date formatting to local date, not UTC
   const handleCalendarChange = (selectedDate) => {
@@ -58,7 +70,7 @@ const ManageSchedule = ({ setShowManageSchedule }) => {
   };
 
   return (
-    <div className="p-4 font-Roboto cursor-pointer">
+    <div className="p-8 font-Roboto cursor-pointer">
       <h1
         onClick={() => {
           setShowManageSchedule(false);
@@ -66,11 +78,12 @@ const ManageSchedule = ({ setShowManageSchedule }) => {
         className="cursor-pointer mt-4 md:mt-0 flex gap-10 items-center text-[1.75rem] md:text-[2rem] text-textClr font-semibold leading-5.5"
       >
         <img src={WebIcons.scheduleBack} alt="" />
-        Manage Schedule
+        {t("manageSch.title")}
       </h1>
       {/* Calendar section */}
       <div className="mt-12.5">
-        <h1 className="text-2xl">{monthName}</h1>
+        <h1 className="text-2xl">{t(`months.${monthName}`)}</h1>
+
         <div className="py-2 max-w-[660px]">
           <Calendar
             onChange={handleCalendarChange}
@@ -84,15 +97,15 @@ const ManageSchedule = ({ setShowManageSchedule }) => {
       <div className="bg-gray-150 border-[1px] border-[#B3B3B3] max-w-[660px] mt-7 rounded-[10px]">
         <form onSubmit={handleSubmit} className="p-5 w-full">
           <h1 className="text-2xl font-semibold text-textClr leading-5.5">
-            Create Schedule
+            {t("manageSch.createSchedule")}
           </h1>
           <div className="mt-5.5">
             <label className="block mb-1 leading-5.5 text-xl text-textClr">
-              Name
+              {t('manageSch.name')}
             </label>
             <input
               type="text"
-              placeholder="Enter Your Name"
+              placeholder={t('manageSch.placeholder.name')}
               value={name}
               className="w-full border-[1px] border-[#E0E0E0] px-4 py-2 outline-none rounded"
               onChange={(e) => setName(e.target.value)}
@@ -101,7 +114,7 @@ const ManageSchedule = ({ setShowManageSchedule }) => {
           <div className="mt-5.5 flex w-full flex-col md:flex-row justify-between gap-2">
             <div className="w-full">
               <label className="block mb-1 leading-5.5 text-lg text-textClr">
-                Date of Schedule
+                {t('manageSch.dateOfSchedule')}
               </label>
               <input
                 type="date"
@@ -113,7 +126,7 @@ const ManageSchedule = ({ setShowManageSchedule }) => {
             </div>
             <div className="">
               <label className="block mb-1 leading-5.5 text-sm text-gray-600">
-                Start Time
+               {t('manageSch.startTime')}
               </label>
               <input
                 type="time"
@@ -127,7 +140,7 @@ const ManageSchedule = ({ setShowManageSchedule }) => {
 
             <div className="">
               <label className="block mb-1 leading-5.5 text-sm text-gray-600">
-                End Time
+                {t('manageSch.endTime')}
               </label>
               <input
                 type="time"
@@ -141,7 +154,7 @@ const ManageSchedule = ({ setShowManageSchedule }) => {
           </div>
           {console.log(time)}
           <button className="mt-5.5 cursor-pointer w-max px rounded-md text-white bg-Primary p-4 ">
-            Add New Schedule
+            {t("manageSch.addSchedule")}
           </button>
         </form>
       </div>

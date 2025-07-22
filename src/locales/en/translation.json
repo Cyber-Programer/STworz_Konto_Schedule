@@ -28,22 +28,110 @@
     "schedules": "Schedule Setting",
     "chat": "Chat to Set Schedule",
     "premium": "Premium",
-    "logout": "Log Out"
+    "logout": "Log Out",
+    "save": "Save"
   },
-  
-  "month": {
-    "january": "January",
-    "february": "February",
-    "march": "March",
-    "april": "April",
-    "may": "May",
-    "june": "June",
-    "july": "July",
-    "august": "August",
-    "september": "September",
-    "october": "October",
-    "november": "November",
-    "december": "December"
+
+  "months": {
+    "January": "January",
+    "February": "February",
+    "March": "March",
+    "April": "April",
+    "May": "May",
+    "June": "June",
+    "July": "July",
+    "August": "August",
+    "September": "September",
+    "October": "October",
+    "November": "November",
+    "December": "December"
+  },
+
+  "monthlySch": {
+    "welcomeLine1": "Welcome to",
+    "welcomeLine2": "Grafik Master",
+    "monthlySch": "Monthly Generated Schedules"
+  },
+  "manageSch": {
+    "title": "Manage Schedule",
+    "createSchedule": "Create Schedule",
+    "name": "Name",
+    "dateOfSchedule": "Date of Schedule",
+    "startTime": "Start Time",
+    "endTime": "End Time",
+    "addSchedule": "Add New Schedule",
+    "placeholder": {
+      "name": "Enter your name"
+    }
+  },
+
+  "dashboard": {
+    "manage&createSch": "Manage & Create Schedule",
+    "prevGeneratedSch": "Previously generated schedules",
+    "monthly": "Monthly",
+    "weekly": "Weekly",
+    "edit": "Edit",
+    "save": "Save",
+    "exportPdf": "Export to PDF",
+    "generatingPdf": "Generating PDF..."
+  },
+
+  "employee": {
+  "title": "Employee",
+  "addNew": "Add New Employee",
+  "editTitle": "Edit Employee",
+  "addTitle": "Add New Employee",
+  "addPhoto": "Add Photo",
+  "nameLabel": "Employee Name",
+  "emailLabel": "Email",
+  "namePlaceholder": "Enter Employee Name",
+  "emailPlaceholder": "Enter Employee Email",
+  "updateBtn": "Update",
+  "addBtn": "Add",
+  "edit": "Edit",
+  "remove": "Remove"
+},
+
+"schedule" : {
+  "principles": "Principles",
+  "searchPlaceholder": "Search rules...",
+  "addNewRule": "Add New Rules",
+  "addNew": "Add New",
+  "task": "Task",
+  "title": "Title",
+  "action": "Action",
+  "edit": "Edit",
+  "delete": "Delete",
+  "editPrompt": "Edit rule title:",
+  "confirmDelete": "Are you sure you want to delete this rule?"
+},
+"premiumPage": {
+    "title": "For Premium user",
+    "planTitle": "Subscription Plan",
+    "choosePlan": "Choose a plan that's right for you",
+    "payMonthly": "Pay Monthly",
+    "payYearly": "Pay Yearly",
+    "free": "Free",
+    "getStarted": "Get started now",
+    "freeDesc": "Ideal for individuals who need quick access to basic features.",
+    "freeFeatures": [
+      "Access to AI-generated schedules is available for the first 3 days.",
+      "Can view the generated schedules",
+      "After 3 days, users need to upgrade to premium for continued access."
+    ],
+    "premium": "Premium",
+    "premiumDesc": "Ideal for individuals who need advanced features and tools for client work.",
+    "monthlyPrice": "199 PLN zt",
+    "yearlyPrice": "1499 PLN zt",
+    "perMonth": "/ Month",
+    "perYear": "/ Year",
+    "premiumFeatures": [
+      "Admin can create as many schedules as needed, with no time restrictions",
+      "Unlimited access to AI-powered schedule generation.",
+      "Premium users get priority customer support for issues and inquiries."
+    ]
   }
+
+
 
 }

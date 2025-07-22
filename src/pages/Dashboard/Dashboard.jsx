@@ -1,8 +1,11 @@
 import React, { useState, useRef } from "react";
 import { Calendar, ArrowLeft, Edit, Save, FileDown } from "lucide-react";
 import ManageSchedule from "./ManageSchedule";
+import { useTranslation } from "react-i18next";
 
 const Dashboard = ({ setShowDashboard, selectedMonth }) => {
+
+  const {t} = useTranslation()
   const [employeeSchedules, setEmployeeSchedules] = useState([
     {
       name: "Mark",
@@ -446,7 +449,7 @@ const Dashboard = ({ setShowDashboard, selectedMonth }) => {
           className="flex gap-x-2.5 items-center border px-5 py-2 border-blue-400 cursor-pointer hover:bg-blue-50"
         >
           <Calendar className="w-5 h-5" />
-          Manage & Create Schedule
+          {t("dashboard.manage&createSch")}
         </button>
       </div>
 
@@ -460,7 +463,7 @@ const Dashboard = ({ setShowDashboard, selectedMonth }) => {
           className="flex pb-10 items-center gap-2 text-lg lg:text-2xl font-semibold cursor-pointer hover:text-blue-600"
         >
           <ArrowLeft className="w-6 h-6" />
-          Previously generated schedules
+          {t("dashboard.prevGeneratedSch")}
         </h2>
 
         {/* Controls */}
@@ -489,6 +492,7 @@ const Dashboard = ({ setShowDashboard, selectedMonth }) => {
                     <Calendar className="w-4 h-4" />
                     <p className="font-medium text-gray-700 capitalize">
                       {option.value}
+                      
                     </p>
                   </button>
                 ))}
@@ -534,7 +538,7 @@ const Dashboard = ({ setShowDashboard, selectedMonth }) => {
               }`}
             >
               <Edit className="w-4 h-4" />
-              <p className="font-medium text-gray-700">Edit</p>
+              <p className="font-medium text-gray-700">{t("dashboard.edit")}</p>
             </button>
 
             <button
@@ -542,7 +546,7 @@ const Dashboard = ({ setShowDashboard, selectedMonth }) => {
               className="flex gap-2 items-center cursor-pointer md:justify-center border px-3 py-2 border-blue-500 hover:bg-green-50"
             >
               <Save className="w-4 h-4" />
-              <p className=" font-medium text-gray-700">Save</p>
+              <p className=" font-medium text-gray-700">{t('dashboard.save')}</p>
             </button>
 
             <button
@@ -556,7 +560,8 @@ const Dashboard = ({ setShowDashboard, selectedMonth }) => {
             >
               <FileDown className="w-4 h-4" />
               <p className=" font-medium text-gray-700">
-                {exporting ? "Generating PDF..." : "Export to PDF"}
+                {/* {exporting ? "Generating PDF..." : "Export to PDF"} */}
+                 {exporting ? t("dashboard.generatingPdf") : t("dashboard.exportPdf")}
               </p>
             </button>
           </div>

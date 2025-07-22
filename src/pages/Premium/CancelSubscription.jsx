@@ -1,48 +1,47 @@
 import React from "react";
 import WebIcons from "../../assets/images";
+import { useTranslation } from "react-i18next";
 
 const CancelSubscription = () => {
+  const { t } = useTranslation();
   return (
     <div className="p-6">
       <h2 className="text-[2rem] font-semibold text-textClr mb-8">
-        For Premium user
+        {t("premiumPage.title")}
       </h2>
 
       <div className="border border-gray-300 rounded-md p-6 h-[80%] flex flex-col items-center  gap-6">
         <h3 className="text-4xl md:text-[2.5rem] font-bold capitalize text-center mb-4">
-          Subscription Plan
+          {t("premiumPage.planTitle")}
         </h3>
 
         <div className="bg-Primary text-white rounded-xl shadow-lg p-6  max-w-[850px] h-auto md:h-[480px] mx-auto  mt-5 md:mt-16">
           <h4 className="font-bold text-xl sm:text-[1.375rem]">Premium</h4>
           <p className=" mb-4">
-            Ideal for individuals who who need advanced features and tools for
-            client work.
+            {t("premiumPage.planDesc")}
           </p>
 
           <div className="text-center md:text-left text-4xl font-semibold mb-2">
-            199 <span className="text-xl font-normal">PLN zt</span>
-            <span className="text-sm font-light"> / Month</span>
+            199 <span className="text-xl font-normal">{t("premiumPage.priceLabel")}</span>
+            <span className="text-sm font-light"> {t("premiumPage.pricePerMonth")} </span>
           </div>
 
           <button className="w-full bg-white text-blue-500 font-semibold py-2 rounded-md mt-4 hover:bg-gray-100">
-            Cancel Now
+            {t("premiumPage.cancelBtn")}
           </button>
 
           <ul className="mt-6 space-y-3 ">
             <li className="flex items-start gap-2">
               <img src={WebIcons.subscriptionIco} alt="icons" />
-              Admin can create as many schedules as needed, with no time
-              restrictions
+              {t("premiumPage.features.feature1")}
             </li>
             <li className="flex items-start gap-2">
               <img src={WebIcons.subscriptionIco} alt="icons" />
-              Unlimited access to AI-powered schedule generation.
+              {t("premiumPage.features.feature2")}
             </li>
             <li className="flex items-start gap-2">
               <img src={WebIcons.subscriptionIco} alt="icons" />
-              Premium users get priority customer support for issues and
-              inquiries.
+             {t("premiumPage.features.feature3")}
             </li>
           </ul>
         </div>
