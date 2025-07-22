@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, use } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import WebIcons from "../../assets/images";
 import getCaretCoordinates from "textarea-caret";
 
