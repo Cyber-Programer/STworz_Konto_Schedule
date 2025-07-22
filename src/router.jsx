@@ -16,6 +16,7 @@ import MonthlySch from "./pages/Dashboard/MonthlySch";
 // import ManageSchedule from "./components/ManageSchedule/ManageSchedule";
 import ChatSchedule from "./pages/ChatSchedule/ChatSchedule";
 import CancelSubscription from "./pages/Premium/CancelSubscription";
+import ForgotPass from "./components/forgotPassword/ForgotPass";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -38,6 +39,10 @@ export const router = createBrowserRouter([
     path: "/signup",
     element: <SignUp />, // SignUp page
   },
+  {
+    path: "/forgotPassword",
+    element: <ForgotPass/>
+  }
 ]);
 
 // Main App Component

@@ -8,7 +8,7 @@ const RootLayout = () => {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const noSidebarRoutes = ["/signin", "/signup"];
+  const noSidebarRoutes = ["/signin", "/signup","/forgotPassword"];
   const showSidebar = !noSidebarRoutes.includes(location.pathname.toLowerCase());
 
   const toggleSidebar = () => setSidebarOpen((prev) => !prev);
