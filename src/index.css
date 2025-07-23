@@ -24,13 +24,13 @@
 
 
 /* authentication section area  */
-/* sign in page  */
+
  .form-control{
     @apply w-full h-12  flex items-center justify-between border-[1px] border-textClr/30 rounded-xl px-4 py-4 bg-[#F3F3F3] shadow-[0px_4px_4px_rgba(0,0,0,0.25)]
  }
 
  /* sign in or sing up button  */
-.signIn_submit {
+.submit_btn{
     @apply mt-5 cursor-pointer text-lg md:text-2xl font-bold font-Inter w-full bg-Primary hover:bg-Primary/90 text-white py-3 rounded-xl transition duration-300
 }
 

@@ -87,7 +87,7 @@ const SignIn = () => {
             <button
               onClick={loginHandel}
               type="submit"
-              className="signIn_submit"
+              className="submit_btn"
             >
               {t("auth.login")}
             </button>

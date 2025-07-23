@@ -10,9 +10,9 @@ import pp from "../../assets/pp.png";
 import { useTranslation } from "react-i18next";
 import { CiEdit } from "react-icons/ci";
 
-const Sidebar = ({ isOpen, toggleSidebar }) => {
-  const {t} = useTranslation();
-  const [selectedNav, setSelectedNav] = useState("home");
+const Sidebar = ({ isOpen, toggleSidebar, selectedPage , setSelectedPage}) => {
+  const { t } = useTranslation();
+  // const [selectedNav, setSelectedNav] = useState("home");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [name, setName] = useState("John Kabir");
   const [email, setEmail] = useState("askf@gmail.com");
@@ -20,11 +20,31 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   const fileInputRef = useRef(null);
 
   const menuItems = [
-    {id:"home", name: t("sidebar.home"), path: "/dashboard", ico: IoHomeOutline },
-    {id: "employees", name: t('sidebar.employees'), path: "/employee", ico: Users },
-    {id:"schedules", name: t('sidebar.schedules'), path: "/schedule", ico: Settings },
-    {id:"chat", name: t('sidebar.chat'), path: "/chat", ico: MessageCircle },
-    {id:"premium", name: t('sidebar.premium'), path: "/premium", ico: MdOutlineWorkspacePremium },
+    {
+      id: "home",
+      name: t("sidebar.home"),
+      path: "/dashboard",
+      ico: IoHomeOutline,
+    },
+    {
+      id: "employees",
+      name: t("sidebar.employees"),
+      path: "/employee",
+      ico: Users,
+    },
+    {
+      id: "schedules",
+      name: t("sidebar.schedules"),
+      path: "/schedule",
+      ico: Settings,
+    },
+    { id: "chat", name: t("sidebar.chat"), path: "/chat", ico: MessageCircle },
+    {
+      id: "premium",
+      name: t("sidebar.premium"),
+      path: "/premium",
+      ico: MdOutlineWorkspacePremium,
+    },
   ];
 
   const navigate = useNavigate();
@@ -43,17 +63,22 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   return (
     <div
       className={`fixed sm:static top-0 left-0 h-full w-auto bg-white z-50 shadow-md transform transition-transform duration-300
-      ${isOpen ? "translate-x-0" : "-translate-x-full"} sm:translate-x-0 p-6 flex flex-col justify-between border-r border-textClr/20`}
+      ${
+        isOpen ? "translate-x-0" : "-translate-x-full"
+      } sm:translate-x-0 p-6 flex flex-col justify-between border-r border-textClr/20`}
     >
       {/* Top Section */}
       <div className="mt-9 md:mt-0 flex flex-col gap-10">
-        <button onClick={() => navigate("/dashboard")} className="cursor-pointer">
+        <button
+          onClick={() => navigate("/dashboard")}
+          className="cursor-pointer"
+        >
           <img src={WebIcons.logo} alt="Logo" className="w-32" />
         </button>
 
         <div className="flex flex-col gap-3">
           {menuItems.map((e) => {
-            const isSelected = selectedNav === e.id;
+            const isSelected = selectedPage === e.id;
             const isBorderedch = e.id === "chat";
             const isBorderedpm = e.id === "premium";
 
@@ -61,7 +86,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
               <div
                 key={e.id}
                 onClick={() => {
-                  setSelectedNav(e.id);
+                  setSelectedPage(e.id);
                   navigate(e.path);
                   if (window.innerWidth < 640) toggleSidebar(); // close only on mobile
                 }}
@@ -81,12 +106,22 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       {/* Profile Section */}
       <div className="flex flex-col gap-6 relative">
         <div className="flex gap-4 items-center cursor-pointer relative">
-          <img src={profileImage} alt="Profile" className="w-10 h-10 rounded-full object-cover" />
+          <img
+            src={profileImage}
+            alt="Profile"
+            className="w-10 h-10 rounded-full object-cover"
+          />
           <div>
             <h2 className="font-semibold">{name}</h2>
             <p className="text-sm text-gray-500">{email}</p>
           </div>
-          <div><CiEdit size={24} className="absolute top-0 right-0" onClick={() => setIsModalOpen(true)}/></div>
+          <div>
+            <CiEdit
+              size={24}
+              className="absolute top-0 right-0"
+              onClick={() => setIsModalOpen(true)}
+            />
+          </div>
         </div>
 
         <button
@@ -95,8 +130,8 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         >
           {t("auth.logout")}
         </button>
-       
-       {/* profile section editable modal  */}
+
+        {/* profile section editable modal  */}
         {/* Modal */}
         {isModalOpen && (
           <div className="absolute bottom-[100%] left-1/2 -translate-x-1/2 w-[95%] bg-white border border-gray-200 rounded-xl p-4 shadow-xl z-50 transition-all duration-300">
@@ -121,17 +156,16 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
               />
             </div>
 
-          <div className="flex flex-col gap-1">
-            <label className="text-sm">{t("sidebar.name")}</label>
+            <div className="flex flex-col gap-1">
+              <label className="text-sm">{t("sidebar.name")}</label>
               <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full mb-2 p-2 border rounded outline-0"
-              placeholder="Name"
-            />
-          </div>
-            
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full mb-2 p-2 border rounded outline-0"
+                placeholder="Name"
+              />
+            </div>
 
             <button
               onClick={() => setIsModalOpen(false)}
@@ -153,4 +187,3 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 };
 
 export default Sidebar;
-
