@@ -1,46 +1,46 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Maname&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Maname&display=swap");
+
 @import "tailwindcss";
 
 @theme {
-    --color-Primary: #3093FC;
-    --color-textClr: #000000;
-    --color-textClr2: #454545;
-    --color-Gray: #F3F3F3;
-    --font-Inter: "Inter", sans-serif;
-    --font-Roboto: "Roboto", sans-serif;
-    --font-Maname:  "Maname", serif;
-    --shift-blue: #669bbc;
-    --shift-orange: #f4a261;
-    --shift-light-blue: #89c2d9;
-    --shift-purple: #9d4edd;
-    --shift-gray: #a3a3a3;
+  --color-Primary: #3093fc;
+  --color-textClr: #000000;
+  --color-textClr2: #454545;
+  --color-Gray: #f3f3f3;
+  --font-Inter: "Inter", sans-serif;
+  --font-Roboto: "Roboto", sans-serif;
+  --font-Maname: "Maname", serif;
+  --shift-blue: #669bbc;
+  --shift-orange: #f4a261;
+  --shift-light-blue: #89c2d9;
+  --shift-purple: #9d4edd;
+  --shift-gray: #a3a3a3;
 }
 
 .react-calendar {
   width: 100% !important; /* Force it to take full width of parent */
 }
 
-
 /* authentication section area  */
-
- .form-control{
-    @apply w-full h-12  flex items-center justify-between border-[1px] border-textClr/30 rounded-xl px-4 py-4 bg-[#F3F3F3] shadow-[0px_4px_4px_rgba(0,0,0,0.25)]
- }
-
- /* sign in or sing up button  */
-.submit_btn{
-    @apply mt-5 cursor-pointer text-lg md:text-2xl font-bold font-Inter w-full bg-Primary hover:bg-Primary/90 text-white py-3 rounded-xl transition duration-300
+/* sign in page  */
+.form-control {
+  @apply w-full h-12  flex items-center justify-between border-[1px] border-textClr/30 rounded-xl px-4 py-4 bg-[#F3F3F3] shadow-[0px_4px_4px_rgba(0,0,0,0.25)];
 }
 
+/* sign in or sing up button  */
+
+
+.submit_btn{
+  @apply mt-5 cursor-pointer text-lg  font-bold font-Inter w-full bg-Primary hover:bg-Primary/90 text-white py-3 rounded-xl transition duration-300;
+}
 /* sign in with google button  */
 .sign_with_goole {
-    @apply flex gap-x-2 items-center justify-center w-full text-center bg-[#EEEEEEEE] px-3 py-3 rounded-[10px] cursor-pointer
+  @apply flex gap-x-2 items-center justify-center w-full text-center bg-[#EEEEEEEE] px-3 py-3 rounded-[10px] cursor-pointer;
 }
 
 input[type="time"]::-webkit-inner-spin-button,
 input[type="time"]::-webkit-clear-button {
   display: none;
 }
-

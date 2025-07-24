@@ -1,5 +1,5 @@
 import lg from "./NavLogo2.png"; // main logo
-import authmain from "./men.svg"; // auth main img
+import authWomen from "./women.svg"; // auth main img
 import scheduleCall from "./icons/schedule/phone.svg";
 import scheduleVideo from "./icons/schedule/video.svg";
 // import scheduleBot from "./icons/schedule/bot.svg";
@@ -12,11 +12,11 @@ import scheduleExport from "./icons/schedule/export.svg";
 import subscriptionIco from "./icons/subscription/tikico.svg";
 import scheduleBack from "./icons/schedule/back.svg";
 import monthBg from "./monthly.png";
-import dashboardTranslate from "./translate.svg"
+import dashboardTranslate from "./translate.svg";
 
 const WebIcons = {
   logo: lg, // main logo
-  authMain: authmain, // auth bg
+  authWomen: authWomen, // auth bg
   scheduleCall: scheduleCall, // schedule call ico
   scheduleVideo: scheduleVideo, // schedule video call ico
   scheduleBot: scheduleBot, // schedule bot ico
@@ -28,7 +28,7 @@ const WebIcons = {
   subscriptionIco: subscriptionIco,
   scheduleBack: scheduleBack,
   monthBg: monthBg,
-  dashboardTranslate: dashboardTranslate
+  dashboardTranslate: dashboardTranslate,
 };
 
 export default WebIcons;

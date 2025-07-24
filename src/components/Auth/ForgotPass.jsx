@@ -31,7 +31,7 @@ const ForgotPassword = () => {
 
               <button
                 
-                type="submit"
+                type="button"
                 className="submit_btn"
               >
                 Reset Password

@@ -13,11 +13,28 @@
     "doYouHaveAccount": "Czy masz konto?",
     "or": "Lub",
     "loginWithGoogle": "Zaloguj się za pomocą konta Google",
+    "forgotPass": "Zapomniałeś hasła",
+    "forgotPassword": "Nie pamiętasz hasła",
+    "forgotPassDesc": "Wprowadź swój e-mail, aby zresetować hasło",
+    "yourEmail": "Twój e-mail",
+    "resetPass": "Zresetuj hasło",
+    "setNewPass": "Ustaw nowe hasło",
+    "newPassDesc": "Utwórz nowe hasło. Upewnij się, że różni się od poprzednich dla bezpieczeństwa",
+    "updatePass": "Zaktualizuj hasło",
+    "checkEmail": "Sprawdź swój e-mail",
+  "checkEmailDescLine1": "Wysłaliśmy link resetujący na adres ",
+  "checkEmailDescLine2": "Wprowadź 5-cyfrowy kod podany w wiadomości e-mail.",
+  "verifyCode": "Zweryfikuj kod",
+  "haventGotEmail": "Nie otrzymałeś jeszcze e-maila?",
+  "resentEmail": "Wyślij ponownie e-mail",
+
     "placeholder": {
       "email": "Wpisz swój e-mail",
       "password": "Wprowadź hasło",
       "confirmPassword": "Potwierdź hasło",
-      "name": "Wpisz swoje imię i nazwisko"
+      "name": "Wpisz swoje imię i nazwisko",
+      "newPass": "Wprowadź nowe hasło",
+      "reEnter": "Ponownie wprowadź hasło"
     }
   },
   "sidebar": {
