@@ -6,17 +6,17 @@ import { useTranslation } from "react-i18next";
 // Mock WebIcons for demonstration
 
 const MonthlySch = () => {
-
   const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenT, setIsOpenT] = useState(false);
   const [selectedYear, setSelectedYear] = useState("2025");
   const [showDashboard, setShowDashboard] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(null);
-  const [language, setLanguage] = useState(i18n.language === "pl" ? "Polish" : "English");
+  const [language, setLanguage] = useState(
+    i18n.language === "pl" ? "Polish" : "English"
+  );
 
   const years = [
-    
     { value: "2025", label: "2025" },
     { value: "2026", label: "2026" },
     { value: "2027", label: "2027" },
@@ -27,7 +27,7 @@ const MonthlySch = () => {
     { value: "2032", label: "2032" },
     { value: "2033", label: "2033" },
   ];
-  
+
   const languageList = ["English", "Polish"];
   const months = [
     t("months.January"),
@@ -48,17 +48,18 @@ const MonthlySch = () => {
     setSelectedYear(year);
     setIsOpen(false);
   };
-  const changeLanguage = (ln)=>{
+  const changeLanguage = (ln) => {
     const langCode = ln === "English" ? "en" : "pl";
     i18n.changeLanguage(langCode);
     setLanguage(ln);
-  }
+  };
 
   if (!showDashboard) {
     return (
       <div className="w-full flex flex-col gap-10 my-2 capitalize px-5">
         <h2 className="mt-7 md:mt-0 text-2xl md:text-[2rem] font-semibold font-Roboto text-textClr">
-          {t("monthlySch.welcomeLine1")} <br className="hidden md:block" /> {t("monthlySch.welcomeLine2")}
+          {t("monthlySch.welcomeLine1")} <br className="hidden md:block" />{" "}
+          {t("monthlySch.welcomeLine2")}
         </h2>
 
         <div className="flex flex-col md:flex-row gap-5 justify-between md:items-center">
@@ -181,10 +182,7 @@ const MonthlySch = () => {
                 backgroundPosition: "center",
               }}
             >
-              <span>
-                {month}
-                {console.log(index)}
-              </span>
+              <span>{month}</span>
             </div>
           ))}
         </div>

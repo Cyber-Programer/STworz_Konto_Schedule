@@ -5,9 +5,14 @@ import mail from "../../assets/icons/auth/mail.svg";
 // import women from "../../assets/women.svg";
 import { Eye, EyeOff } from "lucide-react";
 import { FaUserEdit } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { data, Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import WebIcons from "../../assets/images";
+import baseApi from "../../api/baseApi";
+import { ENDPOINTS } from "../../api/endPoints";
+import { toast } from "react-toastify";
+import { addToken } from "../../utils/helper";
+import ForgotPass from "./ForgotPass"; // forgetPassword page
 const SignUp = () => {
   const { t } = useTranslation();
   const [name, setName] = useState("");
@@ -15,15 +20,67 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
   const [confirmPass, setConfirmPass] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  // const [Otp, setOtp] = useState(null);
+  const [showOtpInput, setShowOtpInput] = useState(false);
   const navigate = useNavigate();
-  const handleSignUP = (e) => {
+  const ACCESS_TOKEN_KEY = import.meta.env.VITE_ACCESS_TOKEN_KEY; // ACCESS_TOKEN_KEY NAME
+
+  const registerHandel = async (e) => {
     e.preventDefault();
-    console.log(name, email, password);
+
+    // check all input's are given
+    if (!name || !email || !password || !confirmPass)
+      return toast.error("All input field's are required.");
+
+    // check "password" and "confirmPassword" are same
+    if (password !== confirmPass) return toast.error("Password must be same");
+
+    try {
+      const res = await baseApi.post(ENDPOINTS.REGISTER, {
+        email: email,
+        name: name,
+        password: password,
+        password2: confirmPass,
+      });
+      const data = res.data;
+
+      // status: 201
+      if (res.status === 201) {
+        console.log(data);
+        setShowOtpInput(true); // verify otp for new account
+
+        try {
+          addToken(ACCESS_TOKEN_KEY, data.token.access); // saving token to localstorage
+        } catch (error) {
+          const errorMessage =
+            error.response?.data?.msg ||
+            error.response?.data?.detail ||
+            error.message;
+          toast.error(`Registration Error: ${errorMessage}`);
+          // console.log(error);
+        }
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.msg ||
+        error.response?.data?.detail ||
+        JSON.stringify(error.response?.data.errors.email[0]) || // fallback for object-based errors
+        error.message;
+
+      toast.error(`Registration Error: ${errorMessage}`);
+      // console.error("Register error:", error.response?.data || error.message);
+      console.log(error);
+    }
   };
 
-  const registerHandel = () => {
-    navigate("/dashboard");
-  };
+  if (showOtpInput)
+    return (
+      <ForgotPass
+        initialEmail={email}
+        initialStep={"verify"}
+        ckOtpVerify={true}
+      />
+    );
 
   return (
     <div className="flex  mx-auto min-h-screen font-Inter">
@@ -35,7 +92,7 @@ const SignUp = () => {
         </div>
         {/* form section area  */}
         <div className="max-w-md  mx-auto mt-16 lg:mt-14 px-4 lg:px-0">
-          <form onSubmit={handleSignUP}>
+          <form onSubmit={registerHandel}>
             <h1 className="font-medium text-[2rem] text-textClr text-center">
               {t("auth.registration")}
             </h1>
@@ -43,7 +100,7 @@ const SignUp = () => {
             {/* name input  */}
             <div>
               <label className="block mb-1 font-Inter font-medium text-textClr">
-                {t("auth.name")} {" "}
+                {t("auth.name")}{" "}
               </label>
               <div className="form-control">
                 <input
@@ -135,11 +192,10 @@ const SignUp = () => {
               className="submit_btn"
             >
               {t("auth.registration")}
-              
             </button>
             {/* sign up link  */}
             <div className="mt-4 text-center text-sm text-gray-600">
-             {t("auth.doYouHaveAccount")} {" "}
+              {t("auth.doYouHaveAccount")}{" "}
               <span
                 onClick={() => {
                   navigate("/signin");
@@ -160,7 +216,11 @@ const SignUp = () => {
       </div>
       {/* right section  */}
       <div className="bg-Primary w-1/2 hidden md:flex items-center justify-center">
-        <img src={WebIcons.authWomen} alt="A men image " className="hidden md:block" />
+        <img
+          src={WebIcons.authWomen}
+          alt="A men image "
+          className="hidden md:block"
+        />
       </div>
     </div>
   );

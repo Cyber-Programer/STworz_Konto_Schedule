@@ -2,11 +2,18 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Eye, EyeOff } from "lucide-react";
 
-const ForgotPassword = () => {
+const ForgotPassword = ({ setNewPassword, onSubmit }) => {
   const { t } = useTranslation();
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState({
+    new: false,
+    confirm: false,
+  });
   const [confirmPass, setConfirmPass] = useState("");
+  const handleSubmit = () => {
+    setNewPassword(password);
+    onSubmit(password);
+  };
   return (
     <div>
       <div className="max-w-md  mx-auto px-4 lg:px-0">
@@ -20,11 +27,11 @@ const ForgotPassword = () => {
           {/* password input  */}
           <div className="my-9">
             <label className="block mb-1 font-Inter font-medium text-textClr">
-              {t("auth.password")}
+              {t("auth.newPassword")}
             </label>
             <div className="form-control">
               <input
-                type={showPassword ? "text" : "password"}
+                type={showPassword.new ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -33,10 +40,15 @@ const ForgotPassword = () => {
               />
               <button
                 type="button"
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={() =>
+                  setShowPassword((prev) => ({
+                    ...prev,
+                    new: !prev.new,
+                  }))
+                }
                 className="ml-2 text-[#797979] hover:text-textClr/70 transition duration-300"
               >
-                {showPassword ? (
+                {showPassword.new ? (
                   <EyeOff className="w-5 h-5" />
                 ) : (
                   <Eye className="w-5 h-5" />
@@ -51,7 +63,7 @@ const ForgotPassword = () => {
             </label>
             <div className="form-control">
               <input
-                type={showPassword ? "text" : "password"}
+                type={showPassword.confirm ? "text" : "password"}
                 value={confirmPass}
                 onChange={(e) => setConfirmPass(e.target.value)}
                 required
@@ -60,10 +72,15 @@ const ForgotPassword = () => {
               />
               <button
                 type="button"
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={() =>
+                  setShowPassword((prev) => ({
+                    ...prev,
+                    confirm: !prev.confirm,
+                  }))
+                }
                 className="ml-2 text-[#797979] hover:text-textClr/70 transition duration-300"
               >
-                {showPassword ? (
+                {showPassword.confirm ? (
                   <EyeOff className="w-5 h-5" />
                 ) : (
                   <Eye className="w-5 h-5" />
@@ -72,7 +89,7 @@ const ForgotPassword = () => {
             </div>
           </div>
 
-          <button type="button" className="submit_btn">
+          <button onClick={handleSubmit} type="button" className="submit_btn">
             {t("auth.updatePass")}
           </button>
         </form>

@@ -5,10 +5,13 @@ import ForgotPassword from "../../components/Auth/ForgotPassword";
 import VerifyCode from "../../components/Auth/VerifyCode";
 import { useNavigate } from "react-router-dom";
 import WebIcons from "../../assets/images";
-const ForgotPass = () => {
-  const [step, setStep] = useState("email");
-  const [email, setEmail] = useState("");
-  const [opt, setOpt] = useState("");
+import baseApi from "../../api/baseApi";
+import { ENDPOINTS } from "../../api/endPoints";
+import { toast } from "react-toastify";
+const ForgotPass = ({ initialStep, initialEmail, ckOtpVerify }) => {
+  const [step, setStep] = useState(initialStep || "email");
+  const [email, setEmail] = useState(initialEmail || "");
+  const [Otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [showForgerPass, setShowForgerPass] = useState(true);
   const [showOtpVerify, setShowOtpVerify] = useState(false);
@@ -22,22 +25,62 @@ const ForgotPass = () => {
     setStep("verify");
   };
 
+  // const verifyOtp = async () => {
+  //   try {
+  //     const res = await baseApi.post(ENDPOINTS.VERIFY_OTP, {
+  //       email,
+  //       otp: Otp,
+  //     });
+
+  //     if (res.status === 200) {
+  //       toast.success("OTP verified successfully");
+  //       navigate("/dashboard");
+  //     } else {
+  //       toast.error("Invalid OTP");
+  //     }
+  //   } catch (err) {
+  //     toast.error("OTP verification failed");
+  //     console.error(err);
+  //   }
+  // };
+
   // OTP handle funtion
-  const handleOTP = async () => {
-    if (!opt) return notify.error("Enter the otp");
-    console.log('first')
-    setStep("reset");
+  const handleOTP = async (otpValue) => {
+    if (!otpValue) return toast.error("OTP not found");
+
+    try {
+      const res = await baseApi.post(ENDPOINTS.VERIFY_OTP, {
+        email,
+        otp: otpValue,
+      });
+
+      if (res.status === 200) {
+        notify.success("OTP verified successfully");
+
+        if (ckOtpVerify) {
+          navigate("/dashboard");
+        } else {
+          setStep("reset");
+        }
+      } else {
+        notify.error("Invalid OTP");
+      }
+    } catch (err) {
+      notify.error("OTP verification failed");
+      console.error(err);
+    }
   };
 
   // Reset Password Function
-  const handleSetPassword = () => {
-    if (!newPassword) return notify.error("Give new password");
-    navigate("/login");
+  const handleSetPassword = (updatedPassword) => {
+    if (!updatedPassword) return;
+    navigate("/signin");
   };
 
   return (
     <div className="flex gap-6 mx-auto min-h-screen font-Inter ">
       {/* left content  */}
+      {console.log(initialEmail, initialStep)}
       <div className="w-full md:w-1/2 min-h-screen flex flex-col justify-center items-center">
         {/* logo section  */}
         <div>
@@ -59,9 +102,16 @@ const ForgotPass = () => {
             onSubmit={handleSendEmail}
           />
         )}
+
         {step === "verify" && (
-          <VerifyCode opt={opt} setOpt={setOpt} onSubmit={handleOTP} />
+          <VerifyCode
+            email={email}
+            otp={Otp}
+            setOtp={setOtp}
+            onSubmit={handleOTP}
+          />
         )}
+
         {step === "reset" && (
           <UpdatePassword
             newPassword={newPassword}

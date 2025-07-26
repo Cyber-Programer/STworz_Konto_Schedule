@@ -4,10 +4,11 @@ import "./index.css";
 import { RouterProvider } from "react-router-dom";
 import { router } from "./router";
 import "./i18n"; // Ensure i18n is initialized before rendering
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; // Important!
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    {/* <App /> */}
     <RouterProvider router={router} />
     <ToastContainer
       position="top-right"

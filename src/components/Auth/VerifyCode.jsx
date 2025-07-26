@@ -2,30 +2,27 @@ import React, { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import notify from "../../utils/tost";
 
-const VerifyCode = ({ opt, setOpt, onSubmit }) => {
+const VerifyCode = ({ otp, setOtp, onSubmit }) => {
   const email = "demo@gmail.com";
   const { t } = useTranslation();
   const inputs = useRef([]);
-  const [values, setValues] = useState(["", "", "", "", ""]);
+  const [values, setValues] = useState(["", "", "", "", "", ""]);
 
   const handleSubmit = () => {
-    
-    setOpt = values.join("");
-    notify.success('opt send')
-    console.log(setOpt)
-    onSubmit(setOpt);
-
+    const joinOtp = values.join(""); // join the otp array in a single string..
+    setOtp(joinOtp);
+    onSubmit(joinOtp);
   };
 
   const handleChange = (e, index) => {
     const value = e.target.value;
 
-    if (/^\d$/.test(value)) {
+    if (/^\d$/.test(value)) { // validate the otp (only number)
       const newValues = [...values];
       newValues[index] = value;
       setValues(newValues);
 
-      if (index < 4) {
+      if (index < 5) {
         inputs.current[index + 1]?.focus();
       }
     } else {
@@ -42,10 +39,12 @@ const VerifyCode = ({ opt, setOpt, onSubmit }) => {
         {t("auth.checkEmail")}
       </h3>
       <p className="text-gray-400">
-        {t("auth.checkEmailDescLine1")} {email} {t("auth.checkEmailDescLine2")}
+        {t("auth.checkEmailDescLine1")} <strong>{email}</strong>{" "}
+        {t("auth.checkEmailDescLine2")}
       </p>
+
       <div className="flex justify-between mt-5">
-        {[...Array(5)].map((_, index) => (
+        {[...Array(6)].map((_, index) => (
           <input
             key={index}
             maxLength={1}

@@ -9,8 +9,8 @@ import { RxCross2 } from "react-icons/rx";
 import pp from "../../assets/pp.png";
 import { useTranslation } from "react-i18next";
 import { CiEdit } from "react-icons/ci";
-
-const Sidebar = ({ isOpen, toggleSidebar, selectedPage , setSelectedPage}) => {
+import { removeToken } from "../../utils/helper";
+const Sidebar = ({ isOpen, toggleSidebar, selectedPage, setSelectedPage }) => {
   const { t } = useTranslation();
   // const [selectedNav, setSelectedNav] = useState("home");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -125,7 +125,10 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedPage , setSelectedPage}) => {
         </div>
 
         <button
-          onClick={() => navigate("/")}
+          onClick={() => {
+            removeToken(import.meta.env.VITE_ACCESS_TOKEN_KEY);
+            navigate("/");
+          }}
           className="w-full py-2 border-2 border-Primary text-Primary hover:bg-Primary hover:text-white rounded-lg font-semibold text-lg"
         >
           {t("auth.logout")}
