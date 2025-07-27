@@ -1,23 +1,31 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import WebIcons from "../../assets/images";
 import { IoHomeOutline } from "react-icons/io5";
 import { MdOutlineWorkspacePremium } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import { Settings, MessageCircle, Users } from "lucide-react";
+import { Settings, MessageCircle, Users, ImportIcon } from "lucide-react";
 import { FaCamera } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
 import pp from "../../assets/pp.png";
 import { useTranslation } from "react-i18next";
 import { CiEdit } from "react-icons/ci";
 import { removeToken } from "../../utils/helper";
+import baseApi from "../../api/baseApi";
+import { ENDPOINTS } from "../../api/endPoints";
+import { getToken } from "../../utils/helper";
+import { toast } from "react-toastify";
 const Sidebar = ({ isOpen, toggleSidebar, selectedPage, setSelectedPage }) => {
   const { t } = useTranslation();
   // const [selectedNav, setSelectedNav] = useState("home");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [name, setName] = useState("John Kabir");
-  const [email, setEmail] = useState("askf@gmail.com");
+  const [name, setName] = useState("demo");
+  const [email, setEmail] = useState("demo@g.com");
+  const [changeName, setChangeName] = useState("");
   const [profileImage, setProfileImage] = useState(pp);
+  const [imageFile, setImageFile] = useState(null);
   const fileInputRef = useRef(null);
+  const token = getToken(import.meta.env.VITE_ACCESS_TOKEN_KEY);
+  const navigate = useNavigate();
 
   const menuItems = [
     {
@@ -47,16 +55,85 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedPage, setSelectedPage }) => {
     },
   ];
 
-  const navigate = useNavigate();
+  // Fetch user info.. api_>
+  const getUserInfo = async () => {
+    try {
+      const res = await baseApi.get(ENDPOINTS.USERINFO, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
+      setName(res.data.name);
+      setEmail(res.data.email);
+      setProfileImage(import.meta.env.VITE_SERVER_URL + res.data.image);
+      console.log(res);
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.msg ||
+        error.response?.data?.detail ||
+        JSON.stringify(error.response?.data.errors.email[0]) || // fallback for object-based errors
+        error.message;
+
+      toast.error(`Registration Error: ${errorMessage}`);
+      // console.error("Register error:", error.response?.data || error.message);
+      console.log(error);
+    }
+  };
+
+  // run the function in every render
+  useEffect(() => {
+    if (token) getUserInfo();
+  }, [token]);
+
+  // Profile pic upload
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setImageFile(file); // Store the file for upload
       const reader = new FileReader();
       reader.onloadend = () => {
         setProfileImage(reader.result);
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  // Save button Function
+  const handleSave = async () => {
+    try {
+      const formData = new FormData();
+
+      if (changeName) {
+        formData.append("name", changeName);
+      }
+
+      if (imageFile) {
+        formData.append("image", imageFile);
+      }
+
+      const res = await baseApi.patch(ENDPOINTS.USERINFO, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (res.status === 200) {
+        if (changeName) setName(changeName);
+        setChangeName("");
+        setImageFile(null);
+        toast.success("Updated successfully");
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.msg ||
+        error.response?.data?.detail ||
+        JSON.stringify(error.response?.data.errors?.email?.[0]) ||
+        error.message;
+
+      toast.error(`Update Error: ${errorMessage}`);
+      console.error(error);
     }
   };
 
@@ -105,7 +182,7 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedPage, setSelectedPage }) => {
 
       {/* Profile Section */}
       <div className="flex flex-col gap-6 relative">
-        <div className="flex gap-4 items-center cursor-pointer relative">
+        <div className="flex gap-4 items-center relative">
           <img
             src={profileImage}
             alt="Profile"
@@ -160,23 +237,32 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedPage, setSelectedPage }) => {
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="text-sm">{t("sidebar.name")}</label>
+              <label className="text-sm font-medium">{t("sidebar.name")}</label>
               <input
                 type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={changeName || name}
+                onChange={(e) => setChangeName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleSave();
+                    setIsModalOpen(false);
+                  }
+                }}
                 className="w-full mb-2 p-2 border rounded outline-0"
                 placeholder="Name"
               />
             </div>
 
             <button
-              onClick={() => setIsModalOpen(false)}
+              onClick={() => {
+                setIsModalOpen(false);
+                handleSave();
+              }}
               className="mt-2 w-full bg-Primary text-white py-2 rounded font-semibold"
             >
               {t("sidebar.save")}
             </button>
-            <button>
+            <button className="cursor-pointer">
               <RxCross2
                 className="absolute top-2 right-2 text-gray-600 cursor-pointer"
                 onClick={() => setIsModalOpen(false)}

@@ -14,10 +14,12 @@ const VerifyCode = ({ otp, setOtp, onSubmit }) => {
     onSubmit(joinOtp);
   };
 
+  // change
   const handleChange = (e, index) => {
     const value = e.target.value;
 
-    if (/^\d$/.test(value)) { // validate the otp (only number)
+    if (/^\d$/.test(value)) {
+      // validate the otp (only number)
       const newValues = [...values];
       newValues[index] = value;
       setValues(newValues);
@@ -31,6 +33,55 @@ const VerifyCode = ({ otp, setOtp, onSubmit }) => {
       newValues[index] = "";
       setValues(newValues);
     }
+  };
+
+  // backSpace
+  const handleKey = (e, index) => {
+    if (e.key === "Backspace") {
+      e.preventDefault(); // prevent default browser behavior
+
+      const newValues = [...values];
+
+      if (values[index]) {
+        // If current field has a value, clear it
+        newValues[index] = "";
+        setValues(newValues);
+      } else if (index > 0) {
+        // If empty, move focus left and clear previous value
+        newValues[index - 1] = "";
+        setValues(newValues);
+        inputs.current[index - 1]?.focus();
+      }
+    }
+
+    if (e.key === "ArrowLeft" && index > 0) {
+      inputs.current[index - 1]?.focus();
+    }
+    if (e.key === "ArrowRight" && index < inputs.current.length - 1) {
+      inputs.current[index + 1]?.focus();
+    }
+  };
+
+  // Paste
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const paste = e.clipboardData.getData("text").trim();
+    if (!paste) return;
+
+    // Filter only digits and slice max 6 chars
+    const digits = paste.replace(/\D/g, "").slice(0, 6).split("");
+
+    if (digits.length === 0) return;
+
+    const newValues = [...values];
+    for (let i = 0; i < digits.length; i++) {
+      newValues[i] = digits[i];
+    }
+    setValues(newValues);
+
+    // Focus the last filled input
+    const lastFilledIndex = digits.length - 1;
+    inputs.current[lastFilledIndex]?.focus();
   };
 
   return (
@@ -56,6 +107,10 @@ const VerifyCode = ({ otp, setOtp, onSubmit }) => {
             }`}
             ref={(el) => (inputs.current[index] = el)}
             onChange={(e) => handleChange(e, index)}
+            onKeyDown={(e) => {
+              handleKey(e, index);
+            }}
+            onPaste={handlePaste}
           />
         ))}
       </div>

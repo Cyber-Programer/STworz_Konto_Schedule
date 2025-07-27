@@ -1,4 +1,4 @@
-import React, { useState, useTransition } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import { FcGoogle } from "react-icons/fc";
 import mail from "../../assets/icons/auth/mail.svg";
 import { Eye, EyeOff } from "lucide-react";
@@ -9,7 +9,7 @@ import WebIcons from "../../assets/images";
 import baseApi from "../../api/baseApi";
 import { ENDPOINTS } from "../../api/endPoints";
 import { toast } from "react-toastify";
-import { addToken, removeToken } from "../../utils/helper";
+import { addToken, getToken } from "../../utils/helper";
 const SignIn = () => {
   const { t } = useTranslation();
   const [email, setEmail] = useState("");
@@ -18,6 +18,7 @@ const SignIn = () => {
   const navigate = useNavigate();
   const ACCESS_TOKEN_KEY = import.meta.env.VITE_ACCESS_TOKEN_KEY; // ACCESS_TOKEN_KEY NAME
 
+  // Login Function
   const loginHandel = async (e) => {
     // navigate("/dashboard");
     e.preventDefault();
@@ -49,6 +50,41 @@ const SignIn = () => {
       console.error("Register error:", error.response?.data || error.message);
     }
   };
+
+  // Token verify function -> "if token available then automatic show the login page"
+  const tokenVerify = async () => {
+    const token = getToken(import.meta.env.VITE_ACCESS_TOKEN_KEY);
+    if (token) {
+      try {
+        const res = await baseApi.post(ENDPOINTS.TOKEN_VERIFY, {
+          token: token,
+        });
+
+        console.log(res.status);
+        if (res.status === 200) {
+          toast.success('Automatic Login Success!')
+          navigate("/dashboard");
+        } else {
+          toast.info("Login with gmail and pass");
+        }
+      } catch (error) {
+        const errorMessage =
+          error.response?.data?.msg ||
+          error.response?.data?.detail ||
+          JSON.stringify(error.response?.data) || // fallback for object-based errors
+          error.message;
+
+        toast.error(`Registration Error: ${errorMessage}`);
+        console.error("Register error:", error.response?.data || error.message);
+      }
+    } else {
+      toast.info("Login with gmail and password");
+    }
+  };
+
+  useEffect(() => {
+    tokenVerify();
+  }, []);
 
   return (
     <div className="flex gap-6 mx-auto min-h-screen font-Inter">

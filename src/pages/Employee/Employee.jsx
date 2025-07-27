@@ -1,160 +1,252 @@
-
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { RxCross1 } from "react-icons/rx";
-
-const initialEmp = [
-  {
-    id: 1,
-    name: "John De",
-    email: "johndexkyewasfkdsu7rjekrn@gmail.com",
-    profileImage: "https://randomuser.me/api/portraits/men/1.jpg",
-  },
-  {
-    id: 2,
-    name: "Farabi Hasan",
-    email: "farabihasan@gmail.com",
-    profileImage: "https://randomuser.me/api/portraits/men/2.jpg",
-  },
-  {
-    id: 3,
-    name: "Sifat Hasan",
-    email: "sifathasan@gmail.com",
-    profileImage: "https://randomuser.me/api/portraits/men/3.jpg",
-  },
-  {
-    id: 4,
-    name: "Shariful Islam",
-    email: "sharifulislam@gmail.com",
-    profileImage: "https://randomuser.me/api/portraits/men/4.jpg",
-  },
-  {
-    id: 5,
-    name: "Sohag",
-    email: "sohag@gmail.com",
-    profileImage: "https://randomuser.me/api/portraits/men/5.jpg",
-  },
-  {
-    id: 6,
-    name: "Furkan",
-    email: "furkan@gmail.com",
-    profileImage: "https://randomuser.me/api/portraits/men/6.jpg",
-  },
-  {
-    id: 7,
-    name: "John De",
-    email: "johndexkyewasfkdsu7rjekrn@gmail.com",
-    profileImage: "https://randomuser.me/api/portraits/men/1.jpg",
-  },
-  {
-    id: 8,
-    name: "Farabi Hasan",
-    email: "farabihasan@gmail.com",
-    profileImage: "https://randomuser.me/api/portraits/men/2.jpg",
-  },
-  {
-    id: 9,
-    name: "Sifat Hasan",
-    email: "sifathasan@gmail.com",
-    profileImage: "https://randomuser.me/api/portraits/men/3.jpg",
-  },
-  {
-    id: 10,
-    name: "Shariful Islam",
-    email: "sharifulislam@gmail.com",
-    profileImage: "https://randomuser.me/api/portraits/men/4.jpg",
-  },
-  {
-    id: 11,
-    name: "Sohag",
-    email: "sohag@gmail.com",
-    profileImage: "https://randomuser.me/api/portraits/men/5.jpg",
-  },
-  {
-    id: 12,
-    name: "Furkan",
-    email: "furkan@gmail.com",
-    profileImage: "https://randomuser.me/api/portraits/men/6.jpg",
-  },
-];
+import baseApi from "../../api/baseApi";
+import { ENDPOINTS } from "../../api/endPoints";
+import { getToken } from "../../utils/helper";
+import { toast } from "react-toastify";
 
 const Employee = () => {
   const { t } = useTranslation();
-  const [employees, setEmployees] = useState(initialEmp);
+  const [employees, setEmployees] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editEmployeeId, setEditEmployeeId] = useState(null);
+  const token = getToken(import.meta.env.VITE_ACCESS_TOKEN_KEY);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     profileImage: "",
   });
-  const [isEditing, setIsEditing] = useState(false);
-  const [editEmployeeId, setEditEmployeeId] = useState(null);
+
+  const [imageFile, setImageFile] = useState(null); // for uploading
+  const [imageUrl, setImageUrl] = useState(""); // for previewing existing
+  const [imagePreviewUrl, setImagePreviewUrl] = useState(""); // for new file preview
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, files } = e.target;
+
+    if (name === "profileImage" && files.length > 0) {
+      const file = files[0];
+      setImageFile(file);
+      // Create preview URL for the new file
+      setImagePreviewUrl(URL.createObjectURL(file));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
-  const handleSubmit = (e) => {
+  // Employee Account creating function
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.email) return;
+    if (!formData.name || !formData.email)
+      return toast.error("Name and Email are required");
 
-    if (isEditing) {
-      setEmployees((prev) =>
-        prev.map((emp) =>
-          emp.id === editEmployeeId ? { ...emp, ...formData } : emp
-        )
-      );
-    } else {
-      const newEmployee = {
-        id: employees.length + 1,
-        ...formData,
-      };
-      setEmployees((prev) => [...prev, newEmployee]);
+    const form = new FormData();
+    form.append("name", formData.name);
+    form.append("email", formData.email);
+    if (imageFile) {
+      form.append("img", imageFile);
     }
 
+    try {
+      const res = await baseApi.post(ENDPOINTS.ADD_NEW_EMPLOYEE, form, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      if (res.status !== 201) return toast.error("Employee Create problem.");
+      toast.success("Employee added successfully");
+      setEmployees((prev) => [...prev, res.data]);
+
+      // Reset form and close modal
+      resetForm();
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.msg ||
+        error.response?.data?.detail ||
+        error.message;
+      toast.error(`Failed to submit: ${errorMessage}`);
+      console.error("handleSubmit error:", error);
+    }
+  };
+
+  // Employee Account Remove function
+  const handleRemove = async (id) => {
+    setEmployees((prev) => prev.filter((emp) => emp.id !== id));
+    try {
+      const res = await baseApi.delete(
+        ENDPOINTS.DELETE_SPECIFIC_EMPLOYEE + id,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(res);
+      toast.success("Employee removed successfully");
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.msg ||
+        error.response?.data?.detail ||
+        JSON.stringify(error.response?.data.errors?.email?.[0]) ||
+        error.message;
+
+      toast.error(`Remove Error: ${errorMessage}`);
+      console.log(error);
+
+      // Restore employee if delete failed
+      getEmployeeList();
+    }
+  };
+
+  // Employee Account Info Edit
+  const handleEdit = (emp) => {
+    setFormData({
+      name: emp.name || "",
+      email: emp.email || "",
+      profileImage: "",
+    });
+    setImageFile(null); // Clear previous file
+    setImagePreviewUrl(""); // Clear preview
+    setImageUrl(emp.img || ""); // Existing image URL from server
+    setEditEmployeeId(emp.id);
+    setIsEditing(true);
+    setShowModal(true);
+  };
+
+  // Update Account Info Function
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    if (!formData.name || !formData.email)
+      return toast.error("Name and Email are required");
+
+    const form = new FormData();
+    form.append("name", formData.name);
+    form.append("email", formData.email);
+
+    // Append image file only if user selected a new one
+    if (imageFile) {
+      form.append("img", imageFile);
+    }
+
+    try {
+      const res = await baseApi.patch(
+        `${ENDPOINTS.UPDATE_EMPLOYEE}${editEmployeeId}/`,
+        form,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log("Update response:", res.data);
+      toast.success("Employee updated successfully");
+
+      // Update employees state with new data from backend
+      setEmployees((prev) =>
+        prev.map((emp) => (emp.id === editEmployeeId ? res.data : emp))
+      );
+
+      // Reset form and close modal
+      resetForm();
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.msg ||
+        error.response?.data?.detail ||
+        error.message;
+
+      toast.error(`Failed to update: ${errorMessage}`);
+      console.error("handleUpdate error:", error);
+    }
+  };
+
+  // Helper function to reset form state
+  const resetForm = () => {
     setFormData({ name: "", email: "", profileImage: "" });
+    setImageFile(null);
+    setImageUrl("");
+    setImagePreviewUrl("");
     setShowModal(false);
     setIsEditing(false);
     setEditEmployeeId(null);
   };
 
-  const handleRemove = (id) => {
-    setEmployees((prev) => prev.filter((emp) => emp.id !== id));
+  // Get employee list function
+  const getEmployeeList = async () => {
+    try {
+      const res = await baseApi.get(ENDPOINTS.ALL_EMPLOYEE_LIST, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(res.data);
+      setEmployees(res.data);
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.msg ||
+        error.response?.data?.detail ||
+        JSON.stringify(error.response?.data.errors?.email?.[0]) ||
+        error.message;
+
+      toast.error(`Fetch Error: ${errorMessage}`);
+      console.log(error);
+    }
   };
 
-  const handleEdit = (emp) => {
-    setFormData({
-      name: emp.name,
-      email: emp.email,
-      profileImage: emp.profileImage || "",
-    });
-    setEditEmployeeId(emp.id);
-    setIsEditing(true);
-    setShowModal(true);
+  // Get Employee list every render
+  useEffect(() => {
+    getEmployeeList();
+  }, [token]);
+
+  // Cleanup object URLs
+  useEffect(() => {
+    return () => {
+      if (imagePreviewUrl) {
+        URL.revokeObjectURL(imagePreviewUrl);
+      }
+    };
+  }, [imagePreviewUrl]);
+
+  // Get current image source for modal preview
+  const getCurrentImageSrc = () => {
+    // Priority: new file preview > existing server image > default avatar
+    if (imagePreviewUrl) {
+      return imagePreviewUrl;
+    }
+    if (imageUrl) {
+      return `${
+        import.meta.env.VITE_SERVER_URL
+      }${imageUrl}?t=${new Date().getTime()}`;
+    }
+    return "https://ui-avatars.com/api/?name=Demo";
   };
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
       {/* Header */}
       <div className="mt-7 md:mt-0 bg-white z-10 px-4 py-4  sticky top-0 flex flex-col lg:flex-row justify-between gap-4 lg:items-center">
-        
         <h2 className="text-3xl md:text-[2rem] font-semibold text-textClr">
           {t("employee.title")}
         </h2>
         <div className="text-right mt-1.5">
           <button
-          className="cursor-pointer text-sm w-max md:w-[200px] p-3 bg-Primary text-white rounded hover:bg-blue-700 transition-all duration-300"
-          onClick={() => {
-            setShowModal(true);
-            setIsEditing(false);
-            setFormData({ name: "", email: "", profileImage: "" });
-          }}
-        >
-          + {t("employee.addNew")}
-        </button>
+            className="cursor-pointer text-sm w-max md:w-[200px] p-3 bg-Primary text-white rounded hover:bg-blue-700 transition-all duration-300"
+            onClick={() => {
+              setShowModal(true);
+              setIsEditing(false);
+              setFormData({ name: "", email: "", profileImage: "" });
+              setImageFile(null);
+              setImageUrl("");
+              setImagePreviewUrl("");
+            }}
+          >
+            + {t("employee.addNew")}
+          </button>
         </div>
-        
       </div>
 
       {/* Modal */}
@@ -163,7 +255,7 @@ const Employee = () => {
           <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative">
             <button
               className="absolute top-2 right-3 text-gray-500 hover:text-black text-xl cursor-pointer"
-              onClick={() => setShowModal(false)}
+              onClick={resetForm}
             >
               <RxCross1 size={16} />
             </button>
@@ -172,15 +264,32 @@ const Employee = () => {
             </h3>
 
             <div className="flex flex-col items-center mb-6">
-              <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-4xl">
-                {/* Placeholder Image */}
-              </div>
-              <button className="mt-4 cursor-pointer w-max text-sm px-4 py-1 bg-[#8E8E8E] text-white rounded-lg">
+              <img
+                className="w-24 h-24 rounded-full object-cover"
+                src={getCurrentImageSrc()}
+                alt="Employee"
+              />
+
+              <input
+                type="file"
+                name="profileImage"
+                accept="image/*"
+                onChange={handleChange}
+                className="hidden"
+                id="uploadImage"
+              />
+              <label
+                htmlFor="uploadImage"
+                className="mt-4 cursor-pointer w-max text-sm px-4 py-1 bg-[#8E8E8E] text-white rounded-lg"
+              >
                 {t("employee.addPhoto")}
-              </button>
+              </label>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form
+              onSubmit={isEditing ? handleUpdate : handleSubmit}
+              className="space-y-4"
+            >
               <div>
                 <label className="block mb-2">{t("employee.nameLabel")}</label>
                 <input
@@ -227,14 +336,18 @@ const Employee = () => {
             <div className="flex items-center gap-4">
               <img
                 src={
-                  emp.profileImage ||
-                  `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                    emp.name
-                  )}`
+                  emp.img === null
+                    ? `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                        emp.name
+                      )}`
+                    : `${import.meta.env.VITE_SERVER_URL}${
+                        emp.img
+                      }?t=${new Date().getTime()}`
                 }
                 alt={emp.name}
                 className="w-12 h-12 rounded-full object-cover"
               />
+
               <div>
                 <div className="font-medium">{emp.name}</div>
                 <div className="text-gray-500 text-sm w-40 truncate md:w-auto">
