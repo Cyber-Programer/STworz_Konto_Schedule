@@ -86,6 +86,10 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedPage, setSelectedPage }) => {
     if (token) getUserInfo();
   }, [token]);
 
+  useEffect(() => {
+    setChangeName(name); // whenever name updates, sync it to changeName
+  }, [name]);
+
   // Profile pic upload
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -240,7 +244,7 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedPage, setSelectedPage }) => {
               <label className="text-sm font-medium">{t("sidebar.name")}</label>
               <input
                 type="text"
-                value={changeName || name}
+                value={changeName}
                 onChange={(e) => setChangeName(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {

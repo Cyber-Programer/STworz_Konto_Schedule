@@ -86,6 +86,7 @@ const ChatSchedule = () => {
     "2025-06-07",
   ];
   const employeList = ["sifat", "rifat", "jubayel", "jannat", "rafi", "joshim"];
+
   const getShiftColor = (shift) => {
     if (shift.includes("08:00")) return "#669bbc";
     if (shift.includes("10:00")) return "#f4a261";
@@ -323,7 +324,7 @@ const ChatSchedule = () => {
 
   // On Enter call handleSend function..
   const handleKeyPress = (e) => {
-    setInput(e.target.value);
+    setInput(e.target.value); // store every key
 
     // function for 'ctrl' + 'space' key
     if (e.ctrlKey && e.key === " ") {
@@ -351,7 +352,7 @@ const ChatSchedule = () => {
         e.preventDefault();
         const selectedName = filterEmployees[selectedIndex];
         const cursorPosition = inputRef.current.selectionEnd;
-        const textBeforeCursor = input.slice(0, cursorPosition);
+        const textBeforeCursor = input.slice(0, cursorPosition); // from first to cursor - all text from input
         // const textAfterCursor = input.slice(cursorPosition);
 
         // Find the last '@' before the cursor
@@ -362,8 +363,8 @@ const ChatSchedule = () => {
 
         // split the input into parts
 
-        const beforAt = input.slice(0, lastAtIndex);
-        const afterAt = input.slice(cursorPosition);
+        const beforAt = input.slice(0, lastAtIndex); // <- @ ...
+        const afterAt = input.slice(cursorPosition); //... @ ->
 
         // combine with selected name
         const newInput = beforAt + selectedName + " " + afterAt;
@@ -415,7 +416,7 @@ const ChatSchedule = () => {
     } else {
       setShowMentionBox(false);
     }
-  }, [input]);
+  }, [employeList, input]);
 
   return (
     <div className="font-sans h-screen flex flex-col md:flex-row p-4 lg:p-8 gap-3 bg-white">

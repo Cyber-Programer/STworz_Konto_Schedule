@@ -12,5 +12,6 @@ export const ENDPOINTS = {
     ADD_NEW_EMPLOYEE: "core/api/employees/",
     UPDATE_EMPLOYEE: "core/api/employees/",
     // Schedule
-    SCHEDULE: "core/api/schedule-settings/"
+    SCHEDULE: "core/api/schedule-settings/",
+    CREATE_SCHEDULE: "core/api/ai-schedule/generate-schedule/"
 }

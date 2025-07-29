@@ -63,6 +63,16 @@ const Employee = () => {
       // Reset form and close modal
       resetForm();
     } catch (error) {
+      const nameError = error.response.data.name[0];
+      const emailError = error.response.data.email[0];
+
+      if (nameError) {
+        toast.error(nameError);
+      }
+      if (emailError) {
+        toast.error(emailError);
+      }
+      
       const errorMessage =
         error.response?.data?.msg ||
         error.response?.data?.detail ||

@@ -31,8 +31,36 @@ const PrinciplesTable = () => {
     setOpenActionId(null);
   };
 
-  const handleSave = (id) => {
+  const handleSave = async (id) => {
     if (!editValue.trim()) return;
+
+    try {
+      const res = await baseApi.patch(
+        ENDPOINTS.SCHEDULE + id + "/",
+        {
+          title: editValue,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (res.status === 200) {
+        toast.success("Updated Successfully");
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.msg ||
+        error.response?.data?.detail ||
+        JSON.stringify(error.response?.data.errors.email[0]) || // fallback for object-based errors
+        error.message;
+
+      toast.error(`Registration Error: ${errorMessage}`);
+      // console.error("Register error:", error.response?.data || error.message);
+      console.log(error);
+    }
+
     setPrinciples((prev) =>
       prev.map((item) =>
         item.id === id ? { ...item, title: editValue.trim() } : item
@@ -50,6 +78,8 @@ const PrinciplesTable = () => {
         },
       });
       if (res.status === 204) {
+        setPrinciples((prev) => prev.filter((item) => item.id !== id));
+        setOpenActionId(null);
         return toast.success("Delete Success");
       }
     } catch (error) {
@@ -65,6 +95,10 @@ const PrinciplesTable = () => {
     }
     // setPrinciples((prev) => prev.filter((item) => item.id !== id));
     // setOpenActionId(null);
+    // const x = () => {
+    //   return principles.filter((item) => item.id !== id);
+    // };
+    // console.log(x);
   };
 
   const handleAddRule = async () => {
@@ -175,19 +209,22 @@ const PrinciplesTable = () => {
         </div>
       </div>
 
-      <div className="overflow-y-auto max-h-[420px]">
+      <div className="overflow-y-auto max-h-[420px] min-h-[200px]">
         <table className="w-full table-auto">
           <thead className="sticky top-0 bg-white z-10">
             <tr className="text-left font-medium">
-              <th className="py-2 px-2 w-24 text-[#828282]">
+              <th className="py-2 px-2 w-[100px] text-[#828282]">
                 {t("schedule.task")}
               </th>
               <th className="py-2 px-2 text-textClr font-medium">
                 {t("schedule.title")}
               </th>
-              <th className="py-2 px-2">{t("schedule.action")}</th>
+              <th className="py-2 px-2 w-[120px] text-right">
+                {t("schedule.action")}
+              </th>
             </tr>
           </thead>
+
           <tbody>
             {filteredData.map((item) => (
               <tr
