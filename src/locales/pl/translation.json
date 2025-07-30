@@ -154,5 +154,13 @@
     "edit": "Edytuj",
     "generatePDF": "Generuj PDF",
     "exportPDF": "Eksportuj do PDF"
-  }
+  },
+  "cancel": {
+  "priceLabel": "PLN zł",
+  "pricePerMonth": "/ Miesiąc",
+  "btn": "Anuluj teraz",
+  "list1": "Administrator może tworzyć dowolną liczbę harmonogramów bez ograniczeń czasowych.",
+  "list2": "Nieograniczony dostęp do generowania harmonogramów wspomaganego przez AI.",
+  "list3": "Użytkownicy Premium otrzymują priorytetowe wsparcie klienta w przypadku problemów i zapytań."
+}
 }

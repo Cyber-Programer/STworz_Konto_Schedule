@@ -155,5 +155,13 @@
     "edit": "Edit",
     "generatePDF": "Generating PDF...",
     "exportPDF": " Export to PDF"
+  },
+    "cancel": {
+    "priceLabel": "PLN zt",
+    "pricePerMonth": "/ Month",
+    "btn": "Cancel Now",
+    "list1": "Admin can create as many schedules as needed, with no time restrictions",
+    "list2": "Unlimited access to AI-powered schedule generation.",
+    "list3": "Premium users get priority customer support for issues and inquiries."
   }
 }
