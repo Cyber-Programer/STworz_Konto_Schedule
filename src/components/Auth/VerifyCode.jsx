@@ -85,7 +85,7 @@ const VerifyCode = ({ otp, setOtp, onSubmit }) => {
   };
 
   return (
-    <div className="mx-auto max-w-md font-Roboto">
+    <div className="mx-auto max-w-md px-4 font-Roboto">
       <h3 className="text-[1.75rem] md:text-[2rem] font-medium">
         {t("auth.checkEmail")}
       </h3>

@@ -1,11 +1,20 @@
-import React, { useState, useRef } from "react";
-import { Calendar, ArrowLeft, Edit, Save, FileDown } from "lucide-react";
+import React, { useState, useRef, useEffect } from "react";
+import {
+  Calendar,
+  ArrowLeft,
+  Edit,
+  Save,
+  FileDown,
+  AwardIcon,
+} from "lucide-react";
 import ManageSchedule from "./ManageSchedule";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
+import baseApi from "../../api/baseApi";
+import { ENDPOINTS } from "../../api/endPoints";
 
-const Dashboard = ({ setShowDashboard, selectedMonth }) => {
-
-  const {t} = useTranslation()
+const Dashboard = ({ setShowDashboard, selectedMonth, selectedYear }) => {
+  const { t } = useTranslation();
   const [employeeSchedules, setEmployeeSchedules] = useState([
     {
       name: "Mark",
@@ -125,7 +134,9 @@ const Dashboard = ({ setShowDashboard, selectedMonth }) => {
   const [showManageSchedule, setShowManageSchedule] = useState(false);
   const [selected, setSelected] = useState("Weekly");
   const [open, setOpen] = useState(false);
-  const [monthName, setMonthName] = useState("may");
+  const [monthName, setMonthName] = useState(
+    selectedMonth?.label?.toLowerCase() || "may"
+  );
   const [showMonthName, setShowMonthName] = useState(false);
 
   const tableRef = useRef();
@@ -175,6 +186,21 @@ const Dashboard = ({ setShowDashboard, selectedMonth }) => {
     if (shift.includes("14:00")) return "bg-[#A68BFB]"; // #A68BFB
     if (shift.includes("16:00")) return "bg-[#F59F67]"; // #F59F67
     return "bg-gray-400";
+  };
+
+  const onChange = async () => {
+    try {
+      const res = await baseApi.get(ENDPOINTS);
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.msg ||
+        error.response?.data?.detail ||
+        JSON.stringify(error.response?.data.errors?.email?.[0]) ||
+        error.message;
+
+      toast.error(`Fetch Error: ${errorMessage}`);
+      console.log(error);
+    }
   };
 
   const handleExport = async () => {
@@ -470,64 +496,77 @@ const Dashboard = ({ setShowDashboard, selectedMonth }) => {
         <div className="flex flex-col lg:flex-row gap-2 font-semibold items-start justify-start mb-3">
           <div className="flex gap-2 items-center flex-wrap mb-2.5 lg:mb-0">
             {/* Month selector */}
-          <div className="relative inline-block text-left">
-            <button
-              onClick={() => setShowMonthName(!showMonthName)}
-              className="w-[130px] flex items-center border border-blue-500 px-5 py-2 outline-blue-400 gap-2 cursor-pointer hover:bg-blue-50"
-            >
-              <Calendar className="w-4 h-4" />
-              {t(`months.${monthName.charAt(0).toUpperCase() + monthName.slice(1)}`)}
-            </button>
-            {showMonthName && (
-              <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 shadow-lg">
-                {months.map((option) => (
-                  <button
-                    key={option.value}
-                    onClick={() => {
-                      setMonthName(option.value);
-                      setShowMonthName(false);
-                    }}
-                    className="flex items-center w-max px-2 py-2 hover:bg-gray-100 gap-2 cursor-pointer"
-                  >
-                    <Calendar className="w-4 h-4" />
-                    <p className="font-medium text-gray-700 capitalize">
-                      {t(`months.${option.value.charAt(0).toUpperCase() + option.value.slice(1)}`)}
-                      
-                    </p>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+            <div className="relative inline-block text-left">
+              <button
+                onClick={() => {
+                  setShowMonthName(!showMonthName);
+                  onChange()
+                }}
+                className="w-[130px] flex items-center border border-blue-500 px-5 py-2 outline-blue-400 gap-2 cursor-pointer hover:bg-blue-50"
+              >
+                <Calendar className="w-4 h-4" />
+                {t(
+                  `months.${
+                    monthName.charAt(0).toUpperCase() + monthName.slice(1)
+                  }`
+                )}
+              </button>
+              {showMonthName && (
+                <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 shadow-lg">
+                  {months.map((option) => (
+                    <button
+                      key={option.value}
+                      onClick={() => {
+                        setMonthName(option.value);
+                        setShowMonthName(false);
+                        console.log(option.value);
+                      }}
+                      className="flex items-center w-max px-2 py-2 hover:bg-gray-100 gap-2 cursor-pointer"
+                    >
+                      <Calendar className="w-4 h-4" />
+                      <p className="font-medium text-gray-700 capitalize">
+                        {t(
+                          `months.${
+                            option.value.charAt(0).toUpperCase() +
+                            option.value.slice(1)
+                          }`
+                        )}
+                      </p>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
 
-          {/* Weekly/Monthly selector */}
-          <div className="relative inline-block text-left">
-            <button
-              onClick={() => setOpen(!open)}
-              className="flex items-center border border-blue-500 px-5 py-2 outline-blue-400 gap-2 cursor-pointer hover:bg-blue-50"
-            >
-              <Calendar className="w-4 h-4" />
-              <p>{t(`dashboard.${selected.toLowerCase()}`)}</p>
-            </button>
+            {/* Weekly/Monthly selector */}
+            <div className="relative inline-block text-left">
+              <button
+                onClick={() => setOpen(!open)}
+                className="flex items-center border border-blue-500 px-5 py-2 outline-blue-400 gap-2 cursor-pointer hover:bg-blue-50"
+              >
+                <Calendar className="w-4 h-4" />
+                <p>{t(`dashboard.${selected.toLowerCase()}`)}</p>
+              </button>
 
-            {open && (
-              <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 shadow-lg">
-                {options.map((option) => (
-                  <button
-                    key={option.value}
-                    onClick={() => {
-                      setSelected(option.value);
-                      setOpen(false);
-                    }}
-                    className="flex items-center w-full px-3 py-2 hover:bg-gray-100 gap-2 cursor-pointer"
-                  >
-                    <Calendar className="w-4 h-4" />
-                     {t(`dashboard.${option.value.toLowerCase()}`)}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+              {open && (
+                <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 shadow-lg">
+                  {options.map((option) => (
+                    <button
+                      key={option.value}
+                      onClick={() => {
+                        setSelected(option.value);
+                        setOpen(false);
+                        alert("");
+                      }}
+                      className="flex items-center w-full px-3 py-2 hover:bg-gray-100 gap-2 cursor-pointer"
+                    >
+                      <Calendar className="w-4 h-4" />
+                      {t(`dashboard.${option.value.toLowerCase()}`)}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="flex gap-2 items-center flex-wrap">
@@ -546,7 +585,9 @@ const Dashboard = ({ setShowDashboard, selectedMonth }) => {
               className="flex gap-2 items-center cursor-pointer md:justify-center border px-3 py-2 border-blue-500 hover:bg-green-50"
             >
               <Save className="w-4 h-4" />
-              <p className=" font-medium text-gray-700">{t('dashboard.save')}</p>
+              <p className=" font-medium text-gray-700">
+                {t("dashboard.save")}
+              </p>
             </button>
 
             <button
@@ -561,7 +602,9 @@ const Dashboard = ({ setShowDashboard, selectedMonth }) => {
               <FileDown className="w-4 h-4" />
               <p className=" font-medium text-gray-700">
                 {/* {exporting ? "Generating PDF..." : "Export to PDF"} */}
-                 {exporting ? t("dashboard.generatingPdf") : t("dashboard.exportPdf")}
+                {exporting
+                  ? t("dashboard.generatingPdf")
+                  : t("dashboard.exportPdf")}
               </p>
             </button>
           </div>

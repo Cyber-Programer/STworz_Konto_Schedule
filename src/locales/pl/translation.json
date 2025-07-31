@@ -162,5 +162,13 @@
   "list1": "Administrator może tworzyć dowolną liczbę harmonogramów bez ograniczeń czasowych.",
   "list2": "Nieograniczony dostęp do generowania harmonogramów wspomaganego przez AI.",
   "list3": "Użytkownicy Premium otrzymują priorytetowe wsparcie klienta w przypadku problemów i zapytań."
-}
+},
+"subscription": {
+    "list1": "Dostęp do harmonogramów generowanych przez AI jest dostępny przez pierwsze 3 dni.",
+    "list2": "Możesz przeglądać wygenerowane harmonogramy.",
+    "list3": "Po 3 dniach użytkownicy muszą przejść na wersję premium, aby kontynuować dostęp.",
+    "list4": "Administrator może tworzyć dowolną liczbę harmonogramów bez ograniczeń czasowych.",
+    "list5": "Nieograniczony dostęp do generowania harmonogramów wspomaganych przez AI.",
+    "list6": "Użytkownicy premium otrzymują priorytetową obsługę klienta w przypadku problemów i zapytań."
+  }
 }

@@ -3,6 +3,7 @@ import { ChevronDown, Calendar } from "lucide-react";
 import WebIcons from "../../assets/images";
 import Dashboard from "./Dashboard";
 import { useTranslation } from "react-i18next";
+import SubscriptionPlan from "../../components/Subscription/SubscriptionPlan"
 // Mock WebIcons for demonstration
 
 const MonthlySch = () => {
@@ -11,7 +12,8 @@ const MonthlySch = () => {
   const [isOpenT, setIsOpenT] = useState(false);
   const [selectedYear, setSelectedYear] = useState("2025");
   const [showDashboard, setShowDashboard] = useState(false);
-  const [selectedMonth, setSelectedMonth] = useState(null);
+  const [selectedMonth, setSelectedMonth] = useState({});
+  const [showSubscription, setShowSubscription] = useState(true);
   const [language, setLanguage] = useState(
     i18n.language === "pl" ? "Polish" : "English"
   );
@@ -29,19 +31,34 @@ const MonthlySch = () => {
   ];
 
   const languageList = ["English", "Polish"];
+  // const months = [
+  //   t("months.January"),
+  //   t("months.February"),
+  //   t("months.March"),
+  //   t("months.April"),
+  //   t("months.May"),
+  //   t("months.June"),
+  //   t("months.July"),
+  //   t("months.August"),
+  //   t("months.September"),
+  //   t("months.October"),
+  //   t("months.November"),
+  //   t("months.December"),
+  // ];
+
   const months = [
-    t("months.January"),
-    t("months.February"),
-    t("months.March"),
-    t("months.April"),
-    t("months.May"),
-    t("months.June"),
-    t("months.July"),
-    t("months.August"),
-    t("months.September"),
-    t("months.October"),
-    t("months.November"),
-    t("months.December"),
+    { label: t("months.January"), value: "01" },
+    { label: t("months.February"), value: "02" },
+    { label: t("months.March"), value: "03" },
+    { label: t("months.April"), value: "04" },
+    { label: t("months.May"), value: "05" },
+    { label: t("months.June"), value: "06" },
+    { label: t("months.July"), value: "07" },
+    { label: t("months.August"), value: "08" },
+    { label: t("months.September"), value: "09" },
+    { label: t("months.October"), value: "10" },
+    { label: t("months.November"), value: "11" },
+    { label: t("months.December"), value: "12" },
   ];
 
   const handleSelect = (year) => {
@@ -57,6 +74,19 @@ const MonthlySch = () => {
   if (!showDashboard) {
     return (
       <div className="w-full flex flex-col gap-10 my-2 capitalize px-5">
+        {showSubscription && (
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto">
+            <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-4xl relative">
+              <SubscriptionPlan />
+              <button
+                onClick={() => setShowSubscription(false)}
+                className="text-blue-600 absolute top-4 right-6 cursor-pointer text-sm"
+              >
+                Skip
+              </button>
+            </div>
+          </div>
+        )}
         <h2 className="mt-7 md:mt-0 text-2xl md:text-[2rem] font-semibold font-Roboto text-textClr">
           {t("monthlySch.welcomeLine1")} <br className="hidden md:block" />{" "}
           {t("monthlySch.welcomeLine2")}
@@ -168,13 +198,13 @@ const MonthlySch = () => {
 
         {/* Show months with background image */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {months.map((month, index) => (
+          {months.map(({ label, value }) => (
             <div
               onClick={() => {
-                setSelectedMonth(index);
+                setSelectedMonth({ label: label, value: value }); // store the month number as state;
                 setShowDashboard(true);
               }}
-              key={index}
+              key={value}
               className=" h-50 border rounded-lg flex items-center justify-center capitalize text-white font-bold text-lg md:text-[2rem] shadow-lg cursor-pointer"
               style={{
                 background: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${WebIcons.monthBg})`,
@@ -182,7 +212,7 @@ const MonthlySch = () => {
                 backgroundPosition: "center",
               }}
             >
-              <span>{month}</span>
+              <span>{label}</span>
             </div>
           ))}
         </div>
@@ -193,6 +223,7 @@ const MonthlySch = () => {
       <Dashboard
         setShowDashboard={setShowDashboard}
         selectedMonth={selectedMonth}
+        selectedYear={selectedYear}
       />
     );
   }

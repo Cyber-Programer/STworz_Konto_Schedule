@@ -163,5 +163,13 @@
     "list1": "Admin can create as many schedules as needed, with no time restrictions",
     "list2": "Unlimited access to AI-powered schedule generation.",
     "list3": "Premium users get priority customer support for issues and inquiries."
+  },
+  "subscription": {
+    "list1": "Access to AI-generated schedules is available for the first 3 days.",
+    "list2": "Can view the generated schedules",
+    "list3": "After 3 days, users need to upgrade to premium for continued access.",
+    "list4": "Admin can create as many schedules as needed, with no time restrictions",
+    "list5": "Unlimited access to AI-powered schedule generation.",
+    "list6": "Premium users get priority customer support for issues and inquiries."
   }
 }

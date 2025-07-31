@@ -5,14 +5,17 @@ import baseApi from "../../api/baseApi";
 import { ENDPOINTS } from "../../api/endPoints";
 import { getToken } from "../../utils/helper";
 import { toast } from "react-toastify";
+import { Search } from "lucide-react";
 
 const Employee = () => {
   const { t } = useTranslation();
   const [employees, setEmployees] = useState([]);
+  const [filteredEmployee, setFilteredEmployee] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editEmployeeId, setEditEmployeeId] = useState(null);
   const token = getToken(import.meta.env.VITE_ACCESS_TOKEN_KEY);
+  const [searchEmp, setSearchEmp] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -72,7 +75,7 @@ const Employee = () => {
       if (emailError) {
         toast.error(emailError);
       }
-      
+
       const errorMessage =
         error.response?.data?.msg ||
         error.response?.data?.detail ||
@@ -185,6 +188,18 @@ const Employee = () => {
     setEditEmployeeId(null);
   };
 
+  useEffect(() => {
+    const filterEmp = employees.filter(
+      (emp) =>
+        emp.name.toLowerCase().includes(searchEmp.toLowerCase()) ||
+        emp.email.toLowerCase().includes(searchEmp.toLowerCase())
+    );
+
+    setFilteredEmployee(filterEmp);
+  }, [employees, searchEmp]);
+
+  // Filter Employee List
+
   // Get employee list function
   const getEmployeeList = async () => {
     try {
@@ -236,7 +251,7 @@ const Employee = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden">
+    <div className="h-screen flex flex-col gap-5 overflow-hidden">
       {/* Header */}
       <div className="mt-7 md:mt-0 bg-white z-10 px-4 py-4  sticky top-0 flex flex-col lg:flex-row justify-between gap-4 lg:items-center">
         <h2 className="text-3xl md:text-[2rem] font-semibold text-textClr">
@@ -257,6 +272,17 @@ const Employee = () => {
             + {t("employee.addNew")}
           </button>
         </div>
+      </div>
+
+      <div className="relative w-[98%] flex">
+        <input
+          type="text"
+          value={searchEmp}
+          onChange={(e) => setSearchEmp(e.target.value)}
+          className="border-2 border-gray-300 w-full px-5 py-3 ml-3 rounded-2xl pr-10 outline-0"
+          placeholder="Search employees..."
+        />
+        <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
       </div>
 
       {/* Modal */}
@@ -338,7 +364,7 @@ const Employee = () => {
 
       {/* Employee List */}
       <div className="flex-1 overflow-y-auto px-4 pb-6">
-        {employees.map((emp) => (
+        {filteredEmployee.map((emp) => (
           <div
             key={emp.id}
             className="flex items-center justify-between bg-Gray p-4 mb-3 shadow-sm rounded"

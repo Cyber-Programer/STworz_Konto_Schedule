@@ -16,35 +16,43 @@ import MonthlySch from "./pages/Dashboard/MonthlySch";
 // import ManageSchedule from "./components/ManageSchedule/ManageSchedule";
 import ChatSchedule from "./pages/ChatSchedule/ChatSchedule";
 import CancelSubscription from "./pages/Premium/CancelSubscription";
-import ForgotPass from "./pages/Auth/ForgotPass"; 
+import ForgotPass from "./pages/Auth/ForgotPass";
+import PrivateRoute from "./PrivateRoute";
+
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <RootLayout />, // RootLayout wraps the routes
+    element: <RootLayout />,
     children: [
-      { index: true, element: <Navigate to="/signin" replace /> }, // Default redirect to dashboard
-      { path: "dashboard", element: <MonthlySch /> },
-      { path: "employee", element: <Employee /> },
-      { path: "schedule", element: <Schedule /> },
-      { path: "chat", element: <ChatSchedule /> },
-      { path: "cancel", element: <CancelSubscription /> },
-      { path: "premium", element: <Premium /> },
+      { index: true, element: <Navigate to="/signin" replace /> },
+
+      // Private Route wrapper
+      {
+        element: <PrivateRoute />,
+        children: [
+          { path: "dashboard", element: <MonthlySch /> },
+          { path: "employee", element: <Employee /> },
+          { path: "schedule", element: <Schedule /> },
+          { path: "chat", element: <ChatSchedule /> },
+          { path: "cancel", element: <CancelSubscription /> },
+          { path: "premium", element: <Premium /> },
+        ],
+      },
     ],
   },
   {
     path: "/signin",
-    element: <SignIn />, // SignIn page
+    element: <SignIn />,
   },
   {
     path: "/signup",
-    element: <SignUp />, // SignUp page
+    element: <SignUp />,
   },
   {
     path: "/forgotPassword",
-    element: <ForgotPass/>
-  }
+    element: <ForgotPass />,
+  },
 ]);
-
 // Main App Component
 function App() {
   return <RouterProvider router={router} />;
