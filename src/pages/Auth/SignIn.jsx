@@ -42,6 +42,7 @@ const SignIn = () => {
     } catch (error) {
       const errorMessage =
         error.response?.data?.msg ||
+        error.response?.data?.errors?.non_field_errors[0] ||
         error.response?.data?.detail ||
         JSON.stringify(error.response?.data) || // fallback for object-based errors
         error.message;
@@ -62,7 +63,7 @@ const SignIn = () => {
 
         console.log(res.status);
         if (res.status === 200) {
-          toast.success('Automatic Login Success!')
+          toast.success("Automatic Login Success!");
           navigate("/dashboard");
         } else {
           toast.info("Login with gmail and pass");

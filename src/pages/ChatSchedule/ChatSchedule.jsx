@@ -82,6 +82,7 @@ const ChatSchedule = () => {
     if (shift.includes("10:00")) return "#f4a261";
     if (shift.includes("14:00")) return "#89c2d9";
     if (shift.includes("16:00")) return "#9d4edd";
+    if (shift.includes("off")) return "#d1d5dc";
     return "#a3a3a3";
   };
 
@@ -305,13 +306,109 @@ const ChatSchedule = () => {
     }
   };
 
+  // const updateSchedule = async () => {
+  //   try {
+  //     const aiRequestId = 7; // Example ai_request_id, you can change it dynamically
+
+  //     // Prepare the schedule data to send to the API
+  //     const schedulesData = employeeSchedules.map((emp) => ({
+  //       employee_id: emp.id, // Assuming employee has an 'id' field
+  //       schedule_data: Object.entries(emp.shifts).map(([date, shifts]) => ({
+  //         date,
+  //         shift: shifts[0], // Assuming only one shift per date, adjust accordingly if multiple shifts
+  //       })),
+  //     }));
+
+  //     const updateData = {
+  //       ai_request_id: aiRequestId,
+  //       schedules: schedulesData,
+  //     };
+
+  //     // Call the API to update the schedule
+  //     const response = await baseApi.post(
+  //       ENDPOINTS.UPDATE_SCHEDULE,
+  //       updateData,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+
+  //     // Handle success
+  //     if (response.status === 200) {
+  //       toast.success("Schedule updated successfully!");
+  //     } else {
+  //       toast.error("Failed to update the schedule.");
+  //     }
+  //   } catch (error) {
+  //     const errorMessage =
+  //       error.response?.data?.msg ||
+  //       error.response?.data?.detail ||
+  //       error.message;
+
+  //     toast.error(`Error: ${errorMessage}`);
+  //     console.error(error);
+  //   }
+  // };
+
   // Save Button Function
-  const HandleSave = async () => {
+  // const HandleSave = async () => {
+  //   try {
+  //     const res = await baseApi.post(
+  //       ENDPOINTS.SAVE_PREVIEW_SCHEDULE,
+  //       {
+  //         preview_id: preview_id,
+  //       },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+  //     if (res.status === 200)
+  //       return toast.success("Schedule Saved Successfully");
+  //     // console.log(res.status);
+  //     await updateSchedule(); // Call the update schedule function
+  //     setIsEditable(false);
+  //     console.log(res);
+  //   } catch (error) {
+  //     const errorMessage =
+  //       error.response?.data?.error ||
+  //       error.response?.data?.msg ||
+  //       error.response?.data?.detail ||
+  //       error.response?.data?.message ||
+  //       error.error ||
+  //       error.message;
+
+  //     // console.error("API Error:", error);
+  //     // console.log("Error Response:", error.response?.data || error.message);
+
+  //     setIsLoading(false); // loading state for api response
+
+  //     toast.update("loading-toast", {
+  //       render: `❌ Error: ${errorMessage}`,
+  //       type: "error",
+  //       isLoading: false,
+  //       autoClose: 4000,
+  //       closeOnClick: true,
+  //     }); // toast sate for api response
+  //   }
+  // };
+
+  // Update Function
+  const handleUpdate = async () => {
     try {
-      const res = await baseApi.post(
-        ENDPOINTS.SAVE_PREVIEW_SCHEDULE,
+      const res = await baseApi.put(
+        ENDPOINTS.UPDATE_SCHEDULE,
         {
-          preview_id: preview_id,
+          ai_request_id: preview_id,
+          schedules: [
+            {
+              employee_id: 11,
+              schedule_data: [{ date: "08:07:2025", shift: "09:00-16:00" }],
+            },
+          ],
         },
         {
           headers: {
@@ -319,10 +416,7 @@ const ChatSchedule = () => {
           },
         }
       );
-      if (res.status === 200)
-        return toast.success("Schedule Saved Successfully");
-      // console.log(res.status);
-      // console.log(res.data);
+      console.log(res);
     } catch (error) {
       const errorMessage =
         error.response?.data?.error ||
@@ -335,8 +429,6 @@ const ChatSchedule = () => {
       // console.error("API Error:", error);
       // console.log("Error Response:", error.response?.data || error.message);
 
-      setIsLoading(false); // loading state for api response
-
       toast.update("loading-toast", {
         render: `❌ Error: ${errorMessage}`,
         type: "error",
@@ -344,6 +436,8 @@ const ChatSchedule = () => {
         autoClose: 4000,
         closeOnClick: true,
       }); // toast sate for api response
+
+      console.log(error);
     }
   };
 
@@ -518,21 +612,6 @@ const ChatSchedule = () => {
     }
   };
 
-  // For auto scrolling
-  useEffect(() => {
-    handleChatScroll();
-  }, [messages]);
-
-  // set employee list to Mention box
-  useEffect(() => {
-    const fetchEmployees = async () => {
-      const list = await getEmployee();
-      setEmployeeList(list || []); // ensure fallback if null
-    };
-
-    fetchEmployees();
-  }, []);
-
   // All send actions
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -616,6 +695,129 @@ const ChatSchedule = () => {
       }
     }
   };
+  // ------------ AI CODE -------------\\
+  // Fetch and format the schedules as required for the update
+  const fetchAndFormatSchedules = async () => {
+    try {
+      const res = await baseApi.get(
+        ENDPOINTS.VIEW_SCHEDULE(selectedYear, monthName, selected),
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (res?.data?.data) {
+        const schedules = res?.data?.data?.schedules.map((emp) => {
+          const scheduleData = emp.schedule_data.map((entry) => ({
+            date: entry.date,
+            shift: entry.shift,
+          }));
+
+          return {
+            employee_id: emp.employee_id,
+            schedule_data: scheduleData,
+          };
+        });
+
+        return schedules;
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.msg ||
+        error.response?.data?.detail ||
+        error.message;
+
+      toast.error(`Fetch Error: ${errorMessage}`);
+      console.error(error);
+    }
+  };
+
+  // Update Function
+  const updateSchedule = async () => {
+    try {
+      const schedulesData = await fetchAndFormatSchedules();
+
+      const updateData = {
+        ai_request_id: preview_id,
+        schedules: schedulesData,
+      };
+
+      const response = await baseApi.post(
+        ENDPOINTS.UPDATE_SCHEDULE,
+        updateData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success("Schedule updated successfully!");
+      } else {
+        toast.error("Failed to update the schedule.");
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.msg ||
+        error.response?.data?.detail ||
+        error.message;
+
+      toast.error(`Error: ${errorMessage}`);
+      console.error(error);
+    }
+  };
+
+  // Save Button Function
+  const HandleSave = async () => {
+    try {
+      const res = await baseApi.post(
+        ENDPOINTS.SAVE_PREVIEW_SCHEDULE,
+        {
+          preview_id: preview_id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (res.status === 200) {
+        toast.success("Schedule Saved Successfully");
+      }
+      await updateSchedule(); // Call the update schedule function
+      setIsEditable(false);
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.error ||
+        error.response?.data?.msg ||
+        error.response?.data?.detail ||
+        error.response?.data?.message ||
+        error.error ||
+        error.message;
+
+      toast.update("loading-toast", {
+        render: `❌ Error: ${errorMessage}`,
+        type: "error",
+        isLoading: false,
+        autoClose: 4000,
+        closeOnClick: true,
+      });
+    }
+  };
+
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      const list = await getEmployee();
+      setEmployeeList(list || []); // ensure fallback if null
+    };
+
+    fetchEmployees();
+  }, []);
+
+  // AI CODE END \\
 
   // handle some key inputs
   useEffect(() => {
@@ -631,6 +833,21 @@ const ChatSchedule = () => {
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  // For auto scrolling
+  useEffect(() => {
+    handleChatScroll();
+  }, [messages]);
+
+  // set employee list to Mention box
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      const list = await getEmployee();
+      setEmployeeList(list || []); // ensure fallback if null
+    };
+
+    fetchEmployees();
   }, []);
 
   // for mention box model
@@ -875,7 +1092,7 @@ const ChatSchedule = () => {
       </div>
 
       {/* Employee List Sidebar */}
-      <div className="hidden md:block max-w-[190px] p-2 border-l border-gray-300 pt-4 lg:pt-0 lg:pl-4">
+      <div className="hidden md:block max-w-auto p-2 border-l border-gray-300 pt-4 lg:pt-0 lg:pl-4">
         <h3 className="font-semibold text-textClr font-Roboto mb-3">
           {t("chat.selectedEmployee") || "Employees"}
         </h3>
@@ -1033,7 +1250,7 @@ const ChatSchedule = () => {
                                 key={idx}
                                 className={`p-1.5 rounded mb-1 text-sm font-semibold text-center ${
                                   shift.toLowerCase() === "off"
-                                    ? "bg-red-100 text-red-600 border border-red-300"
+                                    ? "bg-gray-300 text-white border "
                                     : "text-white"
                                 }`}
                                 style={{

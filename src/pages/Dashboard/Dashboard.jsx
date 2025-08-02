@@ -12,131 +12,31 @@ import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import baseApi from "../../api/baseApi";
 import { ENDPOINTS } from "../../api/endPoints";
+import { getToken } from "../../utils/helper";
 
 const Dashboard = ({ setShowDashboard, selectedMonth, selectedYear }) => {
   const { t } = useTranslation();
-  const [employeeSchedules, setEmployeeSchedules] = useState([
-    {
-      name: "Mark",
-      totalHours: "160 hr 0 min",
-      shifts: {
-        "2025-05-01": ["08:00-14:00"],
-        "2025-05-02": ["08:00-14:00"],
-        "2025-05-03": ["08:00-14:00"],
-        "2025-05-04": ["14:00-21:00"],
-        "2025-05-05": ["14:00-21:00"],
-        "2025-05-06": ["08:00-14:00"],
-        "2025-05-07": ["16:00-23:00"],
-        "2025-05-08": ["08:00-14:00"],
-        "2025-05-09": ["10:00-18:00"],
-        "2025-05-10": ["14:00-21:00"],
-        "2025-05-11": ["16:00-23:00"],
-        "2025-05-12": ["08:00-14:00"],
-        "2025-05-13": ["08:00-14:00"],
-        "2025-05-14": ["10:00-18:00"],
-        "2025-05-15": ["14:00-21:00"],
-        "2025-05-16": ["16:00-23:00"],
-        "2025-05-17": ["08:00-14:00"],
-        "2025-05-18": ["10:00-18:00"],
-        "2025-05-19": ["14:00-21:00"],
-        "2025-05-20": ["16:00-23:00"],
-        "2025-05-21": ["08:00-14:00"],
-        "2025-05-22": ["10:00-18:00"],
-        "2025-05-23": ["14:00-21:00"],
-        "2025-05-24": ["16:00-23:00"],
-        "2025-05-25": ["08:00-14:00"],
-        "2025-05-26": ["10:00-18:00"],
-        "2025-05-27": ["14:00-21:00"],
-        "2025-05-28": ["16:00-23:00"],
-        "2025-05-29": ["08:00-14:00"],
-        "2025-05-30": ["10:00-18:00"],
-        "2025-05-31": ["10:00-18:00"],
-      },
-    },
-    {
-      name: "Oscar",
-      totalHours: "155 hr 0 min",
-      shifts: {
-        "2025-05-01": ["10:00-18:00"],
-        "2025-05-02": ["14:00-21:00"],
-        "2025-05-03": ["16:00-23:00"],
-        "2025-05-04": ["08:00-14:00"],
-        "2025-05-05": ["08:00-14:00"],
-        "2025-05-06": ["10:00-18:00"],
-        "2025-05-07": ["14:00-21:00"],
-        "2025-05-08": ["16:00-23:00"],
-        "2025-05-09": ["08:00-14:00"],
-        "2025-05-10": ["10:00-18:00"],
-        "2025-05-11": ["14:00-21:00"],
-        "2025-05-12": ["16:00-23:00"],
-        "2025-05-13": ["08:00-14:00"],
-        "2025-05-14": ["10:00-18:00"],
-        "2025-05-15": ["14:00-21:00"],
-        "2025-05-16": ["16:00-23:00"],
-        "2025-05-17": ["08:00-14:00"],
-        "2025-05-18": ["10:00-18:00"],
-        "2025-05-19": ["14:00-21:00"],
-        "2025-05-20": ["16:00-23:00"],
-        "2025-05-21": ["08:00-14:00"],
-        "2025-05-22": ["10:00-18:00"],
-        "2025-05-23": ["14:00-21:00"],
-        "2025-05-24": ["16:00-23:00"],
-        "2025-05-25": ["08:00-14:00"],
-        "2025-05-26": ["10:00-18:00"],
-        "2025-05-27": ["14:00-21:00"],
-        "2025-05-28": ["16:00-23:00"],
-        "2025-05-29": ["08:00-14:00"],
-        "2025-05-30": ["10:00-18:00"],
-        "2025-05-31": ["10:00-18:00"],
-      },
-    },
-    ...Array.from({ length: 5 }, (_, i) => ({
-      name: `Employee ${i + 3}`,
-      totalHours: `${140 + (i % 5) * 5} hr 0 min`,
-      shifts: {
-        "2025-05-01": ["08:00-14:00"],
-        "2025-05-02": ["10:00-18:00"],
-        "2025-05-03": ["14:00-21:00"],
-        "2025-05-04": ["16:00-23:00"],
-        "2025-05-05": ["08:00-14:00"],
-        "2025-05-06": ["10:00-18:00"],
-        "2025-05-07": ["14:00-21:00"],
-        "2025-05-08": ["16:00-23:00"],
-        "2025-05-09": ["08:00-14:00"],
-        "2025-05-10": ["10:00-18:00"],
-        "2025-05-11": ["14:00-21:00"],
-        "2025-05-12": ["16:00-23:00"],
-        "2025-05-13": ["08:00-14:00"],
-        "2025-05-14": ["10:00-18:00"],
-        "2025-05-15": ["14:00-21:00"],
-        "2025-05-16": ["16:00-23:00"],
-        "2025-05-17": ["08:00-14:00"],
-        "2025-05-18": ["10:00-18:00"],
-        "2025-05-19": ["14:00-21:00"],
-        "2025-05-20": ["16:00-23:00"],
-        "2025-05-21": ["08:00-14:00"],
-        "2025-05-22": ["10:00-18:00"],
-        "2025-05-23": ["14:00-21:00"],
-        "2025-05-24": ["16:00-23:00"],
-        "2025-05-25": ["08:00-14:00"],
-        "2025-05-26": ["10:00-18:00"],
-        "2025-05-27": ["14:00-21:00"],
-        "2025-05-28": ["16:00-23:00"],
-        "2025-05-29": ["08:00-14:00"],
-        "2025-05-30": ["10:00-18:00"],
-        "2025-05-31": ["10:00-18:00"],
-      },
-    })),
-  ]);
-
+  const [employeeSchedules, setEmployeeSchedules] = useState([]);
+  // Employee Schedule array -> obj
+  // {
+  //     name: "Mark",
+  //     shifts: {
+  //       "2025-05-01": ["08:00-14:00"],
+  //       "2025-05-02": ["08:00-14:00"],
+  //       "2025-05-03": ["08:00-14:00"],
+  //       "2025-05-04": ["14:00-21:00"],
+  //     }
+  //   }
+  const token = getToken(import.meta.env.VITE_ACCESS_TOKEN_KEY);
   const [isEditable, setIsEditable] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [showManageSchedule, setShowManageSchedule] = useState(false);
-  const [selected, setSelected] = useState("Weekly");
+  const [selected, setSelected] = useState("Weekly"); // weekly or monthly state { weekly , monthly }
   const [open, setOpen] = useState(false);
   const [monthName, setMonthName] = useState(
     selectedMonth?.label?.toLowerCase() || "may"
   );
+  const [previousMonthName, setPreviousMonthName] = useState(monthName);
   const [showMonthName, setShowMonthName] = useState(false);
 
   const tableRef = useRef();
@@ -148,7 +48,7 @@ const Dashboard = ({ setShowDashboard, selectedMonth, selectedYear }) => {
     })
   );
 
-  const options = [{ value: "Weekly" }, { value: "Monthly" }];
+  const options = [{ value: "Weekly" }, { value: "Monthly" }]; // {weekly or monthly}
 
   const months = [
     { value: "january" },
@@ -177,6 +77,7 @@ const Dashboard = ({ setShowDashboard, selectedMonth, selectedYear }) => {
     if (shift.includes("10:00")) return "#97CBFD";
     if (shift.includes("14:00")) return "#A68BFB";
     if (shift.includes("16:00")) return "#F59F67";
+    if (shift.includes("off")) return "#d1d5dc";
     return "#a3a3a3";
   };
 
@@ -190,16 +91,100 @@ const Dashboard = ({ setShowDashboard, selectedMonth, selectedYear }) => {
 
   const onChange = async () => {
     try {
-      const res = await baseApi.get(ENDPOINTS);
+      console.log(monthName); // Log current month name
+      const res = await baseApi.get(
+        ENDPOINTS.VIEW_SCHEDULE(selectedYear, monthName, selected),
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Process the response and update state
+      if (res.data.data) {
+        // Transform the response data into the desired structure
+        const newRes = res?.data?.data?.schedules.map((emp) => ({
+          id: emp.employee_id,
+          name: emp.employee_name,
+          email: emp.employee_email,
+          view_type: emp.view_type,
+          month: emp.month,
+          year: emp.year,
+          week: emp.week,
+          shifts: emp.schedule_data.reduce((acc, schedule) => {
+            const formattedDate = schedule.date; // the date from API like "01:08:2025"
+            if (!acc[formattedDate]) {
+              acc[formattedDate] = []; // Initialize an empty array if this date is not yet present
+            }
+            acc[formattedDate].push(schedule.shift); // Add the shift to the array for this date
+            return acc;
+          }, {}),
+        }));
+
+        // Log the formatted response to check the output
+        const res2 = res.data.data.schedules.map((emp) => ({
+          shifts: emp.schedule_data,
+        }));
+        console.log(res2);
+
+        // Now you can use newRes to set your state for employeeSchedules or do other necessary operations
+        setEmployeeSchedules(newRes); // Assuming you want to store this in state
+      }
+      console.log(res.status);
     } catch (error) {
       const errorMessage =
         error.response?.data?.msg ||
         error.response?.data?.detail ||
-        JSON.stringify(error.response?.data.errors?.email?.[0]) ||
         error.message;
-
       toast.error(`Fetch Error: ${errorMessage}`);
       console.log(error);
+    }
+  };
+
+  const updateSchedule = async () => {
+    try {
+      const aiRequestId = 7; // Example ai_request_id, replace it as needed
+
+      // Prepare the schedule data to send to the API
+      const schedulesData = employeeSchedules.map((emp) => ({
+        employee_id: emp.id, // Assuming employee has an 'id' field
+        schedule_data: Object.entries(emp.shifts).map(([date, shifts]) => ({
+          date,
+          shift: shifts[0], // Assuming only one shift per date, adjust accordingly if multiple shifts
+        })),
+      }));
+
+      const updateData = {
+        ai_request_id: aiRequestId,
+        schedules: schedulesData,
+      };
+
+      // Call the API to update the schedule
+      const response = await baseApi.post(
+        ENDPOINTS.UPDATE_SCHEDULE,
+        updateData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Handle success
+      if (response.status === 200) {
+        toast.success("Schedule updated successfully!");
+      } else {
+        toast.error("Failed to update the schedule.");
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.msg ||
+        error.response?.data?.detail ||
+        error.message;
+
+      toast.error(`Error: ${errorMessage}`);
+      console.error(error);
     }
   };
 
@@ -466,6 +451,24 @@ const Dashboard = ({ setShowDashboard, selectedMonth, selectedYear }) => {
     return <ManageSchedule setShowManageSchedule={setShowManageSchedule} />;
   }
 
+  const HandleSave = async () => {
+    await updateSchedule(); // Call the update schedule function
+    setIsEditable(false); // Disable edit mode after saving
+  };
+
+  // auto Call
+  useEffect(() => {
+    onChange();
+  }, []);
+
+  useEffect(() => {
+    if (monthName !== previousMonthName) {
+      // If month changed, call the onChange function
+      onChange();
+      setPreviousMonthName(monthName); // Update previous month to current month
+    }
+  }, [monthName, selected]); // Re-run when monthName or selected view type changes
+
   return (
     <div className="w-full p-4 font-Inter">
       {/* Header */}
@@ -500,7 +503,6 @@ const Dashboard = ({ setShowDashboard, selectedMonth, selectedYear }) => {
               <button
                 onClick={() => {
                   setShowMonthName(!showMonthName);
-                  onChange()
                 }}
                 className="w-[130px] flex items-center border border-blue-500 px-5 py-2 outline-blue-400 gap-2 cursor-pointer hover:bg-blue-50"
               >
@@ -556,7 +558,7 @@ const Dashboard = ({ setShowDashboard, selectedMonth, selectedYear }) => {
                       onClick={() => {
                         setSelected(option.value);
                         setOpen(false);
-                        alert("");
+                        onChange();
                       }}
                       className="flex items-center w-full px-3 py-2 hover:bg-gray-100 gap-2 cursor-pointer"
                     >
@@ -581,7 +583,10 @@ const Dashboard = ({ setShowDashboard, selectedMonth, selectedYear }) => {
             </button>
 
             <button
-              onClick={() => setIsEditable(false)}
+              onClick={() => {
+                setIsEditable(false);
+                // HandleSave();
+              }}
               className="flex gap-2 items-center cursor-pointer md:justify-center border px-3 py-2 border-blue-500 hover:bg-green-50"
             >
               <Save className="w-4 h-4" />

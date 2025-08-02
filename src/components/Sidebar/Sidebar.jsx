@@ -67,6 +67,7 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedPage, setSelectedPage }) => {
       setName(res.data.name);
       setEmail(res.data.email);
       setProfileImage(import.meta.env.VITE_SERVER_URL + res.data.image);
+      console.log(import.meta.env.VITE_SERVER_URL + res.data.image)
       console.log(res);
     } catch (error) {
       const errorMessage =

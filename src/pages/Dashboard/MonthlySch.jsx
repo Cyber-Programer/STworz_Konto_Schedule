@@ -13,7 +13,7 @@ const MonthlySch = () => {
   const [selectedYear, setSelectedYear] = useState("2025");
   const [showDashboard, setShowDashboard] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState({});
-  const [showSubscription, setShowSubscription] = useState(true);
+  const [showSubscription, setShowSubscription] = useState(false); // base on api response
   const [language, setLanguage] = useState(
     i18n.language === "pl" ? "Polish" : "English"
   );
