@@ -446,57 +446,64 @@ const ChatSchedule = () => {
     console.log("Sending message:", messageText);
 
     try {
-      setIsLoading(true); // loading state for api response
-      toast.info("⏳ Generating schedule...", { toastId: "loading-toast" }); // toast state for api response
-      const res = await baseApi.post(
-        ENDPOINTS.CREATE_SCHEDULE,
-        {
-          schedule_request: messageText,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      // setIsLoading(true);
+      // toast.info("⏳ Generating schedule...", { toastId: "loading-toast" });
+
+      // const res = await baseApi.post(
+      //   ENDPOINTS.CREATE_SCHEDULE,
+      //   { schedule_request: messageText },
+      //   { headers: { Authorization: `Bearer ${token}` } }
+      // );
+      const res = await baseApi.get("http://localhost:8001/");
+      setPreview_id(res.data.data.preview_id);
 
       const rawAiResponse = JSON.parse(res.data.data.raw_ai_response);
       console.log("Raw AI Response:", rawAiResponse);
 
-      // Process the API response and structure it in the format you require
+      // Convert API format to table format
       const formattedScheduleData = rawAiResponse.map((employeeData) => {
-        const { name, time } = employeeData;
+        const { name, id, time } = employeeData;
         const shifts = {};
 
-        // Format the shifts for each employee
         Object.entries(time).forEach(([date, shift]) => {
-          shifts[convertDateFormat(date)] = [shift]; // Convert the date format and store the shift
+          // Convert "DD:MM:YYYY" to "YYYY-MM-DD" and wrap shift in array
+          shifts[convertDateFormat(date)] = [shift];
         });
 
-        // Return the formatted employee schedule
         return {
           name,
+          id: id || name, // use id if available, else fallback to name
           shifts,
         };
       });
 
-      console.log("Formatted Schedule Data:", formattedScheduleData);
-
-      // Save the formatted data to state
+      // Set state for table
       setEmployeeSchedules(formattedScheduleData);
 
-      // You can also set `currentDateColumns` if you want to extract unique dates
+      // Extract and sort all unique dates for columns
       const allDates = [];
       rawAiResponse.forEach((employeeData) => {
         Object.keys(employeeData.time).forEach((date) => {
           allDates.push(convertDateFormat(date));
         });
       });
-
       const uniqueSortedDates = [...new Set(allDates)].sort();
       setCurrentDateColumns(uniqueSortedDates);
 
-      // Successfully processed the schedule, show a success toast
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now(),
+          sender: "bot",
+          time: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+          type: "table", // not "text"
+          // You can add any extra info if needed
+        },
+      ]);
+
       toast.update("loading-toast", {
         render: "✅ Schedule generated successfully!",
         type: "success",
@@ -513,7 +520,7 @@ const ChatSchedule = () => {
         error.error ||
         error.message;
 
-      setIsLoading(false); // loading state for api response
+      setIsLoading(false);
 
       toast.update("loading-toast", {
         render: `❌ Error: ${errorMessage}`,
@@ -521,7 +528,7 @@ const ChatSchedule = () => {
         isLoading: false,
         autoClose: 4000,
         closeOnClick: true,
-      }); // toast state for API response
+      });
 
       console.log(error);
 
@@ -895,13 +902,7 @@ const ChatSchedule = () => {
                                       key={date}
                                       className="border border-gray-300 p-2 font-semibold min-w-20"
                                     >
-                                      {new Date(date).toLocaleDateString(
-                                        "en-US",
-                                        {
-                                          month: "short",
-                                          day: "numeric",
-                                        }
-                                      )}
+                                      {date}
                                     </th>
                                   ))}
                                 <th className="border border-gray-300 p-2 font-semibold min-w-12">
@@ -1138,11 +1139,7 @@ const ChatSchedule = () => {
                         key={date}
                         className="border border-gray-300 p-3 font-semibold text-gray-700 text-center min-w-32"
                       >
-                        {new Date(date).toLocaleDateString("en-US", {
-                          weekday: "short",
-                          month: "short",
-                          day: "numeric",
-                        })}
+                        {date}
                       </th>
                     ))}
                   </tr>
