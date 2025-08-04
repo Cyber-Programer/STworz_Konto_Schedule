@@ -16,6 +16,7 @@ export const ENDPOINTS = {
     CREATE_SCHEDULE: "core/api/ai-schedule/generate-schedule/",
     SAVE_PREVIEW_SCHEDULE: "core/api/ai-schedule/save-preview-schedule/",
     // Dashboard Schedule
-    VIEW_SCHEDULE: (year, month, viewType) => `core/api/ai-schedule/view-schedules/?year=${year}&month=${month}&view_type=${viewType}`,
+    // VIEW_SCHEDULE: (year, month, viewType) => `core/api/ai-schedule/view-schedules/?year=${year}&month=${month}&view_type=${viewType}`,
+    VIEW_SCHEDULE: (year,month)=>`core/api/employee-schedules/all-employees/?year=${year}&month=${month}`,
     UPDATE_SCHEDULE: "core/api/ai-schedule/update-last-schedule/"
 }

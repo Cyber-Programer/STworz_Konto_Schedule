@@ -104,34 +104,51 @@ const Dashboard = ({ setShowDashboard, selectedMonth, selectedYear }) => {
       // Process the response and update state
       if (res.data.data) {
         // Transform the response data into the desired structure
-        const newRes = res?.data?.data?.schedules.map((emp) => ({
-          id: emp.employee_id,
-          name: emp.employee_name,
-          email: emp.employee_email,
-          view_type: emp.view_type,
-          month: emp.month,
-          year: emp.year,
-          week: emp.week,
-          shifts: emp.schedule_data.reduce((acc, schedule) => {
-            const formattedDate = schedule.date; // the date from API like "01:08:2025"
-            if (!acc[formattedDate]) {
-              acc[formattedDate] = []; // Initialize an empty array if this date is not yet present
+
+        // -----------------------------------------------------------
+        // const newRes = res?.data?.data?.schedules.map((emp) => ({
+        //   id: emp.employee_id,
+        //   name: emp.employee_name,
+        //   email: emp.employee_email,
+        //   view_type: emp.view_type,
+        //   month: emp.month,
+        //   year: emp.year,
+        //   week: emp.week,
+        //   shifts: emp.schedule_data.reduce((acc, schedule) => {
+        //     const formattedDate = schedule.date; // the date from API like "01:08:2025"
+        //     if (!acc[formattedDate]) {
+        //       acc[formattedDate] = []; // Initialize an empty array if this date is not yet present
+        //     }
+        //     acc[formattedDate].push(schedule.shift); // Add the shift to the array for this date
+        //     return acc;
+        //   }, {}),
+        // }));
+        // -----------------------------------------------------------
+
+        // Log the formatted response to check the output
+        const resData = res?.data?.data;
+
+        const scheduleData = resData.map((emp) => ({
+          name: emp.employee.name,
+          shifts: emp.schedule.reduce((acc, schedule) => {
+            const date = schedule.date; // Keep the date in its original format
+            if (!acc[date]) {
+              acc[date] = [];
             }
-            acc[formattedDate].push(schedule.shift); // Add the shift to the array for this date
-            return acc;
+            acc[date].push(schedule.shift); // Add shift to the corresponding date
+            return acc; // Return the accumulator
           }, {}),
         }));
 
-        // Log the formatted response to check the output
-        const res2 = res.data.data.schedules.map((emp) => ({
-          shifts: emp.schedule_data,
-        }));
-        console.log(res2);
+        console.log(scheduleData);
+        setEmployeeSchedules(scheduleData);
+
+        // console.log(scheduleData);
 
         // Now you can use newRes to set your state for employeeSchedules or do other necessary operations
-        setEmployeeSchedules(newRes); // Assuming you want to store this in state
+        // setEmployeeSchedules(newRes); // Assuming you want to store this in state
       }
-      console.log(res.status);
+      console.log(res.data.data);
     } catch (error) {
       const errorMessage =
         error.response?.data?.msg ||

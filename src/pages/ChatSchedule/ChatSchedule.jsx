@@ -460,119 +460,50 @@ const ChatSchedule = () => {
         }
       );
 
-      console.log("Full API Response:", res.data);
-      setIsLoading(false); // loading state for api response
+      const rawAiResponse = JSON.parse(res.data.data.raw_ai_response);
+      console.log("Raw AI Response:", rawAiResponse);
 
+      // Process the API response and structure it in the format you require
+      const formattedScheduleData = rawAiResponse.map((employeeData) => {
+        const { name, time } = employeeData;
+        const shifts = {};
+
+        // Format the shifts for each employee
+        Object.entries(time).forEach(([date, shift]) => {
+          shifts[convertDateFormat(date)] = [shift]; // Convert the date format and store the shift
+        });
+
+        // Return the formatted employee schedule
+        return {
+          name,
+          shifts,
+        };
+      });
+
+      console.log("Formatted Schedule Data:", formattedScheduleData);
+
+      // Save the formatted data to state
+      setEmployeeSchedules(formattedScheduleData);
+
+      // You can also set `currentDateColumns` if you want to extract unique dates
+      const allDates = [];
+      rawAiResponse.forEach((employeeData) => {
+        Object.keys(employeeData.time).forEach((date) => {
+          allDates.push(convertDateFormat(date));
+        });
+      });
+
+      const uniqueSortedDates = [...new Set(allDates)].sort();
+      setCurrentDateColumns(uniqueSortedDates);
+
+      // Successfully processed the schedule, show a success toast
       toast.update("loading-toast", {
         render: "✅ Schedule generated successfully!",
         type: "success",
         isLoading: false,
         autoClose: 3000,
         closeOnClick: true,
-      }); // toast state for api response
-      if (res.data.data.preview_id) {
-        setPreview_id(res.data.data.preview_id); // save to preview id state
-      } else {
-        return;
-      }
-
-      if (res.data && res.data.data && res.data.data.schedule) {
-        const scheduleData = res.data.data.schedule;
-
-        // Update employee list for mentions
-        const employeeNames = [...new Set(scheduleData.map((emp) => emp.name))];
-        setEmployeeList(employeeNames);
-        setScheduledEmployees(employeeNames); // Track only scheduled ones
-
-        // Process schedule data
-        const processedSchedules = [];
-        const employeeMap = new Map();
-
-        scheduleData.forEach((empData) => {
-          if (!empData.name || !empData.time) return;
-
-          // Create shifts object from time array
-          const shifts = {};
-          empData.time.forEach((timeEntry) => {
-            if (timeEntry.date && timeEntry.shift) {
-              const formattedDate = convertDateFormat(timeEntry.date);
-              // if (timeEntry.shift !== "off") {
-              //   if (!shifts[formattedDate]) {
-              //     shifts[formattedDate] = [];
-              //   }
-              //   shifts[formattedDate].push(timeEntry.shift);
-              // }
-              if (!shifts[formattedDate]) {
-                shifts[formattedDate] = [];
-              }
-              shifts[formattedDate].push(timeEntry.shift);
-            }
-          });
-
-          // Handle duplicate employees by merging shifts
-          if (employeeMap.has(empData.name)) {
-            const existingShifts = employeeMap.get(empData.name);
-            Object.keys(shifts).forEach((date) => {
-              if (existingShifts[date]) {
-                existingShifts[date] = [
-                  ...existingShifts[date],
-                  ...shifts[date],
-                ];
-              } else {
-                existingShifts[date] = shifts[date];
-              }
-            });
-          } else {
-            employeeMap.set(empData.name, shifts);
-          }
-        });
-
-        // Convert map to array
-        employeeMap.forEach((shifts, name) => {
-          processedSchedules.push({
-            name: name,
-            shifts: shifts,
-          });
-        });
-
-        console.log("Processed Schedules:", processedSchedules);
-
-        // Update state
-        setEmployeeSchedules(processedSchedules);
-
-        // Update date columns based on API response
-        const newDateColumns = generateDateColumns(scheduleData);
-        setCurrentDateColumns(newDateColumns);
-        console.log("Date columns:", newDateColumns);
-
-        // Add bot response messages
-        const botMessage = {
-          id: Date.now() + 1,
-          sender: "bot",
-          time: new Date().toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-          text: `Schedule updated successfully for ${
-            employeeNames.length
-          } employee(s): ${employeeNames.join(", ")}.`,
-          type: "text",
-        };
-
-        const tableMessage = {
-          id: Date.now() + 2,
-          sender: "bot",
-          time: new Date().toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-          type: "table",
-        };
-
-        setMessages((prev) => [...prev, botMessage, tableMessage]);
-      } else {
-        throw new Error("Invalid API response structure");
-      }
+      });
     } catch (error) {
       const errorMessage =
         error.response?.data?.error ||
@@ -582,9 +513,6 @@ const ChatSchedule = () => {
         error.error ||
         error.message;
 
-      // console.error("API Error:", error);
-      // console.log("Error Response:", error.response?.data || error.message);
-
       setIsLoading(false); // loading state for api response
 
       toast.update("loading-toast", {
@@ -593,7 +521,7 @@ const ChatSchedule = () => {
         isLoading: false,
         autoClose: 4000,
         closeOnClick: true,
-      }); // toast sate for api response
+      }); // toast state for API response
 
       console.log(error);
 
@@ -773,6 +701,8 @@ const ChatSchedule = () => {
   // Save Button Function
   const HandleSave = async () => {
     try {
+      console.log(preview_id);
+      console.log(token);
       const res = await baseApi.post(
         ENDPOINTS.SAVE_PREVIEW_SCHEDULE,
         {
@@ -807,6 +737,14 @@ const ChatSchedule = () => {
       });
     }
   };
+
+  // ----------------------------------------- \\
+
+  useEffect(() => {
+    console.log("Current Date Columns:", currentDateColumns);
+  }, [currentDateColumns]);
+
+  // ----------------------------------------- \\
 
   useEffect(() => {
     const fetchEmployees = async () => {
