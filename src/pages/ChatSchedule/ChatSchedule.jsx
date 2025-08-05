@@ -23,6 +23,7 @@ const ChatSchedule = () => {
   const [currentDateColumns, setCurrentDateColumns] = useState([]); // visible
   const [preview_id, setPreview_id] = useState(null);
   const [scheduledEmployees, setScheduledEmployees] = useState([]);
+  const [originalSchedules, setOriginalSchedules] = useState([]);
 
   // CurrentDateColumns array-> Obj formate:
   // [
@@ -90,11 +91,15 @@ const ChatSchedule = () => {
   const inputRef = useRef(null);
   const chatDiv = useRef(null);
 
-  // Helper function to convert date format from "01:07:2025" to "2025-07-01"
+  // Helper function to convert date format from "YYYY-MM-DD" or "DD:MM:YYYY" to "DD:MM:YYYY"
   const convertDateFormat = (apiDate) => {
     try {
-      const [day, month, year] = apiDate.split(":");
-      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+      if (!apiDate) return apiDate;
+      // If already in DD:MM:YYYY format, return as is
+      if (apiDate.includes(":")) return apiDate;
+      // If in YYYY-MM-DD format, convert to DD:MM:YYYY
+      const [year, month, day] = apiDate.split("-");
+      return `${day.padStart(2, "0")}:${month.padStart(2, "0")}:${year}`;
     } catch (error) {
       console.error("Date conversion error:", error);
       return apiDate; // return original if conversion fails
@@ -446,15 +451,15 @@ const ChatSchedule = () => {
     console.log("Sending message:", messageText);
 
     try {
-      // setIsLoading(true);
-      // toast.info("⏳ Generating schedule...", { toastId: "loading-toast" });
+      setIsLoading(true);
+      toast.info("⏳ Generating schedule...", { toastId: "loading-toast" });
 
-      // const res = await baseApi.post(
-      //   ENDPOINTS.CREATE_SCHEDULE,
-      //   { schedule_request: messageText },
-      //   { headers: { Authorization: `Bearer ${token}` } }
-      // );
-      const res = await baseApi.get("http://localhost:8001/");
+      const res = await baseApi.post(
+        ENDPOINTS.CREATE_SCHEDULE,
+        { schedule_request: messageText },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      // const res = await baseApi.get("http://localhost:8001/");
       setPreview_id(res.data.data.preview_id);
 
       const rawAiResponse = JSON.parse(res.data.data.raw_ai_response);
@@ -708,24 +713,42 @@ const ChatSchedule = () => {
   // Save Button Function
   const HandleSave = async () => {
     try {
-      console.log(preview_id);
-      console.log(token);
-      const res = await baseApi.post(
-        ENDPOINTS.SAVE_PREVIEW_SCHEDULE,
-        {
+      const changes = getChangedSchedules();
+      let payload;
+      if (changes.length > 0) {
+        payload = {
           preview_id: preview_id,
+          actions: [
+            {
+              action: "update",
+              schedules: changes,
+            },
+            {
+              action: "save",
+            },
+          ],
+        };
+      } else {
+        payload = {
+          preview_id: preview_id,
+          actions: [
+            {
+              action: "save",
+            },
+          ],
+        };
+      }
+
+      const res = await baseApi.post(ENDPOINTS.SAVE_PREVIEW_SCHEDULE, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      });
       if (res.status === 200) {
         toast.success("Schedule Saved Successfully");
       }
-      await updateSchedule(); // Call the update schedule function
       setIsEditable(false);
+      setOriginalSchedules([]); // clear after save
     } catch (error) {
       const errorMessage =
         error.response?.data?.error ||
@@ -827,6 +850,27 @@ const ChatSchedule = () => {
       setSelectedIndex(null);
     }
   }, [employeeList, input]);
+
+  const getChangedSchedules = () => {
+    const changes = [];
+    employeeSchedules.forEach((emp, empIdx) => {
+      const origEmp = originalSchedules.find((o) => o.name === emp.name);
+      if (!origEmp) return;
+      currentDateColumns.forEach((date) => {
+        const origShift =
+          (origEmp.shifts[date] && origEmp.shifts[date][0]) || "";
+        const currShift = (emp.shifts[date] && emp.shifts[date][0]) || "";
+        if (origShift !== currShift) {
+          changes.push({
+            name: emp.name,
+            date,
+            shift: currShift,
+          });
+        }
+      });
+    });
+    return changes;
+  };
 
   return (
     <div className="font-sans h-screen flex  md:flex-row p-4 lg:p-8 gap-3 bg-white">
@@ -1084,7 +1128,12 @@ const ChatSchedule = () => {
             <div className="flex flex-wrap gap-3 mb-6">
               {/* Edit Button */}
               <button
-                onClick={() => setIsEditable(true)}
+                onClick={() => {
+                  setOriginalSchedules(
+                    JSON.parse(JSON.stringify(employeeSchedules))
+                  );
+                  setIsEditable(true);
+                }}
                 className={`px-4 py-2 rounded-md border font-medium cursor-pointer ${
                   isEditable
                     ? "bg-white text-blue-600 border-blue-600 hover:bg-blue-50"
@@ -1097,12 +1146,8 @@ const ChatSchedule = () => {
 
               {/* Save Button (visible always, disabled if not editable) */}
               <button
-                onClick={() => {
-                  HandleSave();
-                  setIsEditable(false);
-                }}
+                onClick={HandleSave}
                 className={`px-4 py-2 rounded-md border font-medium bg-green-600 text-white border-green-600 cursor-pointer hover:bg-green-700`}
-                // disabled={!isEditable}
               >
                 {t("chat.save") || "Save"}
               </button>
@@ -1136,7 +1181,7 @@ const ChatSchedule = () => {
                     </th>
                     {currentDateColumns.map((date) => (
                       <th
-                        key={date}
+                        key={`date-col-${date}`}
                         className="border border-gray-300 p-3 font-semibold text-gray-700 text-center min-w-32"
                       >
                         {date}
@@ -1146,19 +1191,27 @@ const ChatSchedule = () => {
                 </thead>
                 <tbody>
                   {employeeSchedules.map((emp, empIndex) => (
-                    <tr key={emp.name} className="hover:bg-gray-50">
+                    <tr
+                      key={`emp-row-${emp.id || emp.name}`}
+                      className="hover:bg-gray-50"
+                    >
                       <td className="border border-gray-300 p-3 font-medium text-gray-900">
                         {emp.name}
                       </td>
                       {currentDateColumns.map((date) => (
-                        <td key={date} className="border border-gray-300 p-3">
+                        <td
+                          key={`cell-${emp.id || emp.name}-${date}`}
+                          className="border border-gray-300 p-3"
+                        >
                           {(emp.shifts && emp.shifts[date]
                             ? emp.shifts[date]
                             : []
                           ).map((shift, idx) =>
                             isEditable ? (
                               <input
-                                key={idx}
+                                key={`input-${
+                                  emp.id || emp.name
+                                }-${date}-${idx}`}
                                 type="text"
                                 value={shift}
                                 className="w-full border border-gray-300 p-1 rounded text-gray-900 mb-1 text-sm"
@@ -1172,17 +1225,10 @@ const ChatSchedule = () => {
                                 }}
                               />
                             ) : (
-                              // <div
-                              //   key={idx}
-                              //   className="text-white p-1.5 rounded mb-1 text-sm font-semibold text-center"
-                              //   style={{
-                              //     backgroundColor: getShiftColor(shift),
-                              //   }}
-                              // >
-                              //   {shift}
-                              // </div>
                               <div
-                                key={idx}
+                                key={`shift-${
+                                  emp.id || emp.name
+                                }-${date}-${idx}`}
                                 className={`p-1.5 rounded mb-1 text-sm font-semibold text-center ${
                                   shift.toLowerCase() === "off"
                                     ? "bg-gray-300 text-white border "

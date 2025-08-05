@@ -17,38 +17,43 @@ import { getToken } from "../../utils/helper";
 const Dashboard = ({ setShowDashboard, selectedMonth, selectedYear }) => {
   const { t } = useTranslation();
   const [employeeSchedules, setEmployeeSchedules] = useState([]);
-  // Employee Schedule array -> obj
-  // {
-  //     name: "Mark",
-  //     shifts: {
-  //       "2025-05-01": ["08:00-14:00"],
-  //       "2025-05-02": ["08:00-14:00"],
-  //       "2025-05-03": ["08:00-14:00"],
-  //       "2025-05-04": ["14:00-21:00"],
-  //     }
-  //   }
-  const token = getToken(import.meta.env.VITE_ACCESS_TOKEN_KEY);
+  
+  const token = getToken(import.meta.env.VITE_ACCESS_TOKEN_KEY); 
   const [isEditable, setIsEditable] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [showManageSchedule, setShowManageSchedule] = useState(false);
-  const [selected, setSelected] = useState("Weekly"); // weekly or monthly state { weekly , monthly }
+  const [selected, setSelected] = useState("Weekly");
   const [open, setOpen] = useState(false);
   const [monthName, setMonthName] = useState(
-    selectedMonth?.label?.toLowerCase() || "may"
+    selectedMonth?.label?.toLowerCase() || "august" // Changed default to august to match API
   );
   const [previousMonthName, setPreviousMonthName] = useState(monthName);
   const [showMonthName, setShowMonthName] = useState(false);
 
   const tableRef = useRef();
 
-  const [dateColumns] = useState(
-    Array.from({ length: 31 }, (_, i) => {
-      const date = new Date(2025, 4, 2 + i);
-      return date.toISOString().split("T")[0];
-    })
-  );
+  // Generate date columns based on selected month and year
+  const [dateColumns, setDateColumns] = useState([]);
 
-  const options = [{ value: "Weekly" }, { value: "Monthly" }]; // {weekly or monthly}
+  // Generate date columns for the selected month
+  useEffect(() => {
+    const generateDateColumns = () => {
+      const monthIndex = months.findIndex(m => m.value === monthName);
+      const year = selectedYear || 2025;
+      const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+      
+      const columns = Array.from({ length: daysInMonth }, (_, i) => {
+        const date = new Date(year, monthIndex, i + 1);
+        return date.toISOString().split("T")[0]; // Returns YYYY-MM-DD format
+      });
+      
+      setDateColumns(columns);
+    };
+
+    generateDateColumns();
+  }, [monthName, selectedYear]);
+
+  const options = [{ value: "Weekly" }, { value: "Monthly" }];
 
   const months = [
     { value: "january" },
@@ -72,26 +77,35 @@ const Dashboard = ({ setShowDashboard, selectedMonth, selectedYear }) => {
     ).padStart(2, "0")}.${date.getFullYear()}`;
   };
 
+  // Function to convert API date format (DD:MM:YYYY) to standard format (YYYY-MM-DD)
+  const convertApiDateToStandard = (apiDate) => {
+    const [day, month, year] = apiDate.split(':');
+    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+  };
+
   const getShiftColor = (shift) => {
-    if (shift.includes("08:00")) return "#71A3B7";
+    if (shift.includes("08:00") || shift.includes("09:00")) return "#71A3B7";
     if (shift.includes("10:00")) return "#97CBFD";
     if (shift.includes("14:00")) return "#A68BFB";
     if (shift.includes("16:00")) return "#F59F67";
+    if (shift.includes("06:00")) return "#22C55E"; // Green for early morning
     if (shift.includes("off")) return "#d1d5dc";
     return "#a3a3a3";
   };
 
   const getShiftColorClass = (shift) => {
-    if (shift.includes("08:00")) return "bg-[#71A3B7]"; // #71A3B7
-    if (shift.includes("10:00")) return "bg-[#97CBFD]"; // #97CBFD
-    if (shift.includes("14:00")) return "bg-[#A68BFB]"; // #A68BFB
-    if (shift.includes("16:00")) return "bg-[#F59F67]"; // #F59F67
+    if (shift.includes("08:00") || shift.includes("09:00")) return "bg-[#71A3B7]";
+    if (shift.includes("10:00")) return "bg-[#97CBFD]";
+    if (shift.includes("14:00")) return "bg-[#A68BFB]";
+    if (shift.includes("16:00")) return "bg-[#F59F67]";
+    if (shift.includes("06:00")) return "bg-green-500"; // Green for early morning
+    if (shift.includes("off")) return "bg-gray-400";
     return "bg-gray-400";
   };
 
   const onChange = async () => {
     try {
-      console.log(monthName); // Log current month name
+      console.log(monthName);
       const res = await baseApi.get(
         ENDPOINTS.VIEW_SCHEDULE(selectedYear, monthName, selected),
         {
@@ -101,54 +115,26 @@ const Dashboard = ({ setShowDashboard, selectedMonth, selectedYear }) => {
         }
       );
 
-      // Process the response and update state
       if (res.data.data) {
-        // Transform the response data into the desired structure
-
-        // -----------------------------------------------------------
-        // const newRes = res?.data?.data?.schedules.map((emp) => ({
-        //   id: emp.employee_id,
-        //   name: emp.employee_name,
-        //   email: emp.employee_email,
-        //   view_type: emp.view_type,
-        //   month: emp.month,
-        //   year: emp.year,
-        //   week: emp.week,
-        //   shifts: emp.schedule_data.reduce((acc, schedule) => {
-        //     const formattedDate = schedule.date; // the date from API like "01:08:2025"
-        //     if (!acc[formattedDate]) {
-        //       acc[formattedDate] = []; // Initialize an empty array if this date is not yet present
-        //     }
-        //     acc[formattedDate].push(schedule.shift); // Add the shift to the array for this date
-        //     return acc;
-        //   }, {}),
-        // }));
-        // -----------------------------------------------------------
-
-        // Log the formatted response to check the output
-        const resData = res?.data?.data;
-
-        const scheduleData = resData.map((emp) => ({
+        // Transform the API response to match your table structure
+        const scheduleData = res.data.data.map((emp) => ({
           name: emp.employee.name,
+          totalHours: `${emp.total_hours}h`, // Format total hours
           shifts: emp.schedule.reduce((acc, schedule) => {
-            const date = schedule.date; // Keep the date in its original format
-            if (!acc[date]) {
-              acc[date] = [];
+            // Convert API date format to standard format
+            const standardDate = convertApiDateToStandard(schedule.date);
+            
+            if (!acc[standardDate]) {
+              acc[standardDate] = [];
             }
-            acc[date].push(schedule.shift); // Add shift to the corresponding date
-            return acc; // Return the accumulator
+            acc[standardDate].push(schedule.shift);
+            return acc;
           }, {}),
         }));
 
-        console.log(scheduleData);
+        console.log("Transformed schedule data:", scheduleData);
         setEmployeeSchedules(scheduleData);
-
-        // console.log(scheduleData);
-
-        // Now you can use newRes to set your state for employeeSchedules or do other necessary operations
-        // setEmployeeSchedules(newRes); // Assuming you want to store this in state
       }
-      console.log(res.data.data);
     } catch (error) {
       const errorMessage =
         error.response?.data?.msg ||
@@ -161,14 +147,14 @@ const Dashboard = ({ setShowDashboard, selectedMonth, selectedYear }) => {
 
   const updateSchedule = async () => {
     try {
-      const aiRequestId = 7; // Example ai_request_id, replace it as needed
+      const aiRequestId = 7;
 
       // Prepare the schedule data to send to the API
       const schedulesData = employeeSchedules.map((emp) => ({
-        employee_id: emp.id, // Assuming employee has an 'id' field
+        employee_id: emp.id,
         schedule_data: Object.entries(emp.shifts).map(([date, shifts]) => ({
-          date,
-          shift: shifts[0], // Assuming only one shift per date, adjust accordingly if multiple shifts
+          date: convertStandardDateToApi(date), // Convert back to API format
+          shift: shifts[0],
         })),
       }));
 
@@ -177,7 +163,6 @@ const Dashboard = ({ setShowDashboard, selectedMonth, selectedYear }) => {
         schedules: schedulesData,
       };
 
-      // Call the API to update the schedule
       const response = await baseApi.post(
         ENDPOINTS.UPDATE_SCHEDULE,
         updateData,
@@ -188,7 +173,6 @@ const Dashboard = ({ setShowDashboard, selectedMonth, selectedYear }) => {
         }
       );
 
-      // Handle success
       if (response.status === 200) {
         toast.success("Schedule updated successfully!");
       } else {
@@ -203,6 +187,12 @@ const Dashboard = ({ setShowDashboard, selectedMonth, selectedYear }) => {
       toast.error(`Error: ${errorMessage}`);
       console.error(error);
     }
+  };
+
+  // Helper function to convert standard date back to API format
+  const convertStandardDateToApi = (standardDate) => {
+    const [year, month, day] = standardDate.split('-');
+    return `${day}:${month}:${year}`;
   };
 
   const handleExport = async () => {
@@ -247,7 +237,7 @@ const Dashboard = ({ setShowDashboard, selectedMonth, selectedYear }) => {
       ctx.fillStyle = "#6b7280";
       ctx.font = "12px Arial";
       ctx.fillText(
-        `Period: 01.05 - 31.05 (${selected} View) | Generated: ${new Date().toLocaleDateString()}`,
+        `Period: ${monthName} ${selectedYear || 2025} (${selected} View) | Generated: ${new Date().toLocaleDateString()}`,
         sideMargin,
         45
       );
@@ -469,22 +459,21 @@ const Dashboard = ({ setShowDashboard, selectedMonth, selectedYear }) => {
   }
 
   const HandleSave = async () => {
-    await updateSchedule(); // Call the update schedule function
-    setIsEditable(false); // Disable edit mode after saving
+    await updateSchedule();
+    setIsEditable(false);
   };
 
-  // auto Call
+  // Auto call on component mount
   useEffect(() => {
     onChange();
   }, []);
 
   useEffect(() => {
     if (monthName !== previousMonthName) {
-      // If month changed, call the onChange function
       onChange();
-      setPreviousMonthName(monthName); // Update previous month to current month
+      setPreviousMonthName(monthName);
     }
-  }, [monthName, selected]); // Re-run when monthName or selected view type changes
+  }, [monthName, selected]);
 
   return (
     <div className="w-full p-4 font-Inter">
@@ -600,10 +589,7 @@ const Dashboard = ({ setShowDashboard, selectedMonth, selectedYear }) => {
             </button>
 
             <button
-              onClick={() => {
-                setIsEditable(false);
-                // HandleSave();
-              }}
+              onClick={HandleSave}
               className="flex gap-2 items-center cursor-pointer md:justify-center border px-3 py-2 border-blue-500 hover:bg-green-50"
             >
               <Save className="w-4 h-4" />
@@ -623,7 +609,6 @@ const Dashboard = ({ setShowDashboard, selectedMonth, selectedYear }) => {
             >
               <FileDown className="w-4 h-4" />
               <p className=" font-medium text-gray-700">
-                {/* {exporting ? "Generating PDF..." : "Export to PDF"} */}
                 {exporting
                   ? t("dashboard.generatingPdf")
                   : t("dashboard.exportPdf")}
@@ -647,11 +632,11 @@ const Dashboard = ({ setShowDashboard, selectedMonth, selectedYear }) => {
                   id="timeSelect"
                   className="font-normal border border-gray-300 outline-none px-3 py-2 w-full"
                 >
-                  <option value="01.05 - 07.05">01.05 - 07.05</option>
-                  <option value="08.05 - 14.05">08.05 - 14.05</option>
-                  <option value="15.05 - 21.05">15.05 - 21.05</option>
-                  <option value="22.05 - 28.05">22.05 - 28.05</option>
-                  <option value="28.05 - 31.05">28.05 - 31.05</option>
+                  <option value="01.08 - 07.08">01.08 - 07.08</option>
+                  <option value="08.08 - 14.08">08.08 - 14.08</option>
+                  <option value="15.08 - 21.08">15.08 - 21.08</option>
+                  <option value="22.08 - 28.08">22.08 - 28.08</option>
+                  <option value="29.08 - 31.08">29.08 - 31.08</option>
                 </select>
               </th>
               {dateColumns.map((date) => (
