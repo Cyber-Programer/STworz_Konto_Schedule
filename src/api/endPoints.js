@@ -17,6 +17,10 @@ export const ENDPOINTS = {
     SAVE_PREVIEW_SCHEDULE: "core/api/ai-schedule/manage-preview-schedule/",
     // Dashboard Schedule
     // VIEW_SCHEDULE: (year, month, viewType) => `core/api/ai-schedule/view-schedules/?year=${year}&month=${month}&view_type=${viewType}`,
-    VIEW_SCHEDULE: (year, month) => `core/api/employee-schedules/all-employees/?year=${year}&month=${month}`,
-    UPDATE_SCHEDULE: "core/api/ai-schedule/update-last-schedule/"
+    VIEW_SCHEDULE: (year, month) => `core/api/employee-schedules/all-employees-monthly/?year=${year}&month=${month}`,
+    UPDATE_SCHEDULE: "core/api/ai-schedule/update-last-schedule/",
+    DASHBOARD_UPDATE_EDIT: "core/api/employee-schedules/all-employees-monthly/add-schedule/",
+    FORGET_PASSWORD:"accounts/user/send-reset-password-email/",
+    RESET_PASSWORD:"accounts/user/reset-password-otp/",
+    SET_NEW_PASSWORD:"accounts/user/set-new-password/"
 }

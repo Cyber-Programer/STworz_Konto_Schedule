@@ -712,8 +712,10 @@ const ChatSchedule = () => {
 
   // Save Button Function
   const HandleSave = async () => {
+    console.log("Save button clicked");
     try {
       const changes = getChangedSchedules();
+      console.log("Detected changes:", changes);
       let payload;
       if (changes.length > 0) {
         payload = {
@@ -738,6 +740,7 @@ const ChatSchedule = () => {
           ],
         };
       }
+      console.log("Payload:", payload);
 
       const res = await baseApi.post(ENDPOINTS.SAVE_PREVIEW_SCHEDULE, payload, {
         headers: {
@@ -748,7 +751,7 @@ const ChatSchedule = () => {
         toast.success("Schedule Saved Successfully");
       }
       setIsEditable(false);
-      setOriginalSchedules([]); // clear after save
+      setOriginalSchedules([]);
     } catch (error) {
       const errorMessage =
         error.response?.data?.error ||
@@ -852,23 +855,45 @@ const ChatSchedule = () => {
   }, [employeeList, input]);
 
   const getChangedSchedules = () => {
+    console.log("inside getChangedSchedules");
     const changes = [];
-    employeeSchedules.forEach((emp, empIdx) => {
+    employeeSchedules.forEach((emp) => {
       const origEmp = originalSchedules.find((o) => o.name === emp.name);
       if (!origEmp) return;
+      const schedule_data = [];
       currentDateColumns.forEach((date) => {
         const origShift =
           (origEmp.shifts[date] && origEmp.shifts[date][0]) || "";
         const currShift = (emp.shifts[date] && emp.shifts[date][0]) || "";
         if (origShift !== currShift) {
-          changes.push({
-            name: emp.name,
-            date,
+          let formattedDate = date;
+          if (date.includes("-")) {
+            const [year, month, day] = date.split("-");
+            formattedDate = `${day.padStart(2, "0")}:${month.padStart(
+              2,
+              "0"
+            )}:${year}`;
+          } else if (date.includes(".")) {
+            formattedDate = date.replace(/\./g, ":");
+          }
+          schedule_data.push({
+            date: formattedDate,
             shift: currShift,
           });
         }
       });
+      if (schedule_data.length > 0) {
+        changes.push({
+          employee_name: emp.name,
+          schedule_data,
+          year:
+            Number(schedule_data[0]?.date?.split(":")[2]) ||
+            new Date().getFullYear(),
+          month: monthName || "august",
+        });
+      }
     });
+    console.log("changes:", changes);
     return changes;
   };
 
@@ -1146,7 +1171,11 @@ const ChatSchedule = () => {
 
               {/* Save Button (visible always, disabled if not editable) */}
               <button
-                onClick={HandleSave}
+                onClick={() => {
+                  console.log("save button clicked");
+                  HandleSave();
+                }}
+                disabled={!isEditable}
                 className={`px-4 py-2 rounded-md border font-medium bg-green-600 text-white border-green-600 cursor-pointer hover:bg-green-700`}
               >
                 {t("chat.save") || "Save"}
@@ -1203,47 +1232,52 @@ const ChatSchedule = () => {
                           key={`cell-${emp.id || emp.name}-${date}`}
                           className="border border-gray-300 p-3"
                         >
-                          {(emp.shifts && emp.shifts[date]
-                            ? emp.shifts[date]
-                            : []
-                          ).map((shift, idx) =>
-                            isEditable ? (
-                              <input
-                                key={`input-${
-                                  emp.id || emp.name
-                                }-${date}-${idx}`}
-                                type="text"
-                                value={shift}
-                                className="w-full border border-gray-300 p-1 rounded text-gray-900 mb-1 text-sm"
-                                onChange={(e) => {
-                                  const updated = [...employeeSchedules];
-                                  if (updated[empIndex].shifts[date]) {
-                                    updated[empIndex].shifts[date][idx] =
-                                      e.target.value;
-                                    setEmployeeSchedules(updated);
-                                  }
-                                }}
-                              />
-                            ) : (
-                              <div
-                                key={`shift-${
-                                  emp.id || emp.name
-                                }-${date}-${idx}`}
-                                className={`p-1.5 rounded mb-1 text-sm font-semibold text-center ${
-                                  shift.toLowerCase() === "off"
-                                    ? "bg-gray-300 text-white border "
-                                    : "text-white"
-                                }`}
-                                style={{
-                                  backgroundColor:
-                                    shift.toLowerCase() === "off"
-                                      ? undefined
-                                      : getShiftColor(shift),
-                                }}
-                              >
-                                {shift.toLowerCase() === "off" ? "OFF" : shift}
-                              </div>
-                            )
+                          {isEditable ? (
+                            <input
+                              key={`input-${emp.id || emp.name}-${date}-0`}
+                              type="text"
+                              value={
+                                (emp.shifts &&
+                                  emp.shifts[date] &&
+                                  emp.shifts[date][0]) ||
+                                ""
+                              }
+                              className="w-full border border-gray-300 p-1 rounded text-gray-900 mb-1 text-sm"
+                              onChange={(e) => {
+                                const updated = [...employeeSchedules];
+                                if (!updated[empIndex].shifts[date]) {
+                                  updated[empIndex].shifts[date] = [""];
+                                }
+                                updated[empIndex].shifts[date][0] =
+                                  e.target.value;
+                                setEmployeeSchedules(updated); // <-- This is correct!
+                              }}
+                            />
+                          ) : emp.shifts &&
+                            emp.shifts[date] &&
+                            emp.shifts[date][0] ? (
+                            <div
+                              key={`shift-${emp.id || emp.name}-${date}-0`}
+                              className={`p-1.5 rounded mb-1 text-sm font-semibold text-center ${
+                                emp.shifts[date][0].toLowerCase() === "off"
+                                  ? "bg-gray-300 text-white border "
+                                  : "text-white"
+                              }`}
+                              style={{
+                                backgroundColor:
+                                  emp.shifts[date][0].toLowerCase() === "off"
+                                    ? undefined
+                                    : getShiftColor(emp.shifts[date][0]),
+                              }}
+                            >
+                              {emp.shifts[date][0].toLowerCase() === "off"
+                                ? "OFF"
+                                : emp.shifts[date][0]}
+                            </div>
+                          ) : (
+                            <div className="p-1.5 rounded mb-1 text-sm font-semibold text-center text-gray-400">
+                              {/* Empty cell */}
+                            </div>
                           )}
                         </td>
                       ))}

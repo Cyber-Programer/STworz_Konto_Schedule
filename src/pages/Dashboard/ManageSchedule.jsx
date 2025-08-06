@@ -4,7 +4,9 @@ import "react-calendar/dist/Calendar.css";
 import WebIcons from "../../assets/images";
 import TimePicker from "react-time-picker";
 import { useTranslation } from "react-i18next";
-
+import baseApi from "../../api/baseApi";
+import { ENDPOINTS } from "../../api/endPoints";
+import { toast } from "react-toastify";
 const ManageSchedule = ({ setShowManageSchedule }) => {
   const [name, setName] = useState("");
   const [date, setDate] = useState("");
@@ -12,8 +14,8 @@ const ManageSchedule = ({ setShowManageSchedule }) => {
   const [endTime, setEndTime] = useState("");
   const [monthName, setMonthName] = useState("");
   const [value, setValue] = useState(new Date());
-
-  const {t} = useTranslation()
+  const token = localStorage.getItem("ACCESS_TOKEN");
+  const { t } = useTranslation();
 
   // useEffect(() => {
   //   if (value instanceof Date && !isNaN(value)) {
@@ -24,12 +26,12 @@ const ManageSchedule = ({ setShowManageSchedule }) => {
 
   // Use English locale to ensure month names are consistent
 
-useEffect(() => {
-  if (value instanceof Date && !isNaN(value)) {
-    const month = value.toLocaleString("default", { month: "long" }); // always get English
-    setMonthName(month); // keep it as key
-  }
-}, [value]);
+  useEffect(() => {
+    if (value instanceof Date && !isNaN(value)) {
+      const month = value.toLocaleString("default", { month: "long" }); // always get English
+      setMonthName(month); // keep it as key
+    }
+  }, [value]);
 
   //  Fix date formatting to local date, not UTC
   const handleCalendarChange = (selectedDate) => {
@@ -54,19 +56,57 @@ useEffect(() => {
     // console.log(newDate)
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const schedule = {
-      name,
-      date,
-      time,
-    };
-    console.log(schedule);
 
-    setName("");
-    setDate("");
-    setTime("");
-    setShowManageSchedule(false);
+    // Convert date from YYYY-MM-DD to DD:MM:YYYY
+    let formattedDate = date;
+    if (date.includes("-")) {
+      const [year, month, day] = date.split("-");
+      formattedDate = `${day.padStart(2, "0")}:${month.padStart(
+        2,
+        "0"
+      )}:${year}`;
+    }
+
+    // Build shift string (start-end)
+    const shift = `${time}-${endTime}`;
+
+    // Prepare payload
+    const payload = {
+      schedule_entries: [
+        {
+          employee_name: name,
+          date: formattedDate,
+          year: Number(formattedDate.split(":")[2]),
+          month: monthName.toLowerCase(),
+          shift: shift,
+        },
+      ],
+    };
+
+    console.log("Payload sent to API:", payload);
+
+    try {
+      // Replace baseApi and ENDPOINTS.DASHBOARD_UPDATE_EDIT with your actual import
+      const res = await baseApi.post(ENDPOINTS.DASHBOARD_UPDATE_EDIT, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (res.data.success) {
+        toast.success("Schedule added successfully!");
+        setShowManageSchedule(false);
+        setName("");
+        setDate("");
+        setTime("");
+        setEndTime("");
+      } else {
+        toast.error(res.data.error || "Failed to add schedule.");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.error || error.message);
+    }
   };
 
   return (
@@ -101,11 +141,11 @@ useEffect(() => {
           </h1>
           <div className="mt-5.5">
             <label className="block mb-1 leading-5.5 text-xl text-textClr">
-              {t('manageSch.name')}
+              {t("manageSch.name")}
             </label>
             <input
               type="text"
-              placeholder={t('manageSch.placeholder.name')}
+              placeholder={t("manageSch.placeholder.name")}
               value={name}
               className="w-full border-[1px] border-[#E0E0E0] px-4 py-2 outline-none rounded"
               onChange={(e) => setName(e.target.value)}
@@ -114,7 +154,7 @@ useEffect(() => {
           <div className="mt-5.5 flex w-full flex-col md:flex-row justify-between gap-2">
             <div className="w-full">
               <label className="block mb-1 leading-5.5 text-lg text-textClr">
-                {t('manageSch.dateOfSchedule')}
+                {t("manageSch.dateOfSchedule")}
               </label>
               <input
                 type="date"
@@ -126,7 +166,7 @@ useEffect(() => {
             </div>
             <div className="">
               <label className="block mb-1 leading-5.5 text-sm text-gray-600">
-               {t('manageSch.startTime')}
+                {t("manageSch.startTime")}
               </label>
               <input
                 type="time"
@@ -140,7 +180,7 @@ useEffect(() => {
 
             <div className="">
               <label className="block mb-1 leading-5.5 text-sm text-gray-600">
-                {t('manageSch.endTime')}
+                {t("manageSch.endTime")}
               </label>
               <input
                 type="time"

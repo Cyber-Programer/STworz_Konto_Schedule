@@ -2,21 +2,26 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Eye, EyeOff } from "lucide-react";
 
-const ForgotPassword = ({ setNewPassword, onSubmit }) => {
+const UpdatePassword = ({
+  newPassword,
+  setNewPassword,
+  newPassword2,
+  setNewPassword2,
+  onSubmit,
+}) => {
   const { t } = useTranslation();
-  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState({
     new: false,
     confirm: false,
   });
-  const [confirmPass, setConfirmPass] = useState("");
+
   const handleSubmit = () => {
-    setNewPassword(password);
-    onSubmit(password);
+    onSubmit(); // Parent will use newPassword and newPassword2 from state
   };
+
   return (
     <div>
-      <div className="max-w-md  mx-auto px-4 lg:px-0">
+      <div className="max-w-md mx-auto px-4 lg:px-0">
         <h1 className="text-[1.75rem] md:text-[2rem] font-medium text-textClr ">
           {t("auth.setNewPass")}
         </h1>
@@ -32,8 +37,8 @@ const ForgotPassword = ({ setNewPassword, onSubmit }) => {
             <div className="form-control">
               <input
                 type={showPassword.new ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
                 required
                 className="bg-transparent outline-none flex-1 text-gray-800"
                 placeholder={t("auth.placeholder.newPass")}
@@ -64,8 +69,8 @@ const ForgotPassword = ({ setNewPassword, onSubmit }) => {
             <div className="form-control">
               <input
                 type={showPassword.confirm ? "text" : "password"}
-                value={confirmPass}
-                onChange={(e) => setConfirmPass(e.target.value)}
+                value={newPassword2}
+                onChange={(e) => setNewPassword2(e.target.value)}
                 required
                 className="bg-transparent outline-none flex-1 text-gray-800"
                 placeholder={t("auth.placeholder.reEnter")}
@@ -98,4 +103,4 @@ const ForgotPassword = ({ setNewPassword, onSubmit }) => {
   );
 };
 
-export default ForgotPassword;
+export default UpdatePassword;

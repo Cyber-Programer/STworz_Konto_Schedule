@@ -17,8 +17,8 @@ import { getToken } from "../../utils/helper";
 const Dashboard = ({ setShowDashboard, selectedMonth, selectedYear }) => {
   const { t } = useTranslation();
   const [employeeSchedules, setEmployeeSchedules] = useState([]);
-  
-  const token = getToken(import.meta.env.VITE_ACCESS_TOKEN_KEY); 
+
+  const token = getToken(import.meta.env.VITE_ACCESS_TOKEN_KEY);
   const [isEditable, setIsEditable] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [showManageSchedule, setShowManageSchedule] = useState(false);
@@ -29,29 +29,11 @@ const Dashboard = ({ setShowDashboard, selectedMonth, selectedYear }) => {
   );
   const [previousMonthName, setPreviousMonthName] = useState(monthName);
   const [showMonthName, setShowMonthName] = useState(false);
-
+  const [originalSchedules, setOriginalSchedules] = useState([]);
   const tableRef = useRef();
 
   // Generate date columns based on selected month and year
   const [dateColumns, setDateColumns] = useState([]);
-
-  // Generate date columns for the selected month
-  useEffect(() => {
-    const generateDateColumns = () => {
-      const monthIndex = months.findIndex(m => m.value === monthName);
-      const year = selectedYear || 2025;
-      const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
-      
-      const columns = Array.from({ length: daysInMonth }, (_, i) => {
-        const date = new Date(year, monthIndex, i + 1);
-        return date.toISOString().split("T")[0]; // Returns YYYY-MM-DD format
-      });
-      
-      setDateColumns(columns);
-    };
-
-    generateDateColumns();
-  }, [monthName, selectedYear]);
 
   const options = [{ value: "Weekly" }, { value: "Monthly" }];
 
@@ -71,16 +53,15 @@ const Dashboard = ({ setShowDashboard, selectedMonth, selectedYear }) => {
   ];
 
   const formatDate = (dateStr) => {
-    const date = new Date(dateStr);
-    return `${String(date.getDate()).padStart(2, "0")}.${String(
-      date.getMonth() + 1
-    ).padStart(2, "0")}.${date.getFullYear()}`;
+    // Handle DD:MM:YYYY format
+    const [day, month, year] = dateStr.split(":");
+    return `${day}.${month}.${year}`;
   };
 
   // Function to convert API date format (DD:MM:YYYY) to standard format (YYYY-MM-DD)
   const convertApiDateToStandard = (apiDate) => {
-    const [day, month, year] = apiDate.split(':');
-    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    const [day, month, year] = apiDate.split(":");
+    return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
   };
 
   const getShiftColor = (shift) => {
@@ -94,7 +75,8 @@ const Dashboard = ({ setShowDashboard, selectedMonth, selectedYear }) => {
   };
 
   const getShiftColorClass = (shift) => {
-    if (shift.includes("08:00") || shift.includes("09:00")) return "bg-[#71A3B7]";
+    if (shift.includes("08:00") || shift.includes("09:00"))
+      return "bg-[#71A3B7]";
     if (shift.includes("10:00")) return "bg-[#97CBFD]";
     if (shift.includes("14:00")) return "bg-[#A68BFB]";
     if (shift.includes("16:00")) return "bg-[#F59F67]";
@@ -105,7 +87,6 @@ const Dashboard = ({ setShowDashboard, selectedMonth, selectedYear }) => {
 
   const onChange = async () => {
     try {
-      console.log(monthName);
       const res = await baseApi.get(
         ENDPOINTS.VIEW_SCHEDULE(selectedYear, monthName, selected),
         {
@@ -115,25 +96,36 @@ const Dashboard = ({ setShowDashboard, selectedMonth, selectedYear }) => {
         }
       );
 
-      if (res.data.data) {
-        // Transform the API response to match your table structure
-        const scheduleData = res.data.data.map((emp) => ({
-          name: emp.employee.name,
-          totalHours: `${emp.total_hours}h`, // Format total hours
-          shifts: emp.schedule.reduce((acc, schedule) => {
-            // Convert API date format to standard format
-            const standardDate = convertApiDateToStandard(schedule.date);
-            
-            if (!acc[standardDate]) {
-              acc[standardDate] = [];
-            }
-            acc[standardDate].push(schedule.shift);
-            return acc;
-          }, {}),
-        }));
+      if (
+        res.data.success &&
+        res.data.data &&
+        Array.isArray(res.data.data.schedules)
+      ) {
+        const employees = res.data.data.schedules.map((emp) => {
+          const shifts = {};
+          if (Array.isArray(emp.schedule_data)) {
+            emp.schedule_data.forEach((entry) => {
+              if (!shifts[entry.date]) shifts[entry.date] = [];
+              shifts[entry.date].push(entry.shift);
+            });
+          }
+          return {
+            name: emp.employee_name,
+            totalHours: `${emp.total_hours || ""}h`,
+            shifts,
+          };
+        });
 
-        console.log("Transformed schedule data:", scheduleData);
-        setEmployeeSchedules(scheduleData);
+        setEmployeeSchedules(employees);
+
+        // Collect all unique dates for columns (from all employees)
+        const allDates = employees.flatMap((emp) => Object.keys(emp.shifts));
+        const uniqueDates = [...new Set(allDates)].sort((a, b) => {
+          const [da, ma, ya] = a.split(":");
+          const [db, mb, yb] = b.split(":");
+          return new Date(`${ya}-${ma}-${da}`) - new Date(`${yb}-${mb}-${db}`);
+        });
+        setDateColumns(uniqueDates);
       }
     } catch (error) {
       const errorMessage =
@@ -191,7 +183,7 @@ const Dashboard = ({ setShowDashboard, selectedMonth, selectedYear }) => {
 
   // Helper function to convert standard date back to API format
   const convertStandardDateToApi = (standardDate) => {
-    const [year, month, day] = standardDate.split('-');
+    const [year, month, day] = standardDate.split("-");
     return `${day}:${month}:${year}`;
   };
 
@@ -237,7 +229,9 @@ const Dashboard = ({ setShowDashboard, selectedMonth, selectedYear }) => {
       ctx.fillStyle = "#6b7280";
       ctx.font = "12px Arial";
       ctx.fillText(
-        `Period: ${monthName} ${selectedYear || 2025} (${selected} View) | Generated: ${new Date().toLocaleDateString()}`,
+        `Period: ${monthName} ${
+          selectedYear || 2025
+        } (${selected} View) | Generated: ${new Date().toLocaleDateString()}`,
         sideMargin,
         45
       );
@@ -454,13 +448,40 @@ const Dashboard = ({ setShowDashboard, selectedMonth, selectedYear }) => {
     }
   };
 
-  if (showManageSchedule) {
-    return <ManageSchedule setShowManageSchedule={setShowManageSchedule} />;
-  }
-
   const HandleSave = async () => {
-    await updateSchedule();
-    setIsEditable(false);
+    const changedEntries = getChangedEntries();
+    if (changedEntries.length === 0) {
+      toast.info("No changes to save.");
+      setIsEditable(false);
+      return;
+    }
+    try {
+      const response = await baseApi.post(
+        ENDPOINTS.DASHBOARD_UPDATE_EDIT,
+        { schedule_entries: changedEntries },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        toast.success("Schedule updated successfully!");
+        setOriginalSchedules(JSON.parse(JSON.stringify(employeeSchedules)));
+        setIsEditable(false);
+        onChange(); // Refresh data
+      } else {
+        toast.error("Failed to update the schedule.");
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.msg ||
+        error.response?.data?.detail ||
+        error.message;
+
+      toast.error(`Error: ${errorMessage}`);
+      console.error(error);
+    }
   };
 
   // Auto call on component mount
@@ -475,229 +496,298 @@ const Dashboard = ({ setShowDashboard, selectedMonth, selectedYear }) => {
     }
   }, [monthName, selected]);
 
+  // Simulate API response
+  // useEffect(() => {
+  //   const apiResponse = {};
+  //   if (apiResponse.success && apiResponse.data && apiResponse.data.schedules) {
+  //     const employees = apiResponse.data.schedules.map((emp) => {
+  //       const shifts = {};
+  //       emp.schedule_data.forEach((entry) => {
+  //         if (!shifts[entry.date]) shifts[entry.date] = [];
+  //         shifts[entry.date].push(entry.shift);
+  //       });
+  //       return {
+  //         name: emp.employee_name,
+  //         shifts,
+  //       };
+  //     });
+
+  //     setEmployeeSchedules(employees);
+
+  //     // Collect all unique dates for columns
+  //     const allDates = employees.flatMap((emp) => Object.keys(emp.shifts));
+  //     const uniqueDates = [...new Set(allDates)].sort((a, b) => {
+  //       // Optional: sort by date
+  //       const [da, ma, ya] = a.split(":");
+  //       const [db, mb, yb] = b.split(":");
+  //       return new Date(`${ya}-${ma}-${da}`) - new Date(`${yb}-${mb}-${db}`);
+  //     });
+  //     setDateColumns(uniqueDates);
+  //   }
+  // }, []);
+
+  const getChangedEntries = () => {
+    const changes = [];
+    employeeSchedules.forEach((emp) => {
+      const origEmp = originalSchedules.find((o) => o.name === emp.name);
+      if (!origEmp) return;
+      dateColumns.forEach((date) => {
+        const origShift =
+          (origEmp.shifts[date] && origEmp.shifts[date][0]) || "";
+        const currShift = (emp.shifts[date] && emp.shifts[date][0]) || "";
+        if (origShift !== currShift) {
+          const [day, month, year] = date.split(":");
+          changes.push({
+            employee_name: emp.name,
+            date: `${day.padStart(2, "0")}.${month.padStart(2, "0")}.${year}`,
+            year: Number(year),
+            month: monthName,
+            shift: currShift,
+          });
+        }
+      });
+    });
+    return changes;
+  };
+
   return (
     <div className="w-full p-4 font-Inter">
-      {/* Header */}
-      <div className="w-full flex justify-end my-4">
-        <button
-          onClick={() => setShowManageSchedule(true)}
-          className="flex gap-x-2.5 items-center border px-5 py-2 border-blue-400 cursor-pointer hover:bg-blue-50"
-        >
-          <Calendar className="w-5 h-5" />
-          {t("dashboard.manage&createSch")}
-        </button>
-      </div>
-
-      <hr className="text-gray-300 mb-4" />
-
-      <div className="flex flex-col lg:flex-row justify-between flex-wrap">
-        <h2
-          onClick={() => {
-            setShowDashboard(false);
-          }}
-          className="flex pb-10 items-center gap-2 text-lg lg:text-2xl font-semibold cursor-pointer hover:text-blue-600"
-        >
-          <ArrowLeft className="w-6 h-6" />
-          {t("dashboard.prevGeneratedSch")}
-        </h2>
-
-        {/* Controls */}
-        <div className="flex flex-col lg:flex-row gap-2 font-semibold items-start justify-start mb-3">
-          <div className="flex gap-2 items-center flex-wrap mb-2.5 lg:mb-0">
-            {/* Month selector */}
-            <div className="relative inline-block text-left">
-              <button
-                onClick={() => {
-                  setShowMonthName(!showMonthName);
-                }}
-                className="w-[130px] flex items-center border border-blue-500 px-5 py-2 outline-blue-400 gap-2 cursor-pointer hover:bg-blue-50"
-              >
-                <Calendar className="w-4 h-4" />
-                {t(
-                  `months.${
-                    monthName.charAt(0).toUpperCase() + monthName.slice(1)
-                  }`
-                )}
-              </button>
-              {showMonthName && (
-                <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 shadow-lg">
-                  {months.map((option) => (
-                    <button
-                      key={option.value}
-                      onClick={() => {
-                        setMonthName(option.value);
-                        setShowMonthName(false);
-                        console.log(option.value);
-                      }}
-                      className="flex items-center w-max px-2 py-2 hover:bg-gray-100 gap-2 cursor-pointer"
-                    >
-                      <Calendar className="w-4 h-4" />
-                      <p className="font-medium text-gray-700 capitalize">
-                        {t(
-                          `months.${
-                            option.value.charAt(0).toUpperCase() +
-                            option.value.slice(1)
-                          }`
-                        )}
-                      </p>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Weekly/Monthly selector */}
-            <div className="relative inline-block text-left">
-              <button
-                onClick={() => setOpen(!open)}
-                className="flex items-center border border-blue-500 px-5 py-2 outline-blue-400 gap-2 cursor-pointer hover:bg-blue-50"
-              >
-                <Calendar className="w-4 h-4" />
-                <p>{t(`dashboard.${selected.toLowerCase()}`)}</p>
-              </button>
-
-              {open && (
-                <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 shadow-lg">
-                  {options.map((option) => (
-                    <button
-                      key={option.value}
-                      onClick={() => {
-                        setSelected(option.value);
-                        setOpen(false);
-                        onChange();
-                      }}
-                      className="flex items-center w-full px-3 py-2 hover:bg-gray-100 gap-2 cursor-pointer"
-                    >
-                      <Calendar className="w-4 h-4" />
-                      {t(`dashboard.${option.value.toLowerCase()}`)}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="flex gap-2 items-center flex-wrap">
+      {showManageSchedule ? (
+        <ManageSchedule setShowManageSchedule={setShowManageSchedule} />
+      ) : (
+        <>
+          {/* Header */}
+          <div className="w-full flex justify-end my-4">
             <button
-              onClick={() => setIsEditable(true)}
-              className={`flex gap-2 items-center cursor-pointer justify-center border px-3 py-2 border-blue-500 hover:bg-blue-50 ${
-                isEditable ? "bg-blue-100" : ""
-              }`}
+              onClick={() => setShowManageSchedule(true)}
+              className="flex gap-x-2.5 items-center border px-5 py-2 border-blue-400 cursor-pointer hover:bg-blue-50"
             >
-              <Edit className="w-4 h-4" />
-              <p className="font-medium text-gray-700">{t("dashboard.edit")}</p>
-            </button>
-
-            <button
-              onClick={HandleSave}
-              className="flex gap-2 items-center cursor-pointer md:justify-center border px-3 py-2 border-blue-500 hover:bg-green-50"
-            >
-              <Save className="w-4 h-4" />
-              <p className=" font-medium text-gray-700">
-                {t("dashboard.save")}
-              </p>
-            </button>
-
-            <button
-              onClick={handleExport}
-              disabled={exporting}
-              className={`flex gap-2 items-center cursor-pointer justify-center border px-3 py-2 border-blue-500 ${
-                exporting
-                  ? "opacity-50 cursor-not-allowed"
-                  : "hover:bg-yellow-50"
-              }`}
-            >
-              <FileDown className="w-4 h-4" />
-              <p className=" font-medium text-gray-700">
-                {exporting
-                  ? t("dashboard.generatingPdf")
-                  : t("dashboard.exportPdf")}
-              </p>
+              <Calendar className="w-5 h-5" />
+              {t("dashboard.manage&createSch")}
             </button>
           </div>
-        </div>
-      </div>
 
-      {/* Schedule Table */}
-      <div className="overflow-x-auto">
-        <table
-          ref={tableRef}
-          className="w-full min-w-[900px] border border-gray-400 rounded-xl"
-        >
-          <thead>
-            <tr className="border border-gray-400">
-              <th className="border border-gray-400 px-2 py-2 text-left min-w-[140px]">
-                <select
-                  name="timeSelect"
-                  id="timeSelect"
-                  className="font-normal border border-gray-300 outline-none px-3 py-2 w-full"
-                >
-                  <option value="01.08 - 07.08">01.08 - 07.08</option>
-                  <option value="08.08 - 14.08">08.08 - 14.08</option>
-                  <option value="15.08 - 21.08">15.08 - 21.08</option>
-                  <option value="22.08 - 28.08">22.08 - 28.08</option>
-                  <option value="29.08 - 31.08">29.08 - 31.08</option>
-                </select>
-              </th>
-              {dateColumns.map((date) => (
-                <th
-                  key={date}
-                  className="border border-gray-400 text-center text-base font-semibold px-2 py-4 min-w-[120px]"
-                >
-                  {formatDate(date)}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {employeeSchedules.map((employee) => (
-              <tr key={employee.name} className="border border-gray-400">
-                <td className="border border-gray-400 px-2 py-2 whitespace-nowrap text-[14px] font-semibold text-left min-w-[140px]">
-                  {employee.name}
-                  <div className="text-xs text-gray-500">
-                    {employee.totalHours}
-                  </div>
-                </td>
-                {dateColumns.map((date) => (
-                  <td
-                    key={date}
-                    className="border border-gray-400 text-center px-2 py-2 min-w-[120px]"
+          <hr className="text-gray-300 mb-4" />
+
+          <div className="flex flex-col lg:flex-row justify-between flex-wrap">
+            <h2
+              onClick={() => {
+                setShowDashboard(false);
+              }}
+              className="flex pb-10 items-center gap-2 text-lg lg:text-2xl font-semibold cursor-pointer hover:text-blue-600"
+            >
+              <ArrowLeft className="w-6 h-6" />
+              {t("dashboard.prevGeneratedSch")}
+            </h2>
+
+            {/* Controls */}
+            <div className="flex flex-col lg:flex-row gap-2 font-semibold items-start justify-start mb-3">
+              <div className="flex gap-2 items-center flex-wrap mb-2.5 lg:mb-0">
+                {/* Month selector */}
+                <div className="relative inline-block text-left">
+                  <button
+                    onClick={() => {
+                      setShowMonthName(!showMonthName);
+                    }}
+                    className="w-[130px] flex items-center border border-blue-500 px-5 py-2 outline-blue-400 gap-2 cursor-pointer hover:bg-blue-50"
                   >
-                    {(employee.shifts[date] || []).map((shift, idx) => (
-                      <div key={idx} className="mb-1">
-                        {isEditable ? (
-                          <input
-                            type="text"
-                            value={shift}
-                            className="w-full border border-gray-500 px-1 py-1 rounded bg-white text-black text-sm"
-                            onChange={(e) => {
-                              const newSchedules = [...employeeSchedules];
-                              const employeeIndex = employeeSchedules.findIndex(
-                                (e) => e.name === employee.name
-                              );
-                              newSchedules[employeeIndex].shifts[date][idx] =
-                                e.target.value;
-                              setEmployeeSchedules(newSchedules);
-                            }}
-                          />
-                        ) : (
-                          <div
-                            className={`text-sm text-white font-medium rounded-[10px] px-2 py-2 h-[54px] flex items-center justify-center ${getShiftColorClass(
-                              shift
-                            )}`}
-                          >
-                            {shift}
-                          </div>
-                        )}
+                    <Calendar className="w-4 h-4" />
+                    {t(
+                      `months.${
+                        monthName.charAt(0).toUpperCase() + monthName.slice(1)
+                      }`
+                    )}
+                  </button>
+                  {showMonthName && (
+                    <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 shadow-lg">
+                      {months.map((option) => (
+                        <button
+                          key={option.value}
+                          onClick={() => {
+                            setMonthName(option.value);
+                            setShowMonthName(false);
+                            console.log(option.value);
+                          }}
+                          className="flex items-center w-max px-2 py-2 hover:bg-gray-100 gap-2 cursor-pointer"
+                        >
+                          <Calendar className="w-4 h-4" />
+                          <p className="font-medium text-gray-700 capitalize">
+                            {t(
+                              `months.${
+                                option.value.charAt(0).toUpperCase() +
+                                option.value.slice(1)
+                              }`
+                            )}
+                          </p>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Weekly/Monthly selector */}
+                <div className="relative inline-block text-left">
+                  <button
+                    onClick={() => setOpen(!open)}
+                    className="flex items-center border border-blue-500 px-5 py-2 outline-blue-400 gap-2 cursor-pointer hover:bg-blue-50"
+                  >
+                    <Calendar className="w-4 h-4" />
+                    <p>{t(`dashboard.${selected.toLowerCase()}`)}</p>
+                  </button>
+
+                  {open && (
+                    <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 shadow-lg">
+                      {options.map((option) => (
+                        <button
+                          key={option.value}
+                          onClick={() => {
+                            setSelected(option.value);
+                            setOpen(false);
+                            onChange();
+                          }}
+                          className="flex items-center w-full px-3 py-2 hover:bg-gray-100 gap-2 cursor-pointer"
+                        >
+                          <Calendar className="w-4 h-4" />
+                          {t(`dashboard.${option.value.toLowerCase()}`)}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex gap-2 items-center flex-wrap">
+                <button
+                  onClick={() => {
+                    setOriginalSchedules(
+                      JSON.parse(JSON.stringify(employeeSchedules))
+                    );
+                    setIsEditable(true);
+                  }}
+                  className={`flex gap-2 items-center cursor-pointer justify-center border px-3 py-2 border-blue-500 hover:bg-blue-50 ${
+                    isEditable ? "bg-blue-100" : ""
+                  }`}
+                >
+                  <Edit className="w-4 h-4" />
+                  <p className="font-medium text-gray-700">
+                    {t("dashboard.edit")}
+                  </p>
+                </button>
+
+                <button
+                  onClick={HandleSave}
+                  className="flex gap-2 items-center cursor-pointer md:justify-center border px-3 py-2 border-blue-500 hover:bg-green-50"
+                >
+                  <Save className="w-4 h-4" />
+                  <p className=" font-medium text-gray-700">
+                    {t("dashboard.save")}
+                  </p>
+                </button>
+
+                <button
+                  onClick={handleExport}
+                  disabled={exporting}
+                  className={`flex gap-2 items-center cursor-pointer justify-center border px-3 py-2 border-blue-500 ${
+                    exporting
+                      ? "opacity-50 cursor-not-allowed"
+                      : "hover:bg-yellow-50"
+                  }`}
+                >
+                  <FileDown className="w-4 h-4" />
+                  <p className=" font-medium text-gray-700">
+                    {exporting
+                      ? t("dashboard.generatingPdf")
+                      : t("dashboard.exportPdf")}
+                  </p>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Schedule Table */}
+          <div className="overflow-x-auto">
+            <table
+              ref={tableRef}
+              className="w-full min-w-[900px] border border-gray-400 rounded-xl"
+            >
+              <thead>
+                <tr className="border border-gray-400">
+                  <th className="border border-gray-400 px-2 py-2 text-left min-w-[140px]">
+                    <select
+                      name="timeSelect"
+                      id="timeSelect"
+                      className="font-normal border border-gray-300 outline-none px-3 py-2 w-full"
+                    >
+                      <option value="01.08 - 07.08">01.08 - 07.08</option>
+                      <option value="08.08 - 14.08">08.08 - 14.08</option>
+                      <option value="15.08 - 21.08">15.08 - 21.08</option>
+                      <option value="22.08 - 28.08">22.08 - 28.08</option>
+                      <option value="29.08 - 31.08">29.08 - 31.08</option>
+                    </select>
+                  </th>
+                  {dateColumns.map((date) => (
+                    <th
+                      key={date}
+                      className="border border-gray-400 text-center text-base font-semibold px-2 py-4 min-w-[120px]"
+                    >
+                      {formatDate(date)}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {employeeSchedules.map((employee) => (
+                  <tr key={employee.name} className="border border-gray-400">
+                    <td className="border border-gray-400 px-2 py-2 whitespace-nowrap text-[14px] font-semibold text-left min-w-[140px]">
+                      {employee.name}
+                      <div className="text-xs text-gray-500">
+                        {employee.totalHours}
                       </div>
+                    </td>
+                    {dateColumns.map((date) => (
+                      <td
+                        key={date}
+                        className="border border-gray-400 text-center px-2 py-2 min-w-[120px]"
+                      >
+                        {(employee.shifts[date] || []).map((shift, idx) => (
+                          <div key={idx} className="mb-1">
+                            {isEditable ? (
+                              <input
+                                type="text"
+                                value={shift}
+                                className="w-full border border-gray-500 px-1 py-1 rounded bg-white text-black text-sm"
+                                onChange={(e) => {
+                                  const newSchedules = [...employeeSchedules];
+                                  const employeeIndex =
+                                    employeeSchedules.findIndex(
+                                      (e) => e.name === employee.name
+                                    );
+                                  newSchedules[employeeIndex].shifts[date][
+                                    idx
+                                  ] = e.target.value;
+                                  setEmployeeSchedules(newSchedules);
+                                }}
+                              />
+                            ) : (
+                              <div
+                                className={`text-sm text-white font-medium rounded-[10px] px-2 py-2 h-[54px] flex items-center justify-center ${getShiftColorClass(
+                                  shift
+                                )}`}
+                              >
+                                {shift}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </td>
                     ))}
-                  </td>
+                  </tr>
                 ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
     </div>
   );
 };
