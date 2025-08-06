@@ -716,7 +716,6 @@ const ChatSchedule = () => {
     try {
       const changes = getChangedSchedules();
       console.log("Detected changes:", changes);
-
       let payload;
       if (changes.length > 0) {
         payload = {
@@ -725,6 +724,9 @@ const ChatSchedule = () => {
             {
               action: "update",
               schedules: changes,
+            },
+            {
+              action: "save",
             },
           ],
         };
@@ -740,28 +742,32 @@ const ChatSchedule = () => {
       }
       console.log("Payload:", payload);
 
-      if (!preview_id) {
-        console.error("preview_id is missing!");
-        return;
-      }
-      if (!payload) {
-        console.error("payload is missing!");
-        return;
-      }
-
       const res = await baseApi.post(ENDPOINTS.SAVE_PREVIEW_SCHEDULE, payload, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("API response:", res);
       if (res.status === 200) {
         toast.success("Schedule Saved Successfully");
       }
       setIsEditable(false);
       setOriginalSchedules([]);
     } catch (error) {
-      // ...error handling...
+      const errorMessage =
+        error.response?.data?.error ||
+        error.response?.data?.msg ||
+        error.response?.data?.detail ||
+        error.response?.data?.message ||
+        error.error ||
+        error.message;
+
+      toast.update("loading-toast", {
+        render: `❌ Error: ${errorMessage}`,
+        type: "error",
+        isLoading: false,
+        autoClose: 4000,
+        closeOnClick: true,
+      });
     }
   };
 
@@ -878,12 +884,6 @@ const ChatSchedule = () => {
     });
     return changes;
   };
-
-  useEffect(() => {
-    if (showFullTable) {
-      setOriginalSchedules(JSON.parse(JSON.stringify(employeeSchedules)));
-    }
-  }, [showFullTable, employeeSchedules]);
 
   return (
     <div className="font-sans h-screen flex  md:flex-row p-4 lg:p-8 gap-3 bg-white">
@@ -1163,7 +1163,8 @@ const ChatSchedule = () => {
                   console.log("save button clicked");
                   HandleSave();
                 }}
-                className="px-4 py-2 rounded-md border font-medium bg-green-600 text-white border-green-600 cursor-pointer hover:bg-green-700"
+                disabled={!isEditable}
+                className={`px-4 py-2 rounded-md border font-medium bg-green-600 text-white border-green-600 cursor-pointer hover:bg-green-700`}
               >
                 {t("chat.save") || "Save"}
               </button>
