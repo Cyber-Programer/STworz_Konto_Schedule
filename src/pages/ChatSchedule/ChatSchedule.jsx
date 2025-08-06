@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import baseApi from "../../api/baseApi";
 import { ENDPOINTS } from "../../api/endPoints";
-import { getToken } from "../../utils/helper";
+import { getToken, removeToken } from "../../utils/helper";
 
 const ChatSchedule = () => {
   const { t } = useTranslation();
@@ -301,6 +301,10 @@ const ChatSchedule = () => {
       toast.error("❌ Problem to find employee name");
 
       console.log(error);
+      if (error.status === 401) {
+        console.log("unauthorized");
+        removeToken("ACCESS_TOKEN"); // remove token if unauthorized
+      }
     }
   };
 
@@ -714,23 +718,36 @@ const ChatSchedule = () => {
   const HandleSave = async () => {
     console.log("Save button clicked");
     try {
-      const changes = getChangedSchedules();
-      console.log("Detected changes:", changes);
       let payload;
-      if (changes.length > 0) {
-        payload = {
-          preview_id: preview_id,
-          actions: [
-            {
-              action: "update",
-              schedules: changes,
-            },
-            {
-              action: "save",
-            },
-          ],
-        };
+      if (isEditable) {
+        // In edit mode: track changes
+        const changes = getChangedSchedules();
+        console.log("Detected changes:", changes);
+        if (changes.length > 0) {
+          payload = {
+            preview_id: preview_id,
+            actions: [
+              {
+                action: "update",
+                schedules: changes,
+              },
+              {
+                action: "save",
+              },
+            ],
+          };
+        } else {
+          payload = {
+            preview_id: preview_id,
+            actions: [
+              {
+                action: "save",
+              },
+            ],
+          };
+        }
       } else {
+        // Not in edit mode: just save
         payload = {
           preview_id: preview_id,
           actions: [
@@ -1163,7 +1180,6 @@ const ChatSchedule = () => {
                   console.log("save button clicked");
                   HandleSave();
                 }}
-                disabled={!isEditable}
                 className={`px-4 py-2 rounded-md border font-medium bg-green-600 text-white border-green-600 cursor-pointer hover:bg-green-700`}
               >
                 {t("chat.save") || "Save"}

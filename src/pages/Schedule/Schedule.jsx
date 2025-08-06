@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import baseApi from "../../api/baseApi";
 import { ENDPOINTS } from "../../api/endPoints";
-import { getToken } from "../../utils/helper";
+import { getToken, removeToken } from "../../utils/helper";
 const PrinciplesTable = () => {
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
@@ -59,6 +59,10 @@ const PrinciplesTable = () => {
       toast.error(`Registration Error: ${errorMessage}`);
       // console.error("Register error:", error.response?.data || error.message);
       console.log(error);
+      if (error.status === 401) {
+        console.log("unauthorized");
+        removeToken("ACCESS_TOKEN"); // remove token if unauthorized
+      }
     }
 
     setPrinciples((prev) =>

@@ -13,7 +13,6 @@ const RootLayout = () => {
   //   location.pathname.toLowerCase()
   // );
 
-  // set for first load
   const returnSelectedPage = () => {
     const path = location.pathname.toLowerCase();
     if (path == "/dashboard") return "home";
@@ -29,9 +28,9 @@ const RootLayout = () => {
   );
   const toggleSidebar = () => setSidebarOpen((prev) => !prev);
 
-  // set for every load
   useEffect(() => {
-    setSelectedPage(returnSelectedPage());
+    
+    (returnSelectedPage());
   }, [location.pathname]);
 
   return (

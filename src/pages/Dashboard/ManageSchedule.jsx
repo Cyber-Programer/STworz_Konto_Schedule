@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import baseApi from "../../api/baseApi";
 import { ENDPOINTS } from "../../api/endPoints";
 import { toast } from "react-toastify";
+import { removeToken } from "../../utils/helper";
 const ManageSchedule = ({ setShowManageSchedule }) => {
   const [name, setName] = useState("");
   const [date, setDate] = useState("");
@@ -94,6 +95,10 @@ const ManageSchedule = ({ setShowManageSchedule }) => {
           Authorization: `Bearer ${token}`,
         },
       });
+
+      if (res.status === 401) {
+        return removeToken(import.meta.env.VITE_ACCESS_TOKEN_KEY); // remove token if unauthorized
+      }
       if (res.data.success) {
         toast.success("Schedule added successfully!");
         setShowManageSchedule(false);
@@ -106,6 +111,10 @@ const ManageSchedule = ({ setShowManageSchedule }) => {
       }
     } catch (error) {
       toast.error(error.response?.data?.error || error.message);
+      if (error.status === 401) {
+        console.log("unauthorized");
+        removeToken("ACCESS_TOKEN"); // remove token if unauthorized
+      }
     }
   };
 

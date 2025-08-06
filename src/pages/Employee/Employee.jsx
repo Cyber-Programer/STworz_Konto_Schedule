@@ -3,9 +3,9 @@ import { useTranslation } from "react-i18next";
 import { RxCross1 } from "react-icons/rx";
 import baseApi from "../../api/baseApi";
 import { ENDPOINTS } from "../../api/endPoints";
-import { getToken } from "../../utils/helper";
+import { getToken, removeToken } from "../../utils/helper";
 import { toast } from "react-toastify";
-import { Search } from "lucide-react";
+import { CloudCog, Search } from "lucide-react";
 
 const Employee = () => {
   const { t } = useTranslation();
@@ -208,6 +208,7 @@ const Employee = () => {
           Authorization: `Bearer ${token}`,
         },
       });
+      
       console.log(res.data);
       setEmployees(res.data);
     } catch (error) {
@@ -219,6 +220,10 @@ const Employee = () => {
 
       toast.error(`Fetch Error: ${errorMessage}`);
       console.log(error);
+      if (error.status === 401) {
+        console.log('unauthorized');
+        removeToken('ACCESS_TOKEN'); // remove token if unauthorized
+      }
     }
   };
 
