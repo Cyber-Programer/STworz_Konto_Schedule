@@ -25,6 +25,9 @@ const SignIn = () => {
     try {
       if (!email || !password)
         return toast.error("Email and Password is required");
+      toast.loading("⏳ Please wait for checking...", {
+        toastId: "loading-login",
+      });
       const res = await baseApi.post(ENDPOINTS.LOGIN, {
         email,
         password,
@@ -37,6 +40,13 @@ const SignIn = () => {
         if (!token) return toast.error("Token not found...");
         toast.success(data?.msg);
         addToken(ACCESS_TOKEN_KEY, token);
+        // update the loading toast with success message
+        toast.update("loading-login", {
+          render: "Login Successful! Redirecting...",
+          type: "success",
+          isLoading: false,
+          autoClose: 2000,
+        });
         navigate("/dashboard");
       }
     } catch (error) {

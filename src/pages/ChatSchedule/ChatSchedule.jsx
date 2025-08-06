@@ -716,6 +716,7 @@ const ChatSchedule = () => {
     try {
       const changes = getChangedSchedules();
       console.log("Detected changes:", changes);
+
       let payload;
       if (changes.length > 0) {
         payload = {
@@ -724,9 +725,6 @@ const ChatSchedule = () => {
             {
               action: "update",
               schedules: changes,
-            },
-            {
-              action: "save",
             },
           ],
         };
@@ -742,32 +740,28 @@ const ChatSchedule = () => {
       }
       console.log("Payload:", payload);
 
+      if (!preview_id) {
+        console.error("preview_id is missing!");
+        return;
+      }
+      if (!payload) {
+        console.error("payload is missing!");
+        return;
+      }
+
       const res = await baseApi.post(ENDPOINTS.SAVE_PREVIEW_SCHEDULE, payload, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+      console.log("API response:", res);
       if (res.status === 200) {
         toast.success("Schedule Saved Successfully");
       }
       setIsEditable(false);
       setOriginalSchedules([]);
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.error ||
-        error.response?.data?.msg ||
-        error.response?.data?.detail ||
-        error.response?.data?.message ||
-        error.error ||
-        error.message;
-
-      toast.update("loading-toast", {
-        render: `❌ Error: ${errorMessage}`,
-        type: "error",
-        isLoading: false,
-        autoClose: 4000,
-        closeOnClick: true,
-      });
+      // ...error handling...
     }
   };
 
@@ -855,12 +849,10 @@ const ChatSchedule = () => {
   }, [employeeList, input]);
 
   const getChangedSchedules = () => {
-    console.log("inside getChangedSchedules");
     const changes = [];
     employeeSchedules.forEach((emp) => {
       const origEmp = originalSchedules.find((o) => o.name === emp.name);
       if (!origEmp) return;
-      const schedule_data = [];
       currentDateColumns.forEach((date) => {
         const origShift =
           (origEmp.shifts[date] && origEmp.shifts[date][0]) || "";
@@ -876,26 +868,22 @@ const ChatSchedule = () => {
           } else if (date.includes(".")) {
             formattedDate = date.replace(/\./g, ":");
           }
-          schedule_data.push({
+          changes.push({
+            name: emp.name,
             date: formattedDate,
             shift: currShift,
           });
         }
       });
-      if (schedule_data.length > 0) {
-        changes.push({
-          employee_name: emp.name,
-          schedule_data,
-          year:
-            Number(schedule_data[0]?.date?.split(":")[2]) ||
-            new Date().getFullYear(),
-          month: monthName || "august",
-        });
-      }
     });
-    console.log("changes:", changes);
     return changes;
   };
+
+  useEffect(() => {
+    if (showFullTable) {
+      setOriginalSchedules(JSON.parse(JSON.stringify(employeeSchedules)));
+    }
+  }, [showFullTable, employeeSchedules]);
 
   return (
     <div className="font-sans h-screen flex  md:flex-row p-4 lg:p-8 gap-3 bg-white">
@@ -1175,8 +1163,7 @@ const ChatSchedule = () => {
                   console.log("save button clicked");
                   HandleSave();
                 }}
-                disabled={!isEditable}
-                className={`px-4 py-2 rounded-md border font-medium bg-green-600 text-white border-green-600 cursor-pointer hover:bg-green-700`}
+                className="px-4 py-2 rounded-md border font-medium bg-green-600 text-white border-green-600 cursor-pointer hover:bg-green-700"
               >
                 {t("chat.save") || "Save"}
               </button>

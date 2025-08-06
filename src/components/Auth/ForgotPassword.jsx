@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-const ForgotPassword = ({email,setEmail,onSubmit}) => {
+const ForgotPassword = ({ email, setEmail, onSubmit }) => {
   const { t } = useTranslation();
   // const [email, setEmail] = useState("");
 
@@ -14,7 +14,7 @@ const ForgotPassword = ({email,setEmail,onSubmit}) => {
         <p className="text-[1.25rem] text-[#999999] leading-5 mt-3">
           {t("auth.forgotPassDesc")}
         </p>
-        <form className="mt-6">
+        <form className="mt-6" onSubmit={onSubmit}>
           {/* email input  */}
           <div>
             <label className="block mb-1 font-Inter font-medium text-textClr">

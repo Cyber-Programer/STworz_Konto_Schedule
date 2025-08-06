@@ -19,12 +19,15 @@ const ForgotPass = ({ initialStep, initialEmail, ckOtpVerify }) => {
   const navigate = useNavigate();
 
   // Send reset password email
-  const handleSendEmail = async () => {
+  const handleSendEmail = async (e) => {
+    e.preventDefault();
+    toast.loading("Sending OTP...", {
+      toastId: "loading-otp",
+    });
     if (!email) return notify.error("Give a valid email");
     try {
       const res = await baseApi.post(ENDPOINTS.FORGET_PASSWORD, { email });
       if (res.status === 200) {
-        notify.success("OTP sent to your email");
         setStep("verify");
       } else {
         notify.error(res.data?.error || "Failed to send OTP");
@@ -33,11 +36,15 @@ const ForgotPass = ({ initialStep, initialEmail, ckOtpVerify }) => {
       notify.error("Failed to send OTP");
       console.error(err);
     }
+    toast.dismiss("loading-otp");
   };
 
   // Verify OTP and get reset token
   const handleOTP = async (otpValue) => {
     if (!otpValue) return toast.error("OTP not found");
+    toast.loading("Verifying OTP...", {
+      toastId: "loading-verify-otp",
+    });
     try {
       const res = await baseApi.post(ENDPOINTS.RESET_PASSWORD, {
         email,
@@ -54,13 +61,16 @@ const ForgotPass = ({ initialStep, initialEmail, ckOtpVerify }) => {
       notify.error("OTP verification failed");
       console.error(err);
     }
+    toast.dismiss("loading-verify-otp");
   };
 
   // Set new password
   const handleSetPassword = async () => {
-    
     // if (newPassword !== newPassword2)
     //   return notify.error("Passwords do not match");
+    toast.loading("Resetting password...", {
+      toastId: "loading-reset-password",
+    });
     try {
       const res = await baseApi.post(ENDPOINTS.SET_NEW_PASSWORD, {
         reset_token: resetToken,
@@ -77,6 +87,7 @@ const ForgotPass = ({ initialStep, initialEmail, ckOtpVerify }) => {
       notify.error("Password reset failed");
       console.error(err);
     }
+    toast.dismiss("loading-reset-password");
   };
 
   return (
